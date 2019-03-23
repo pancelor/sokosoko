@@ -1,0 +1,2 @@
+const tileWidth = 32
+const tileHeight = 32

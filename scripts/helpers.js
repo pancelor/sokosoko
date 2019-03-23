@@ -62,6 +62,19 @@ async function sleep(ms) {
   })
 }
 
+function posDir(p, dir, len=1) {
+  const dx = [1,0,-1,0][dir];
+  const dy = [0,-1,0,1][dir];
+  return {
+    x: p.x + len*dx,
+    y: p.y + len*dy,
+  }
+}
+
+function posEq(a, b) {
+  return a.x === b.x && a.y === b.y
+}
+
 //
 // testing
 //
@@ -177,21 +190,35 @@ function listen(evName) {
 //
 
 function downloadFile(name, contents, mime_type) {
-    mime_type = mime_type || "text/plain";
+  mime_type = mime_type || "text/plain";
 
-    let blob = new Blob([contents], {type: mime_type});
+  let blob = new Blob([contents], {type: mime_type});
 
-    let dlink = document.createElement('a');
-    dlink.download = name;
-    dlink.href = window.URL.createObjectURL(blob);
-    dlink.onclick = function(e) {
-        // revokeObjectURL needs a delay to work properly
-        let that = this;
-        setTimeout(function() {
-            window.URL.revokeObjectURL(that.href);
-        }, 1500);
-    };
+  let dlink = document.createElement('a');
+  dlink.download = name;
+  dlink.href = window.URL.createObjectURL(blob);
+  dlink.onclick = function(e) {
+    // revokeObjectURL needs a delay to work properly
+    let that = this;
+    setTimeout(function() {
+      window.URL.revokeObjectURL(that.href);
+    }, 1500);
+  };
 
-    dlink.click();
-    dlink.remove();
+  dlink.click();
+  dlink.remove();
+}
+
+function globalExists(cb) {
+  // e.g. globalExists(() => tileData)
+  try {
+    cb()
+    return true
+  } catch (e) {
+    if (e.name === "ReferenceError") {
+      return false
+    } else {
+      throw e
+    }
+  }
 }

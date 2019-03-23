@@ -6,11 +6,19 @@ let deserActorClass;
 let deserTileName;
 let serTileName;
 
-function initSerTables() {
+function initActorSerTables() {
+  // e.g. deserActorClass["Player"] -> Player (constructor)
+  //   (to go the other way, use constructorVar.name)
+
   deserActorClass = {}
   for (let cst of allActorTypes) {
     deserActorClass[cst.name] = cst
   }
+}
+
+function initTileSerTables() {
+  // e.g. serTileName["dirt"] -> 1
+  // e.g. deserTileName[1] -> "dirt"
 
   serTileName = {}
   let i = 0
@@ -19,20 +27,15 @@ function initSerTables() {
     i += 1
   }
 
-  try {
-    // if level.dat has a `savedDeserTileName`, we load it here
+  if (globalExists(() => savedDeserTileName)) {
     deserTileName = savedDeserTileName
-  } catch (e) {
-    if (e.name === "ReferenceError") {
-      console.warn("No tile deserialization table found; rebuilding")
-      deserTileName = {}
-      let i = 0
-      for (let img of tilesList.children) {
-        deserTileName[i] = img.id
-        i += 1
-      }
-    } else {
-      throw e
+  } else {
+    console.warn("No tile deserialization table found; rebuilding")
+    deserTileName = {}
+    let i = 0
+    for (let img of tilesList.children) {
+      deserTileName[i] = img.id
+      i += 1
     }
   }
 }
@@ -50,13 +53,11 @@ function exportTilesDeserTable() {
   return lines.join("\n")
 }
 
-function globalExists(varName) {
-  return (window[varName] !== undefined)
-}
+function ImportTiles() {
+  initTileSerTables()
 
-function importTiles() {
   // imports `tileData` from level.dat into the global var `tiles`
-  if (!globalExists("tileData")) {
+  if (!globalExists(() => tileData)) {
     console.warn("could not find any saved tileData")
     tiles = [[]]
     return
@@ -70,7 +71,9 @@ function importTiles() {
     tiles.push([]);
     for (let cc = 0; cc < ncc; cc++) {
       const code = lines[rr][cc];
-      tiles[rr][cc] = deserTileName[code]
+      const name = deserTileName[code]
+      assert(name)
+      tiles[rr][cc] = name
     }
   }
 }
@@ -82,8 +85,8 @@ function exportTilesString() {
   for (let rr = 0; rr < nrr; rr++) {
     const chars = ["  "]
     for (let cc = 0; cc < ncc; cc++) {
-      const name = tiles[rr][cc];
-      chars.push(serTileName[name]);
+      const imgName = tiles[rr][cc];
+      chars.push(serTileName[imgName]);
     }
     lines.push(chars.join(''))
   }
@@ -92,9 +95,11 @@ function exportTilesString() {
   return lines.join("\n")
 }
 
-function importActors() {
+function ImportActors() {
+  initActorSerTables()
+
   // imports `actorData` from level.dat into the global var `actors`
-  if (!globalExists("actorData")) {
+  if (!globalExists(() => actorData)) {
     console.warn("could not find any saved actorData")
     actors = []
     return
@@ -121,7 +126,7 @@ function exportActorsString() {
   return lines.join("\n")
 }
 
-function exportLevelString() {
+function ExportLevelString() {
   const lines = []
   lines.push(exportTilesDeserTable())
   lines.push(exportTilesString())

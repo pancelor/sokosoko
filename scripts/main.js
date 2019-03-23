@@ -1,86 +1,78 @@
-let isPlayerTurn;
-
 function registerKeyListeners() {
-  isPlayerTurn = true;
-  let bufferedInput = null;
-
-  async function movementKey(dir) {
-    // This function gets all weird b/c it's running multiple copies
-    // of itself at once. One main "thread" plays back any buffered inputs
-    // while many other "threads" set the buffered input
-    if (!isPlayerTurn) {
-      bufferedInput = dir
+  const keyRepeatTimeout = 125
+  let heldDir = null
+  let holdInterval
+  const keyDirMap = {
+    "KeyD": 0,
+    "ArrowRight": 0,
+    "KeyW": 1,
+    "ArrowUp": 1,
+    "KeyA": 2,
+    "ArrowLeft": 2,
+    "KeyS": 3,
+    "ArrowDown": 3,
+  }
+  function onKeyHold() {
+    assert([0,1,2,3].includes(heldDir))
+    Update(heldDir)
+  }
+  function resetHoldInterval(start=true) {
+    clearInterval(holdInterval)
+    if (!start) { return }
+    onKeyHold()
+    holdInterval = setInterval(onKeyHold, keyRepeatTimeout)
+  }
+  function onKeyDown(e) {
+    const dir = keyDirMap[e.key]
+    if (dir === undefined) { return }
+    heldDir = dir
+    resetHoldInterval()
+  }
+  function onKeyUp(e) {
+    const dir = keyDirMap[e.key]
+    if (dir === undefined) { return }
+    if (heldDir === dir) {
+      resetHoldInterval(false)
+    }
+  }
+  window.addEventListener("keydown", e => {
+    if (e.ctrlKey) {
+      // don't preventDefault on keyboard shortcuts
       return
     }
-    isPlayerTurn = false
-    await update(dir)
-    assert(isPlayerTurn === false)
-    while (bufferedInput !== null) {
-      const dir = bufferedInput
-      bufferedInput = null
-      await update(dir)
-    }
-    isPlayerTurn = true
-  }
 
-  const keyRepeatTimeout = 125
+    e.preventDefault()
+    if (e.repeat) { return false }
 
-  function makeHandler(codes, cb) {
-    let repeatInterval
-    if (!Array.isArray(codes)) { codes = [codes] }
-    return e => {
-      if (!codes.includes(e.code)) { return }
-      if (e.type === "keydown") {
-        if (e.repeat) { return }
-        cb()
-        clearInterval(repeatInterval) // don't want multiple intervals running if we lose focus
-        repeatInterval = setInterval(cb, keyRepeatTimeout)
-      } else if (e.type === "keyup") {
-        if (!repeatInterval) {
-          console.warn(`released ${e.code} but there was no repeat interval (${repeat})`)
-        }
-        clearTimeout(repeatInterval)
-      } else { assert(0, `unknown event with type ${e.type}: ${JSON.stringify(e)}`) }
-    }
-  }
-  const repeatHandlers = [
-    makeHandler("KeyZ", () => {
-      if (!isPlayerTurn) { return }
-      undo()
-      raf()
-    }),
-    makeHandler("KeyY", () => {
-      if (!isPlayerTurn) { return }
-      redo()
-      raf()
-    }),
-    makeHandler(["KeyD", "ArrowRight"], () => { movementKey(0) }),
-    makeHandler(["KeyW", "ArrowUp"], () => { movementKey(1) }),
-    makeHandler(["KeyA", "ArrowLeft"], () => { movementKey(2) }),
-    makeHandler(["KeyS", "ArrowDown"], () => { movementKey(3) }),
-  ]
+    onKeyDown(e)
+    return false
+  })
+  window.addEventListener("keyup", e => {
+    e.preventDefault()
+    if (e.repeat) { return false }
 
-  window.addEventListener("keydown", e=>repeatHandlers.forEach(f=>f(e)))
-  window.addEventListener("keyup", e=>repeatHandlers.forEach(f=>f(e)))
+    onKeyUp(e)
+    return false
+  })
 }
 
 function redraw() {
   const ctx = canvas.getContext('2d')
   ctx.imageSmoothingEnabled = false
-  drawGame(ctx)
+  DrawGame(ctx)
 }
 
-function raf() {
+function Raf() {
   requestAnimationFrame(redraw)
 }
 
 function init() {
   registerKeyListeners()
-  initTiles()
-  initActors()
-  initGame()
+  InitTiles()
+  InitActors()
+  InitGame()
 
-  raf()
+  Raf()
 }
 
 window.onload = init

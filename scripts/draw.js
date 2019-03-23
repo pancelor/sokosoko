@@ -3,7 +3,8 @@ function cls(ctx) {
 }
 
 function drawBkg(ctx) {
-  drawImg(ctx, imgBackground, new TilePos({x: 0, y: 0}))
+  assert(0, 'imgBackground doesnt exist')
+  drawImg(ctx, imgBackground, {x: 0, y: 0})
 }
 
 function ctxWith(ctx, map, cb) {
@@ -20,13 +21,15 @@ function ctxWith(ctx, map, cb) {
   Object.assign(ctx, old)
 }
 
-function drawImg(ctx, img, pos, scale=1) {
+function drawImg(ctx, img, tilePos) {
   if (img == null) {
     assert(0, "null image")
     return
   }
-  scale *= imgScale
-  ctx.drawImage(img, pos.canvasX(), pos.canvasY(), img.width*scale, img.height*scale)
+  let { x, y } = tilePos
+  x *= tileWidth
+  y *= tileHeight
+  ctx.drawImage(img, x, y)
 }
 
 function drawLine(ctx, p1, p2) {
