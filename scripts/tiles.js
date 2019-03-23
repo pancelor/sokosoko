@@ -74,7 +74,7 @@ function DrawTiles(ctx) {
       const name = tiles[rr][cc]
       const img = document.getElementById(name)
       assert(img)
-      const pos = {x: cc, y: rr}
+      const pos = new Pos({x: cc, y: rr})
       drawImg(ctx, img, pos)
     }
   }
@@ -106,27 +106,28 @@ function LevelOpenings(level) {
   const openings = [null, null, null, null] // a dir-indexed dictionary
   const lastColumn = tiles[level.begin].length - 1
   for (let rr = level.begin; rr < level.end; rr += 1) {
+    const y = rr - level.begin
     if (rr === level.begin) {
       const ix = tiles[rr].findIndex(name=>!solid(name))
       if (ix !== -1) {
         // assert(openings[1] === null) // doesn't really work...
-        openings[1] = {x: ix, y: rr}
+        openings[1] = Pos.fromLevel(level, {x: ix, y})
       }
     }
     if (rr + 1 === level.end) {
       const ix = tiles[rr].findIndex(name=>!solid(name))
       if (ix !== -1) {
         // assert(openings[3] === null) // doesn't really work...
-        openings[3] = {x: ix, y: rr}
+        openings[3] = Pos.fromLevel(level, {x: ix, y})
       }
     }
     if (!solid(tiles[rr][0])) {
       // assert(openings[2] === null) // doesn't really work...
-      openings[2] = {x: 0, y: rr}
+      openings[2] = Pos.fromLevel(level, {x: 0, y})
     }
     if (!solid(tiles[rr][lastColumn])) {
       // assert(openings[0] === null) // doesn't really work...
-      openings[0] = {x: lastColumn, y: rr}
+      openings[0] = Pos.fromLevel(level, {x: lastColumn, y})
     }
   }
   return openings

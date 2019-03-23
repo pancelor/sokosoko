@@ -67,26 +67,15 @@ function back(arr, i=1) {
 }
 
 function posDir(p, dir, len=1) {
-  const dx = [1,0,-1,0][dir];
-  const dy = [0,-1,0,1][dir];
-  return {
-    x: p.x + len*dx,
-    y: p.y + len*dy,
-  }
+  const dx = [1,0,-1,0][dir]
+  const dy = [0,-1,0,1][dir]
+  const delta = new Pos({x:len*dx, y:len*dy})
+  return p.add(delta)
 }
 
 function oppDir(dir) {
   // returns the opposite direction
   return saneMod(dir + 2, 4)
-}
-
-function posEq(a, b) {
-  if (!a || !b) { return false }
-  return a.x === b.x && a.y === b.y
-}
-
-function posStr(p) {
-  return `(${p.x}, ${p.y})`
 }
 
 //

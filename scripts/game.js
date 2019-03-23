@@ -1,19 +1,96 @@
+class Pos {
+  constructor({x, y}) {
+    this.x = x
+    this.y = y
+  }
+
+  equals(other) {
+    // _only_ checks x,y coords; no frame checking
+    return this.x === other.x && this.y === other.y
+  }
+
+  clone() {
+    return new Pos({x: this.x, y: this.y})
+  }
+
+  add({x, y}) {
+    return new Pos({
+      x: this.x + x,
+      y: this.y + y,
+    })
+  }
+
+  static fromLevel(level, localPos) {
+    // takes a level pos and returns a world pos
+    return new Pos({x: localPos.x, y: localPos.y + level.begin})
+  }
+
+  toLevelPos(level) {
+    // takes a world pos and returns a level pos
+    return new Pos({x: this.x, y: this.y - level.begin})
+  }
+
+  str() {
+    return `(${this.x}, ${this.y})`
+  }
+}
+
+class FramePos extends Pos {
+  constructor(pos, frameStack) {
+    super(pos)
+    this.frameStack = [...frameStack]
+  }
+
+  clone() {
+    const sup = Pos.prototype.clone.call(this)
+    return new FramePos(sup, [...this.frameStack])
+  }
+
+  add(delta) {
+    const sup = Pos.prototype.add.call(this, delta)
+    return new FramePos(sup, [...this.frameStack])
+  }
+
+  frame() {
+    return back(this.frameStack)
+  }
+
+  parent() {
+    const frame = this.frame()
+    assert(frame)
+    const newStack = this.frameStack.slice(0, this.frameStack.length-1)
+    return new FramePos(frame.mini().pos, newStack)
+  }
+
+  child(pos, frame) {
+    return new FramePos(pos, [...this.frameStack, frame])
+  }
+
+  str() {
+    return `${frameStackToString(this.frameStack)} : ${this.x}, ${this.y}`
+  }
+
+  lift(pos) {
+    // takes a pos and lifts it to be a FramePos with the same frame stack as this
+    return new FramePos(pos, [...this.frameStack])
+  }
+
+  unlift(pos) {
+    // converts to a normal pos
+    return new Pos(this)
+  }
+}
+
+
+
 let player
-let frameStack
 
 function InitGame() {
   // note: tiles/actors have already been loaded
   console.log("InitGame()")
   player = allActors(Player)[0]
   assert(player)
-  initFrameStack()
   actors.forEach(a=>a.onGameInit())
-}
-
-function initFrameStack() {
-  const mini = findActor(Mini, {x:2, y:2})
-  assert(mini)
-  frameStack = [new Frame({miniId: mini.id, levelId: mini.levelId})]
 }
 
 function frameStackToString(stack) {
@@ -21,7 +98,7 @@ function frameStackToString(stack) {
   for (const frame of stack) {
     const mini = getActorId(frame.miniId)
     assert(mini)
-    chars.push(`Mini#${mini.id}@${posStr(mini.pos)}{${frame.levelId}}, `)
+    chars.push(`Mini#${mini.id}@${mini.pos.str()}{${frame.levelId}}, `)
   }
   return chars.join('')
 }
@@ -35,13 +112,13 @@ class Frame {
   }
 
   mini() {
-    const a = getActorId(miniId)
+    const a = getActorId(this.miniId)
     assert(a.constructor === Mini)
     return a
   }
 
   level() {
-    return getLevel(miniId)
+    return getLevel(this.levelId)
   }
 }
 
@@ -54,7 +131,7 @@ function Update(dir) {
 }
 
 function checkWin() {
-  return frameStack.length === 0
+  return player.pos.frameStack.length === 0
 }
 
 function DrawGame(ctx) {
@@ -105,13 +182,21 @@ class Actor {
   static deserialize(line) {
     const [type, x, y] = line.split(' ')
     assert(type === this.name, `expected ${this.name} got ${type}`)
-    const p = {x: int(x), y: int(y)}
+    const p = new Pos({x: int(x), y: int(y)})
     return new (this)(p)
   }
 }
 
 class Player extends Actor {
   static img = imgPlayer
+
+  onGameInit() {
+    const mini = findActor(Mini, new Pos({x:2, y:2}))
+    assert(mini)
+    const frameStack = [new Frame({miniId: mini.id, levelId: mini.levelId})]
+
+    this.pos = new FramePos(this.pos, frameStack)
+  }
 
   update(dir) {
     return pushableUpdate(this, dir)
@@ -131,6 +216,10 @@ class Mini extends Actor {
     return pushableUpdate(this, dir)
   }
 
+  level() {
+    return getLevel(this.levelId)
+  }
+
   serialize() {
     return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${this.levelId}`
   }
@@ -138,7 +227,7 @@ class Mini extends Actor {
   static deserialize(line) {
     const [type, x, y, id] = line.split(' ')
     assert(type === this.name, `expected ${this.name} got ${type}`)
-    const p = {x: int(x), y: int(y)}
+    const p = new Pos({x: int(x), y: int(y)})
     const levelId = int(id)
     return new (this)(p, levelId)
   }
@@ -172,74 +261,98 @@ function getLevel(id) {
   return l
 }
 
-function levelPos(level, pos) {
-  // takes a level pos and returns a world pos
-  return {x: pos.x, y: pos.y + level.begin}
-}
-function toLevelPos(level, pos) {
-  // takes a world pos and returns a level pos
-  return {x: pos.x, y: pos.y - level.begin}
+function maybeTeleOut(that, dir) {
+  // if that is standing in a level opening and moving out (dir)
+  //   move that to the parent FramePos (teleport out one level)
+  // else do nothing
+  // returns whether the tele happened
+  assert(that.pos.frameStack)
+  assert(0 <= dir && dir < 4) // temp
+
+  const level = that.pos.frame().level()
+  const outPos = LevelOpenings(level)[dir]
+  if (outPos && outPos.equals(that.pos)) {
+    that.pos = that.pos.parent()
+    return true
+  } else {
+    return false
+  }
 }
 
-function tryingToTeleOut(pos, d) {
-  assert(0 <= d && d < 4)
-  // obselete: returns whether standing at p and trying to move in dir d is escaping from the current level
-  const level = back(frameStack).level()
+function maybeTeleIn(that, dir) {
+  // if that is standing next to a Mini and is moving into it (dir)
+  //   move that into the mini (teleport out one level)
+  // else do nothing
+  // returns whether the tele happened
+  assert(that.pos.frameStack)
+  assert(0 <= dir && dir < 4) // temp
 
-  const outPos = LevelOpenings(level)[d]
-  return posEq(pos, outPos)
+  const nextPos = posDir(that.pos, dir)
+  const mini = findActor(Mini, nextPos)
+  if (mini) {
+    const op = LevelOpenings(mini.level())[oppDir(dir)]
+    if (op) {
+      // teleport into the mini
+      const preOp = posDir(op, oppDir(dir)) // right before entering the room, to try to push
+      that.pos = that.pos.child(preOp, new Frame({miniId: mini.id, levelId: mini.levelId}))
+
+      return true
+    }
+  }
+  return false
 }
 
 function pushableUpdate(that, dir) {
   // DRY without subclassing for pushable objects
-  const oldPos = {...that.pos}
-  const nextPos = posDir(that.pos, dir)
+  assert(that.pos.constructor === FramePos)
 
-  if (tryingToTeleOut(that.pos, dir)) {
-    const popped = frameStack.pop()
-    const level = getLevel(popped.levelId)
-    const mini = getActorId(popped.miniId)
-    assert(mini)
-    that.pos = mini.pos
+  const oldPos = that.pos.clone()
+  const nextPos = posDir(that.pos, dir)
+  assert(oldPos.frameStack) //temp
+  assert(nextPos.frameStack) //temp
+
+  if (maybeTeleOut(that, dir)) {
     if (pushableUpdate(that, dir)) {
       return true
     } else {
       // undo
       that.pos = oldPos
-      frameStack.push(popped)
     }
   }
 
   if (!CanMoveToTile(nextPos)) { return false }
 
   const crate = findActor(Crate, nextPos)
-  if (crate && !crate.update(dir)) { return false }
+  if (crate && !liftedUpdate(that, crate, dir)) { return false }
+
+  if (maybeTeleIn(that, dir)) {
+    if (pushableUpdate(that, dir)) {
+      return true
+    } else {
+      // undo
+      that.pos = oldPos
+    }
+  }
 
   const mini = findActor(Mini, nextPos)
-  if (mini) {
-    const newLevel = getLevel(mini.levelId)
-    const ops = LevelOpenings(newLevel)
-    const op = ops[oppDir(dir)]
-    if (op) {
-      // teleport into the mini
-      const oldLevel = getLevel(back(frameStack).levelId)
-      frameStack.push(new Frame({dir, miniId: mini.id, levelId: newLevel.id}))
-
-      that.pos = posDir(op, oppDir(dir)) // right before entering the room, to try to push
-      if (pushableUpdate(that, dir)) {
-        return true
-      } else {
-        // undo
-        that.pos = oldPos
-        frameStack.pop()
-      }
-    }
-    // there was either no opening, or we failed to get into the opening
-    if (!mini.update(dir)) { return false }
-  }
+  // how can mini exist if we already called maybeTeleIn?
+  // well, if there was either no opening, or we failed to get into the opening
+  if (mini && !liftedUpdate(that, mini, dir)) { return false }
 
   that.pos = nextPos
   return true
+}
+
+function liftedUpdate(lifter, target, dir) {
+  // lifts target into lifter's framepos, tries to update it, and unlifts it
+  // returns whether the update was successful
+  assert(lifter.pos.constructor === FramePos)
+
+  target.pos = lifter.pos.lift(target.pos)
+  const success = target.update(dir)
+  target.pos = target.pos.unlift()
+
+  return success
 }
 
 function allActors(csts) {
@@ -260,7 +373,7 @@ function findActor(cst, p) {
   // (or anywhere, if no pos is given)
   const as = allActors(cst)
   if (p) {
-    return as.find(a=>posEq(a.pos, p))
+    return as.find(a=>p.equals(a.pos))
   } else {
     return as[0]
   }

@@ -1,4 +1,7 @@
 let enableHeldButtons = true
+function disableHeldButtons() {
+  enableHeldButtons = false
+}
 
 function registerKeyListeners() {
   const keyRepeatTimeout = 125
