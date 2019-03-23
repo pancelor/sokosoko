@@ -43,6 +43,7 @@ const tileData = `
 `
 
 const actorData = `
+  Mini 0 0 2
   Player 4 9
   Crate 3 10
   Mini 2 11 3

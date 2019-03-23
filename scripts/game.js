@@ -11,13 +11,17 @@ function InitGame() {
 
 function initLevelStack() {
   // this initial stack could change with different puzzle design
-  levelStack = [new Frame({pos: {x: 0, y: 0}, dir: 3, id: 2})]
+  const mini = findActor(Mini, {x:0, y:0})
+  assert(mini)
+  levelStack = [new Frame({dir: 3, miniId: mini.id, levelId: mini.levelId})]
 }
 
 function levelStackToString() {
   const chars = ['[']
   for (const frame of levelStack) {
-    chars.push(`${posStr(frame.pos)}{${frame.levelId}}, `)
+    const mini = getActorId(frame.miniId)
+    assert(mini)
+    chars.push(`Mini#${mini.id}@${posStr(mini.pos)}{${frame.levelId}}, `)
   }
   return chars.join('')
 }
@@ -25,10 +29,10 @@ function levelStackToString() {
 class Frame {
   // a frame is an entry location (from the next level up) and a level id
   // the levelStack is made up of frames
-  constructor({pos, dir, id}) {
-    this.pos = pos
+  constructor({dir, miniId, levelId}) {
     this.dir = dir
-    this.levelId = id
+    this.miniId = miniId
+    this.levelId = levelId
   }
 }
 
@@ -153,13 +157,13 @@ const allActorTypes = [Player, Crate, Mini]
 //   return null
 // }
 
-function tryingToTeleOut(pos, dir) {
+function tryingToTeleOut(pos, d) {
   // returns whether standing at p and trying to move in dir d is escaping from the current level
   const { dir: frameDir, levelId} = back(levelStack)
   const level = getLevel(levelId)
   const ops = LevelOpenings(level)
   if (ops.find(op=>posEq(op, pos))) {
-    return saneMod(frameDir + 2, 4) === dir
+    return saneMod(frameDir + 2, 4) === d
   }
 }
 
@@ -183,8 +187,9 @@ function pushableUpdate(that, dir) {
   if (tryingToTeleOut(that.pos, dir)) {
     const popped = levelStack.pop()
     const level = getLevel(popped.levelId)
-    that.pos = posDir(popped.pos, otherDir) // popped.pos isn't the position of the mini; it's the position we were in before entering the mini
-    assert(findActor(Mini, that.pos))
+    const mini = getActorId(popped.miniId)
+    assert(mini)
+    that.pos = mini.pos
     if (pushableUpdate(that, dir)) {
       return true
     } else {
@@ -207,7 +212,7 @@ function pushableUpdate(that, dir) {
     if (op) {
       // teleport into the mini
       const oldLevel = getLevel(back(levelStack).levelId)
-      levelStack.push(new Frame({pos: oldPos, dir: dir, id: newLevel.id}))
+      levelStack.push(new Frame({dir, miniId: mini.id, levelId: newLevel.id}))
 
       that.pos = posDir(op, otherDir) // right before entering the room, to try to push
       if (pushableUpdate(that, dir)) {
