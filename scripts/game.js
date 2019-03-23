@@ -1,25 +1,24 @@
 let player
-let levelStack
-
+let frameStack
 
 function InitGame() {
   // note: tiles/actors have already been loaded
   console.log("InitGame()")
   player = allActors(Player)[0]
   assert(player)
-  initLevelStack()
+  initFrameStack()
+  actors.forEach(a=>a.onGameInit())
 }
 
-function initLevelStack() {
-  // this initial stack could change with different puzzle design
-  const mini = findActor(Mini, {x:0, y:0})
+function initFrameStack() {
+  const mini = findActor(Mini, {x:2, y:2})
   assert(mini)
-  levelStack = [new Frame({dir: 3, miniId: mini.id, levelId: mini.levelId})]
+  frameStack = [new Frame({miniId: mini.id, levelId: mini.levelId})]
 }
 
-function levelStackToString() {
+function frameStackToString(stack) {
   const chars = ['[']
-  for (const frame of levelStack) {
+  for (const frame of stack) {
     const mini = getActorId(frame.miniId)
     assert(mini)
     chars.push(`Mini#${mini.id}@${posStr(mini.pos)}{${frame.levelId}}, `)
@@ -29,16 +28,25 @@ function levelStackToString() {
 
 class Frame {
   // a frame is an entry location (from the next level up) and a level id
-  // the levelStack is made up of frames
   constructor({dir, miniId, levelId}) {
     this.dir = dir
     this.miniId = miniId
     this.levelId = levelId
   }
+
+  mini() {
+    const a = getActorId(miniId)
+    assert(a.constructor === Mini)
+    return a
+  }
+
+  level() {
+    return getLevel(miniId)
+  }
 }
 
 function Update(dir) {
-  player.update(dir, levelStack)
+  player.update(dir)
   if (checkWin()) {
     console.log("you win!")
   }
@@ -46,7 +54,7 @@ function Update(dir) {
 }
 
 function checkWin() {
-  return levelStack.length === 0
+  return frameStack.length === 0
 }
 
 function DrawGame(ctx) {
@@ -86,7 +94,7 @@ class Actor {
     return false
   }
 
-  initGame() {
+  onGameInit() {
     // code that runs on game init
   }
 
@@ -158,16 +166,6 @@ const allActorTypes = [Player, Crate, Mini]
 //   return null
 // }
 
-function tryingToTeleOut(pos, d) {
-  // returns whether standing at p and trying to move in dir d is escaping from the current level
-  const { dir: frameDir, levelId} = back(levelStack)
-  const level = getLevel(levelId)
-  const ops = LevelOpenings(level)
-  if (ops.find(op=>posEq(op, pos))) {
-    return saneMod(frameDir + 2, 4) === d
-  }
-}
-
 function getLevel(id) {
   const l = levels.find(l=>l.id===id)
   assert(l)
@@ -175,18 +173,30 @@ function getLevel(id) {
 }
 
 function levelPos(level, pos) {
-  // takes a level pos and returns a global pos
+  // takes a level pos and returns a world pos
   return {x: pos.x, y: pos.y + level.begin}
+}
+function toLevelPos(level, pos) {
+  // takes a world pos and returns a level pos
+  return {x: pos.x, y: pos.y - level.begin}
+}
+
+function tryingToTeleOut(pos, d) {
+  assert(0 <= d && d < 4)
+  // obselete: returns whether standing at p and trying to move in dir d is escaping from the current level
+  const level = back(frameStack).level()
+
+  const outPos = LevelOpenings(level)[d]
+  return posEq(pos, outPos)
 }
 
 function pushableUpdate(that, dir) {
   // DRY without subclassing for pushable objects
-  const otherDir = saneMod(dir + 2, 4)
   const oldPos = {...that.pos}
   const nextPos = posDir(that.pos, dir)
 
   if (tryingToTeleOut(that.pos, dir)) {
-    const popped = levelStack.pop()
+    const popped = frameStack.pop()
     const level = getLevel(popped.levelId)
     const mini = getActorId(popped.miniId)
     assert(mini)
@@ -196,7 +206,7 @@ function pushableUpdate(that, dir) {
     } else {
       // undo
       that.pos = oldPos
-      levelStack.push(popped)
+      frameStack.push(popped)
     }
   }
 
@@ -209,19 +219,19 @@ function pushableUpdate(that, dir) {
   if (mini) {
     const newLevel = getLevel(mini.levelId)
     const ops = LevelOpenings(newLevel)
-    const op = ops[otherDir]
+    const op = ops[oppDir(dir)]
     if (op) {
       // teleport into the mini
-      const oldLevel = getLevel(back(levelStack).levelId)
-      levelStack.push(new Frame({dir, miniId: mini.id, levelId: newLevel.id}))
+      const oldLevel = getLevel(back(frameStack).levelId)
+      frameStack.push(new Frame({dir, miniId: mini.id, levelId: newLevel.id}))
 
-      that.pos = posDir(op, otherDir) // right before entering the room, to try to push
+      that.pos = posDir(op, oppDir(dir)) // right before entering the room, to try to push
       if (pushableUpdate(that, dir)) {
         return true
       } else {
         // undo
         that.pos = oldPos
-        levelStack.pop()
+        frameStack.pop()
       }
     }
     // there was either no opening, or we failed to get into the opening

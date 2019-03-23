@@ -62,6 +62,10 @@ async function sleep(ms) {
   })
 }
 
+function back(arr, i=1) {
+  return arr[arr.length-i]
+}
+
 function posDir(p, dir, len=1) {
   const dx = [1,0,-1,0][dir];
   const dy = [0,-1,0,1][dir];
@@ -71,8 +75,9 @@ function posDir(p, dir, len=1) {
   }
 }
 
-function back(arr, i=1) {
-  return arr[arr.length-i]
+function oppDir(dir) {
+  // returns the opposite direction
+  return saneMod(dir + 2, 4)
 }
 
 function posEq(a, b) {
