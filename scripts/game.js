@@ -162,6 +162,11 @@ class Actor {
     Actor.id += 1
   }
 
+  color(ctx){
+    // used to show recursion
+    return this.constructor.color
+  }
+
   draw(ctx){
     drawImg(ctx, this.img, this.pos)
   }
@@ -189,6 +194,7 @@ class Actor {
 
 class Player extends Actor {
   static img = imgPlayer
+  static color = "#FFFFFF"
 
   onGameInit() {
     const mini = findActor(Mini, new Pos({x:2, y:2}))
@@ -206,10 +212,53 @@ class Player extends Actor {
 class Mini extends Actor {
   static img = imgMini
 
-  constructor(p, levelId) {
+  constructor(p, levelId, col) {
     super(p)
     assert(levelId.constructor === Number)
     this.levelId = levelId
+    this.col = col
+  }
+
+  draw(ctx) {
+    const numPx = 8*8
+    const data = new Uint8ClampedArray(numPx*4);
+    for (let ix = 0; ix < numPx; ix += 1) {
+      const [y, x] = divmod(ix, 8)
+      const p = new Pos({x, y})
+      const a = findActor(p)
+      let colorCode
+      if (a) {
+        colorCode = a.color()
+      } else {
+        colorCode = GetTileColor(p)
+      }
+      const { r, g, b } = hexColor(colorCode)
+      const iR = ix*4
+      const iG = ix*4 + 1
+      const iB = ix*4 + 2
+      const iA = ix*4 + 3
+      data[iR] = r
+      data[iG] = g
+      data[iB] = b
+      data[iA] = 1
+    }
+    // const temp = document.createElement("canvas")
+    // temp.width = 8
+    // temp.height = 8
+    // const tempCtx = temp.getContext('2d');
+    // tempCtx.imageSmoothing = false
+    // ctx.putImageData(new ImageData(data, 8, 8), 0, 0)
+
+    let { x, y } = this.pos
+    x *= tileWidth
+    y *= tileHeight
+
+    // const tempData = tempCtx.getImageData(0, 0, temp.width, temp.height)
+    ctx.putImageData(new ImageData(data, 8, 8), x, y)
+  }
+
+  color() {
+    return this.col
   }
 
   update(dir) {
@@ -229,12 +278,14 @@ class Mini extends Actor {
     assert(type === this.name, `expected ${this.name} got ${type}`)
     const p = new Pos({x: int(x), y: int(y)})
     const levelId = int(id)
-    return new (this)(p, levelId)
+    const topleft = Pos.fromLevel(getLevel(levelId), new Pos({x: 0, y: 0}))
+    return new (this)(p, levelId, GetTileColor(topleft))
   }
 }
 
 class Crate extends Actor {
   static img = imgCrate
+  static color = "#DB856B"
 
   update(dir) {
     return pushableUpdate(this, dir)

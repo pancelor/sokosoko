@@ -80,8 +80,13 @@ function DrawTiles(ctx) {
   }
 }
 
+function GetTileColor(p) {
+  const name = getTile(p)
+  assert(name)
+  return document.getElementById(name).dataset.color
+}
 
-function getTile(p) { // TODO use me
+function getTile(p) {
   if (inbounds(p)) {
     return tiles[p.y][p.x]
   } else {

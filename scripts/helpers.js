@@ -39,8 +39,35 @@ assert(saneMod(0, 10) === 0)
 assert(saneMod(10, 10) === 0)
 assert(saneMod(-6, 10) === 4)
 
+function divmod(x, y) {
+  return [Math.floor(x / y), saneMod(x, y)]
+}
+assertEqual(divmod(10, 3)[0], 3)
+assertEqual(divmod(10, 3)[1], 1)
+
+function hex(str) {
+  const match = str.match(/^[#]?(?<code>[a-fA-F\d]+)$/)
+  if (!match) {
+    throw new Error(`bad hex parse on "${str}"`)
+  }
+  return parseInt(match.groups.code, 16)
+}
+assertEqual(hex("FFA300"), 16753408)
+assertEqual(hex("#FFA300"), 16753408)
+
+function hexColor(str) {
+  let val, r, g, b
+  val = hex(str); // these semicolons are very important b/c of the ['s coming up
+  [val, b] = divmod(val, 256);
+  [val, g] = divmod(val, 256);
+  r = val
+  return {r, g, b}
+}
+assertObjMatch(hexColor("#FFA300"), {r:255, g:163, b:0})
+
+
 function int(str) {
-  if (!str.match(/\d+/)) {
+  if (!str.match(/^\d+$/)) {
     throw new Error(`bad int parse on "${str}"`)
   }
   return parseInt(str)
