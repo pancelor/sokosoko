@@ -1,22 +1,6 @@
-function downloadFile(name, contents, mime_type) {
-    mime_type = mime_type || "text/plain";
-
-    let blob = new Blob([contents], {type: mime_type});
-
-    let dlink = document.createElement('a');
-    dlink.download = name;
-    dlink.href = window.URL.createObjectURL(blob);
-    dlink.onclick = function(e) {
-        // revokeObjectURL needs a delay to work properly
-        let that = this;
-        setTimeout(function() {
-            window.URL.revokeObjectURL(that.href);
-        }, 1500);
-    };
-
-    dlink.click();
-    dlink.remove();
-}
+//
+// math
+//
 
 function randInt(min, max) {
   // returns an int
@@ -54,6 +38,33 @@ assert(saneMod(3, 10) === 3)
 assert(saneMod(0, 10) === 0)
 assert(saneMod(10, 10) === 0)
 assert(saneMod(-6, 10) === 4)
+
+function int(str) {
+  if (!str.match(/\d+/)) {
+    throw new Error(`bad int parse on "${str}"`)
+  }
+  return parseInt(str)
+}
+
+function xor(a, b) {
+  // returns the logical xor of the booleans a and b
+  // returns a bool no matter how bool-y the arguments are
+  return !!a != !!b
+}
+assert(xor(0, 0) === false)
+assert(xor(0, 1) === true)
+assert(xor(1, 0) === true)
+assert(xor(1, 1) === false)
+
+async function sleep(ms) {
+  return new Promise((resolve, reject) => {
+    setTimeout(resolve, ms)
+  })
+}
+
+//
+// testing
+//
 
 function assert(b, msg=null) {
   if (!b) {
@@ -111,36 +122,12 @@ expectError(() => {
   assertObjMatch({foo: {bar: 1}}, {foo: {bar: 2}})
 }, /expected.*got/)
 
-// function assertLite(b, msg=null) {
-//   if (!b) {
-//     msg = (msg === null) ? msg : "assert error"
-//     console.warn(msg)
-//   }
-// }
-
-function int(str) {
-  if (!str.match(/\d+/)) {
-    throw new Error(`bad int parse on "${str}"`)
-  }
-  return parseInt(str)
-}
-
-function xor(a, b) {
-  return !!a != !!b
-}
-assert(xor(0, 0) === false)
-assert(xor(0, 1) === true)
-assert(xor(1, 0) === true)
-assert(xor(1, 1) === false)
-
-async function sleep(ms) {
-  return new Promise((resolve, reject) => {
-    setTimeout(resolve, ms)
-  })
-}
-
+//
+// functions for use in the chrome dev tools:
+//
 
 function addDiffListener(evName, ignore=[]) {
+  // e.g. addDiffListener("mousewheel", ["timestamp"])
   let last = null;
   window.addEventListener(evName, (e) => {
     if (last) {
@@ -181,9 +168,30 @@ function diff(a, b) {
   return res
 }
 
-// e.g. addDiffListener("mousewheel", ["timestamp"])
-
 function listen(evName) {
   window.addEventListener(evName, console.log)
 }
 
+//
+// misc
+//
+
+function downloadFile(name, contents, mime_type) {
+    mime_type = mime_type || "text/plain";
+
+    let blob = new Blob([contents], {type: mime_type});
+
+    let dlink = document.createElement('a');
+    dlink.download = name;
+    dlink.href = window.URL.createObjectURL(blob);
+    dlink.onclick = function(e) {
+        // revokeObjectURL needs a delay to work properly
+        let that = this;
+        setTimeout(function() {
+            window.URL.revokeObjectURL(that.href);
+        }, 1500);
+    };
+
+    dlink.click();
+    dlink.remove();
+}

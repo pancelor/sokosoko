@@ -20,6 +20,7 @@ function initSerTables() {
   }
 
   try {
+    // if level.dat has a `savedDeserTileName`, we load it here
     deserTileName = savedDeserTileName
   } catch (e) {
     if (e.name === "ReferenceError") {
@@ -49,7 +50,18 @@ function exportTilesDeserTable() {
   return lines.join("\n")
 }
 
-function loadTiles() {
+function globalExists(varName) {
+  return (window[varName] !== undefined)
+}
+
+function importTiles() {
+  // imports `tileData` from level.dat into the global var `tiles`
+  if (!globalExists("tileData")) {
+    console.warn("could not find any saved tileData")
+    tiles = [[]]
+    return
+  }
+
   let lines = tileData.trim().split('\n').map(l=>l.trim())
   const nrr = lines.length
   const ncc = lines[0].length
@@ -80,12 +92,20 @@ function exportTilesString() {
   return lines.join("\n")
 }
 
-function loadActors() {
+function importActors() {
+  // imports `actorData` from level.dat into the global var `actors`
+  if (!globalExists("actorData")) {
+    console.warn("could not find any saved actorData")
+    actors = []
+    return
+  }
+
   let lines = actorData.trim().split('\n').map(l=>l.trim())
   actors = [];
   for (let l of lines) {
     const type = l.split(' ')[0]
     const klass = deserActorClass[type]
+    assert(klass !== undefined, `could not find actor type ${type} for deserialization`)
     actors.push(klass.deserialize(l));
   }
 }
