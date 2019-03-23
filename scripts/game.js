@@ -1,8 +1,60 @@
 let player
+let levelStack
+
+function InitGame() {
+  // note: tiles/actors have already been loaded
+  console.log("InitGame()")
+  player = allActors(Player)[0]
+  assert(player)
+  initLevelStack()
+}
+
+function initLevelStack() {
+  // this initial stack could change with different puzzle design
+  levelStack = [new Frame({pos: {x: 0, y: 0}, dir: 3, id: 2})]
+}
+
+function levelStackToString() {
+  const chars = ['[']
+  for (const frame of levelStack) {
+    chars.push(`${posStr(frame.pos)}{${frame.levelId}}, `)
+  }
+  return chars.join('')
+}
+
+class Frame {
+  // a frame is an entry location (from the next level up) and a level id
+  // the levelStack is made up of frames
+  constructor({pos, dir, id}) {
+    this.pos = pos
+    this.dir = dir
+    this.levelId = id
+  }
+}
 
 function Update(dir) {
-  player.update(dir)
+  player.update(dir, levelStack)
+  if (checkWin()) {
+    console.log("you win!")
+  }
   Raf()
+}
+
+function checkWin() {
+  return levelStack.length === 0
+}
+
+function DrawGame(ctx) {
+  DrawTiles(ctx)
+  drawActors(ctx)
+}
+
+function drawActors(ctx) {
+  allActors().forEach(e=>e.draw(ctx))
+}
+
+function InitActors() {
+  ImportActors()
 }
 
 class Actor {
@@ -49,14 +101,33 @@ class Player extends Actor {
   static img = imgPlayer
 
   update(dir) {
-    const nextPos = posDir(this.pos, dir)
-    if (!CanMoveToTile(nextPos)) { return false }
+    return pushableUpdate(this, dir)
+  }
+}
 
-    const crate = findActor(Crate, nextPos)
-    if (crate && !crate.update(dir)) { return false }
+class Mini extends Actor {
+  static img = imgMini
 
-    this.pos = nextPos
-    return true
+  constructor(p, levelId) {
+    super(p)
+    assert(levelId.constructor === Number)
+    this.levelId = levelId
+  }
+
+  update(dir) {
+    return pushableUpdate(this, dir)
+  }
+
+  serialize() {
+    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${this.levelId}`
+  }
+
+  static deserialize(line) {
+    const [type, x, y, id] = line.split(' ')
+    assert(type === this.name, `expected ${this.name} got ${type}`)
+    const p = {x: int(x), y: int(y)}
+    const levelId = int(id)
+    return new (this)(p, levelId)
   }
 }
 
@@ -64,33 +135,95 @@ class Crate extends Actor {
   static img = imgCrate
 
   update(dir) {
-    const nextPos = posDir(this.pos, dir)
-    if (!CanMoveToTile(nextPos)) { return false }
-    this.pos = nextPos
-    return true
+    return pushableUpdate(this, dir)
   }
 }
 
-const allActorTypes = [Player, Crate]
+const allActorTypes = [Player, Crate, Mini]
 
-function InitGame() {
-  // note: tiles/actors have already been loaded
-  console.log("InitGame()")
-  player = allActors(Player)[0]
-  assert(player)
+// function dirTo(p1, p2) {
+//   // returns 0-3 if p2 is adjacent to p1
+//   // otherwise null
+//   const dy = p2.y - p1.y
+//   const dx = p2.x - p1.x
+//   if (dy === 0 && dx === 1) { return 0 }
+//   if (dy === -1 && dx === 0) { return 1 }
+//   if (dy === 0 && dx === -1) { return 2 }
+//   if (dy === 1 && dx === 0) { return 3 }
+//   return null
+// }
+
+function tryingToTeleOut(pos, dir) {
+  // returns whether standing at p and trying to move in dir d is escaping from the current level
+  const { dir: frameDir, levelId} = back(levelStack)
+  const level = getLevel(levelId)
+  const ops = LevelOpenings(level)
+  if (ops.find(op=>posEq(op, pos))) {
+    return saneMod(frameDir + 2, 4) === dir
+  }
 }
 
-function DrawGame(ctx) {
-  DrawTiles(ctx)
-  drawActors(ctx)
+function getLevel(id) {
+  const l = levels.find(l=>l.id===id)
+  assert(l)
+  return l
 }
 
-function drawActors(ctx) {
-  allActors().forEach(e=>e.draw(ctx))
+function levelPos(level, pos) {
+  // takes a level pos and returns a global pos
+  return {x: pos.x, y: pos.y + level.begin}
 }
 
-function InitActors() {
-  ImportActors()
+function pushableUpdate(that, dir) {
+  // DRY without subclassing for pushable objects
+  const otherDir = saneMod(dir + 2, 4)
+  const oldPos = {...that.pos}
+  const nextPos = posDir(that.pos, dir)
+
+  if (tryingToTeleOut(that.pos, dir)) {
+    const popped = levelStack.pop()
+    const level = getLevel(popped.levelId)
+    that.pos = posDir(popped.pos, otherDir) // popped.pos isn't the position of the mini; it's the position we were in before entering the mini
+    assert(findActor(Mini, that.pos))
+    if (pushableUpdate(that, dir)) {
+      return true
+    } else {
+      // undo
+      that.pos = oldPos
+      levelStack.push(popped)
+    }
+  }
+
+  if (!CanMoveToTile(nextPos)) { return false }
+
+  const crate = findActor(Crate, nextPos)
+  if (crate && !crate.update(dir)) { return false }
+
+  const mini = findActor(Mini, nextPos)
+  if (mini) {
+    const newLevel = getLevel(mini.levelId)
+    const ops = LevelOpenings(newLevel)
+    const op = ops[otherDir]
+    if (op) {
+      // teleport into the mini
+      const oldLevel = getLevel(back(levelStack).levelId)
+      levelStack.push(new Frame({pos: oldPos, dir: dir, id: newLevel.id}))
+
+      that.pos = posDir(op, otherDir) // right before entering the room, to try to push
+      if (pushableUpdate(that, dir)) {
+        return true
+      } else {
+        // undo
+        that.pos = oldPos
+        levelStack.pop()
+      }
+    }
+    // there was either no opening, or we failed to get into the opening
+    if (!mini.update(dir)) { return false }
+  }
+
+  that.pos = nextPos
+  return true
 }
 
 function allActors(csts) {

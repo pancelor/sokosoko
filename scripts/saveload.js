@@ -53,6 +53,9 @@ function exportTilesDeserTable() {
   return lines.join("\n")
 }
 
+let tiles
+let levels
+
 function ImportTiles() {
   initTileSerTables()
 
@@ -63,32 +66,71 @@ function ImportTiles() {
     return
   }
 
+  tiles = []
+  levels = []
+
   let lines = tileData.trim().split('\n').map(l=>l.trim())
-  const nrr = lines.length
-  const ncc = lines[0].length
-  tiles = [];
-  for (let rr = 0; rr < nrr; rr++) {
-    tiles.push([]);
-    for (let cc = 0; cc < ncc; cc++) {
-      const code = lines[rr][cc];
-      const name = deserTileName[code]
-      assert(name)
-      tiles[rr][cc] = name
-    }
+  let line
+  let line_ix = 0
+  function nextLine() {
+    if (line_ix === lines.length) { return false }
+    line = lines[line_ix]
+    line_ix += 1
+    return true
   }
+
+  function parseLevel() {
+    const level = {}
+    const good = nextLine()
+    if (!good) { return false }
+
+    const match = line.match(/^level (?<id>\d+)$/)
+    assert(match, "bad level header")
+    level.id = int(match.groups.id)
+    level.begin = tiles.length
+
+    while (nextLine()) {
+      if (line === '') { break }
+      assert(line.length === 8)
+      const row = []
+      for (let code of line) {
+        const name = deserTileName[code]
+        assert(name)
+        row.push(name)
+      }
+      tiles.push(row)
+    }
+    level.end = tiles.length // level lives in `tiles` from level.begin to level.end (not inclusive on `end`)
+    assert(level.begin < level.end)
+    levels.push(level)
+    return true
+  }
+
+  while (parseLevel()) {}
+
+  // console.log(exportTilesString());
+  // console.log(levels);
+}
+
+function exportLevelString(level) {
+  const lines = []
+  lines.push(`  level ${level.id}`)
+  for (let rr = level.begin; rr < level.end; rr += 1) {
+    const chars = ["  "]
+    for (let imgName of tiles[rr]) {
+      chars.push(serTileName[imgName])
+    }
+    lines.push(chars.join(''))
+  }
+  return lines.join("\n")
 }
 
 function exportTilesString() {
   const lines = []
   lines.push("const tileData = `")
-  const {width: ncc, height: nrr} = tilesDim()
-  for (let rr = 0; rr < nrr; rr++) {
-    const chars = ["  "]
-    for (let cc = 0; cc < ncc; cc++) {
-      const imgName = tiles[rr][cc];
-      chars.push(serTileName[imgName]);
-    }
-    lines.push(chars.join(''))
+  for (let level of levels) {
+    lines.push(exportLevelString(level))
+    lines.push("")
   }
   lines.push("`")
   lines.push("")

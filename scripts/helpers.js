@@ -71,8 +71,17 @@ function posDir(p, dir, len=1) {
   }
 }
 
+function back(arr, i=1) {
+  return arr[arr.length-i]
+}
+
 function posEq(a, b) {
+  if (!a || !b) { return false }
   return a.x === b.x && a.y === b.y
+}
+
+function posStr(p) {
+  return `(${p.x}, ${p.y})`
 }
 
 //

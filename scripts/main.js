@@ -1,3 +1,5 @@
+let enableHeldButtons = true
+
 function registerKeyListeners() {
   const keyRepeatTimeout = 125
   let heldDir = null
@@ -20,22 +22,29 @@ function registerKeyListeners() {
     clearInterval(holdInterval)
     if (!start) { return }
     onKeyHold()
+    if (!enableHeldButtons) { return }
     holdInterval = setInterval(onKeyHold, keyRepeatTimeout)
   }
   function onKeyDown(e) {
-    const dir = keyDirMap[e.key]
+    const dir = keyDirMap[e.code]
     if (dir === undefined) { return }
     heldDir = dir
     resetHoldInterval()
   }
   function onKeyUp(e) {
-    const dir = keyDirMap[e.key]
+    const dir = keyDirMap[e.code]
     if (dir === undefined) { return }
     if (heldDir === dir) {
       resetHoldInterval(false)
     }
   }
   window.addEventListener("keydown", e => {
+    if (e.ctrlKey && e.code === "KeyS") {
+      SaveLevel()
+      e.preventDefault()
+      return false
+    }
+
     if (e.ctrlKey) {
       // don't preventDefault on keyboard shortcuts
       return

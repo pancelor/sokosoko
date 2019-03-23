@@ -1,20 +1,50 @@
 const savedDeserTileName = {
-  0: "imgYellowWall",
-  1: "imgYellowFloor",
+  0: "imgRedFloor",
+  1: "imgRedWall",
+  2: "imgBlueFloor",
+  3: "imgBlueWall",
+  4: "imgGreenFloor",
+  5: "imgGreenWall",
+  6: "imgYellowFloor",
+  7: "imgYellowWall",
 }
 
 const tileData = `
-  00000000
-  01111110
-  01111110
-  01111110
-  01111110
-  01111110
-  01111110
-  00000000
+  level 1
+  11111111
+  10000001
+  10000001
+  10000001
+  10000001
+  10000001
+  10000001
+  11111111
+
+  level 2
+  77776777
+  76666667
+  76666667
+  76666667
+  76666667
+  76666667
+  76666667
+  77777777
+
+  level 3
+  55554555
+  54444445
+  54444445
+  54444445
+  54444445
+  44444445
+  54444445
+  55455555
+
 `
 
 const actorData = `
-  Player 1 1
-  Crate 3 3
+  Player 4 9
+  Crate 3 10
+  Mini 2 11 3
+  Mini 4 19 2
 `

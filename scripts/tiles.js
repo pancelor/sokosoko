@@ -95,6 +95,39 @@ function setTile(p, name) { // TODO use me
   }
 }
 
-function SaveLevel() { // TODO use me
-  downloadFile("level.dat", exportLevelString())
+function SaveLevel() {
+  downloadFile("level.dat", ExportLevelString())
+}
+
+function LevelOpenings(level) {
+  // LevelOpenings(level)[dir] -> {x, y} world coordinates (_not_ level coordinates) of an entrance to level on the `dir` side
+  // LevelOpenings(level)[dir] -> null if no entrances on that side
+
+  const openings = [null, null, null, null] // a dir-indexed dictionary
+  const lastColumn = tiles[level.begin].length - 1
+  for (let rr = level.begin; rr < level.end; rr += 1) {
+    if (rr === level.begin) {
+      const ix = tiles[rr].findIndex(name=>!solid(name))
+      if (ix !== -1) {
+        // assert(openings[1] === null) // doesn't really work...
+        openings[1] = {x: ix, y: rr}
+      }
+    }
+    if (rr + 1 === level.end) {
+      const ix = tiles[rr].findIndex(name=>!solid(name))
+      if (ix !== -1) {
+        // assert(openings[3] === null) // doesn't really work...
+        openings[3] = {x: ix, y: rr}
+      }
+    }
+    if (!solid(tiles[rr][0])) {
+      // assert(openings[2] === null) // doesn't really work...
+      openings[2] = {x: 0, y: rr}
+    }
+    if (!solid(tiles[rr][lastColumn])) {
+      // assert(openings[0] === null) // doesn't really work...
+      openings[0] = {x: lastColumn, y: rr}
+    }
+  }
+  return openings
 }
