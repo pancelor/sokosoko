@@ -40,7 +40,7 @@ function EndEpoch() {
 
 function propEqual(p1, p2) {
   // TODO: hacky
-  if ([Pos, Frame].includes(p1.constructor)) {
+  if (p1 && [Pos, Frame].includes(p1.constructor)) {
     return p1.equals(p2)
   } else {
     return p1 === p2
@@ -95,7 +95,7 @@ function collateEpoch2(buffer) {
   }
   return res
 }
-RegisterTest("collateEpoch1 1", () => {
+RegisterTest("collateEpoch 1", () => {
   const buffer = [
     {id: 1, before: { x: 1 }, after: { x: 2 }},
     {id: 2, before: { y: 8 }, after: { y: 9 }},
@@ -106,7 +106,7 @@ RegisterTest("collateEpoch1 1", () => {
   assertObjEqual(newBuffer[0], {id: 1, before: { x: 1 }, after: { x: 3 }})
   assertObjEqual(newBuffer[1], {id: 2, before: { y: 8 }, after: { y: 9 }})
 })
-RegisterTest("collateEpoch1 2", () => {
+RegisterTest("collateEpoch 2", () => {
   const buffer = [
     {id: 1, before: { x: 1 }, after: { x: 2 }},
     {id: 1, before: { y: 10 }, after: { y: 11 }},
@@ -115,7 +115,7 @@ RegisterTest("collateEpoch1 2", () => {
   assertEqual(newBuffer.length, 1)
   assertObjEqual(newBuffer[0], {id: 1, before: { x: 1, y: 10 }, after: { x: 2, y: 11 }})
 })
-RegisterTest("collateEpoch1 3", () => {
+RegisterTest("collateEpoch 3", () => {
   const buffer = [
     {id: 1, before: { x: 1 }, after: { x: 2 }},
     {id: 1, before: { x: 2, y: 10 }, after: { x: 3, y: 11 }},
@@ -124,20 +124,40 @@ RegisterTest("collateEpoch1 3", () => {
   assertEqual(newBuffer.length, 1)
   assertObjEqual(newBuffer[0], {id: 1, before: { x: 1, y: 10 }, after: { x: 3, y: 11 }})
 })
-RegisterTest("collateEpoch2 1", () => {
+RegisterTest("collateEpoch 4", () => {
   const buffer = [
     {id: 1, before: { x: 1 }, after: { x: 1 }},
   ]
   const newBuffer = collateEpoch(buffer)
   assertEqual(newBuffer.length, 0)
 })
-RegisterTest("collateEpoch2 2", () => {
+RegisterTest("collateEpoch 5", () => {
   const buffer = [
     {id: 1, before: { x: 1 }, after: { x: 1, y: 2 }},
   ]
   const newBuffer = collateEpoch(buffer)
   assertEqual(newBuffer.length, 1)
   assertObjEqual(newBuffer[0], {id: 1, before: {}, after: { y: 2 }})
+})
+RegisterTest("collateEpoch 6", () => {
+  const buffer = [
+    {id: 1, before: {}, after: { dead: true }},
+  ]
+  const newBuffer = collateEpoch(buffer)
+  assertEqual(newBuffer.length, 1)
+  assertObjEqual(newBuffer[0], buffer[0])
+})
+RegisterTest("collateEpoch 7", () => {
+  const buffer = [{id: 1, before: {}, after: { dead: true }}]
+  const newBuffer = collateEpoch(buffer)
+  assertEqual(newBuffer.length, 1)
+  assertObjEqual(newBuffer[0], buffer[0])
+})
+RegisterTest("collateEpoch 8", () => {
+  const buffer = [{id: 1, before: { dead: true }, after: {}}]
+  const newBuffer = collateEpoch(buffer)
+  assertEqual(newBuffer.length, 1)
+  assertObjEqual(newBuffer[0], buffer[0])
 })
 
 function logHistory() {
@@ -170,7 +190,7 @@ function Undo() {
   for (const { id, before, after } of e) {
     const a = getActorId(id)
     for (const prop of Object.keys(after)) {
-      assert(propEqual(a[prop], after[prop]), `undo error on ${a.serialize()} on prop ${prop}: expected ${after[prop].serialize()}; got ${a[prop].serialize()}`)
+      assert(propEqual(a[prop], after[prop]), `undo error on ${serialize(a)} on prop ${prop}: expected ${serialize(after[prop])}; got ${serialize(a[prop])}`)
     }
     Object.assign(a, before)
   }
@@ -185,7 +205,7 @@ function Redo() {
   for (const { id, before, after } of e) {
     const a = getActorId(id)
     for (const prop of Object.keys(before)) {
-      assert(propEqual(a[prop], before[prop]), `redo error on ${a.serialize()} on prop ${prop}: expected ${before[prop].serialize()}; got ${a[prop].serialize()}`)
+      assert(propEqual(a[prop], before[prop]), `redo error on ${serialize(a)} on prop ${prop}: expected ${serialize(before[prop])}; got ${serialize(a[prop])}`)
     }
     Object.assign(a, after)
   }

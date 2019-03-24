@@ -8,10 +8,6 @@ class Pos {
     return this.x === other.x && this.y === other.y
   }
 
-  clone() {
-    return new Pos({x: this.x, y: this.y})
-  }
-
   add({x, y}) {
     return new Pos({
       x: this.x + x,
@@ -51,10 +47,6 @@ class FrameBase {
     this.parent = null
   }
 
-  clone() {
-    return new FrameBase(this.levelId)
-  }
-
   mini() {
     assert(0, "FrameBase has no mini")
   }
@@ -86,11 +78,7 @@ class Frame {
     assert(miniId)
     assert(parent)
     this.miniId = miniId
-    this.parent = parent.clone()
-  }
-
-  clone() {
-    return new Frame(this.miniId, this.parent.clone())
+    this.parent = parent
   }
 
   mini() {
@@ -226,10 +214,10 @@ function checkRealWin() {
 function maybeFakeWin() {
   const a = findActor(FakeFlag, player.pos)
   if (!a) { return false}
-  destroyActor(a) // hacky
+  a.die()
 }
 
-function destroyActor(a) {
+function destroyActor(a) { // hacky; don't use me
   const ix = actors.indexOf(a)
   actors.splice(ix, 1)
 }
@@ -311,6 +299,7 @@ class Actor {
     // get id
     this.id = Actor.id
     Actor.id += 1
+    this.dead = false
   }
 
   color(){
@@ -319,6 +308,7 @@ class Actor {
   }
 
   draw(ctx){
+    if (this.dead) { return }
     drawImg(ctx, this.img, this.pos)
   }
 
@@ -328,17 +318,30 @@ class Actor {
   }
 
   setPos(p) {
+    const before = this.pos
+    const after = p
     RecordChange({
       id: this.id,
-      before: { pos: this.pos.clone() },
-      after: { pos: p.clone() },
+      before: { pos: before },
+      after: { pos: after },
     })
-    this.pos = p
+    this.pos = after
   }
 
   setFrameStack(f) {
     // by default, don't record
     this.frameStack = f
+  }
+
+  die() {
+    const before = this.dead
+    const after = true
+    RecordChange({
+      id: this.id,
+      before: { dead: before },
+      after: { dead: after },
+    })
+    this.dead = after
   }
 
   onGameInit() {
@@ -402,12 +405,14 @@ class Player extends Actor {
   }
 
   setFrameStack(f) {
+    const before = this.frameStack
+    const after = f
     RecordChange({
       id: this.id,
-      before: { frameStack: this.frameStack.clone() },
-      after: { frameStack: f.clone() },
+      before: { frameStack: before },
+      after: { frameStack: after },
     })
-    this.frameStack = f
+    this.frameStack = after
   }
 
   update(dir) {
@@ -562,8 +567,8 @@ function pushableUpdate(that, dir) {
   // DRY without subclassing for pushable objects
   assert(that.frameStack)
 
-  const oldPos = that.pos.clone()
-  const oldFrameStack = that.frameStack.clone()
+  const oldPos = that.pos
+  const oldFrameStack = that.frameStack
   const nextPos = posDir(that.pos, dir)
 
   if (maybeTeleOut(that, dir)) {
@@ -606,7 +611,7 @@ function liftedPushableUpdate(lifter, target, dir) {
   assert(lifter.frameStack)
   assert(!target.frameStack)
 
-  target.frameStack = lifter.frameStack.clone()
+  target.frameStack = lifter.frameStack
   const success = pushableUpdate(target, dir)
   delete target.frameStack
 
@@ -631,7 +636,7 @@ function findActor(cst, p) {
   // (or anywhere, if no pos is given)
   const as = allActors(cst)
   if (p) {
-    return as.find(a=>p.equals(a.pos))
+    return as.find(a=>!a.dead && p.equals(a.pos))
   } else {
     return as[0]
   }

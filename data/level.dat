@@ -83,6 +83,7 @@ const actorData = `
   Mini 4 5 0
   Mini 4 43 0
   FakeFlag 1 4
+  FakeFlag 2 13
   Flag 3 43
   Player 1 14
   Mini 2 14 2

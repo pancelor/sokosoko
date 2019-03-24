@@ -44,7 +44,7 @@ function expectError(cb, msgMatch='') {
 function assertObjMatch(actual, expected, _path="") {
   for (const prop of Object.keys(expected)) {
     const pathToProp = `${_path}.${prop}`
-    if (expected[prop].constructor === Object) {
+    if (expected[prop] && expected[prop].constructor === Object) {
       assert(actual[prop].constructor === Object, `${pathToProp}: expected ${expected[prop]}; got ${actual[prop]}`)
       assertObjMatch(actual[prop], expected[prop], _path=pathToProp)
     } else {
@@ -254,6 +254,14 @@ RegisterTest("argmin 2", () => {
   assertEqual(min, 1)
 })
 
+function serialize(x) {
+  if (x.serialize && x.serialize.constructor === Function) {
+    return x.serialize()
+  } else {
+    return `${x}`
+  }
+}
+
 //
 // functions for use in the chrome dev tools:
 //
@@ -342,7 +350,11 @@ async function playSound(audioElement) {
   if (!audioElement) { return }
   audioElement.pause()
   audioElement.currentTime = 0
-  await audioElement.play()
+  try {
+    await audioElement.play()
+  } catch (err) {
+    console.warn(`playSound(${audioElement.id}) failed`)
+  }
 }
 
 function globalExists(cb) {
