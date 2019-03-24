@@ -333,16 +333,17 @@ class Player extends Actor {
     const miniYellow = findActor(Mini, pcoord(1, 6))
     const miniBlue = findActor(Mini, pcoord(6, 14))
     const miniBlackBase = findActor(Mini, pcoord(4, 5))
-    // const miniOuter = findActor(Mini, pcoord(4, 5))
+    const miniOuter = findActor(Mini, pcoord(3, 43))
     assert(miniBlack && GetLevelColor(miniBlack.levelId) === "Black")
     assert(miniYellow && GetLevelColor(miniYellow.levelId) === "Yellow")
     assert(miniBlue && GetLevelColor(miniBlue.levelId) === "Blue")
     assert(miniBlackBase && GetLevelColor(miniBlackBase.levelId) === "Black")
+    assert(miniOuter && GetLevelColor(miniOuter.levelId) === "Black")
     const frameStack = [
 
-       // not sure whether it makes more sense for this line to be here or not...
        // also, levelId doesn't seem to be relevant at all here idk why; the code is complicated
-       new Frame({miniId: null, levelId: miniBlack.levelId}),
+       new Frame({miniId: null, levelId: miniOuter.levelId}),
+       new Frame({miniId: miniOuter.id, levelId: miniOuter.levelId}),
 
        new Frame({miniId: miniBlackBase.id, levelId: miniBlackBase.levelId}),
        new Frame({miniId: miniYellow.id, levelId: miniYellow.levelId}),
@@ -496,8 +497,8 @@ function maybeTeleOut(that, dir) {
   // returns whether the tele happened
   assert(that.pos.frameStack)
 
-  const level = that.pos.frame().level()
-  const outPos = LevelOpenings(level)[dir]
+  const innerLevel = that.pos.frame().level()
+  const outPos = LevelOpenings(innerLevel)[dir]
   if (outPos && outPos.equals(that.pos)) {
     const parent = that.pos.parent()
     if (parent === null) {
