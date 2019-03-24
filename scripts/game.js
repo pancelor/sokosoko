@@ -159,7 +159,7 @@ class Frame {
 let keyHist = []
 let keyHistInterval
 function getKeyHist() {
-  console.log(`play("${keyHist.join('')}")`)
+  console.log(`const winStr = "${keyHist.join('')}"`)
 }
 function play(moves, dt=50) {
   assert(keyHist.length === 0)
@@ -181,16 +181,28 @@ function RecordKeyHist(dir) {
   keyHist.push(dir)
 }
 function Update(dir) {
-  if (checkWin()) { return }
+  if (checkRealWin()) { return }
 
   StartEpoch()
   player.update(dir)
+  maybeFakeWin()
   EndEpoch()
   Raf()
 }
 
-function checkWin() {
-  return !!findActor(Flag, player.pos)
+function checkRealWin() {
+  return findActor(Player) === undefined
+}
+
+function maybeFakeWin() {
+  const a = findActor(Flag, player.pos)
+  if (!a) { return false}
+  destroyActor(a)
+}
+
+function destroyActor(a) {
+  const ix = actors.indexOf(a)
+  actors.splice(ix, 1)
 }
 
 async function DrawGame(ctx) {
@@ -220,7 +232,7 @@ async function drawFancy() {
       0, 0, canvas2.width, canvas2.height
     )
   } else {
-    ctxWith(ctx, {fillStyle: "white"}, cls)
+    ctxWith(ctx, {fillStyle: "#FFF1E8"}, cls)
   }
 
   // draw inner level
@@ -243,8 +255,9 @@ async function drawFancy() {
     ctx.strokeRect(0, 0, canvas2.width, canvas2.height)
   })
 
-  if (checkWin()) {
+  if (checkRealWin()) {
     drawMessage(ctx, "You win!")
+    drawImg(ctx, imgPlayer, pcoord(9, 12)) // hacky
   }
 }
 
@@ -315,18 +328,36 @@ class Player extends Actor {
   static color = "#000000"
 
   onGameInit() {
-    const mini1 = getActorId(1)
-    const mini2 = getActorId(2)
-    assert(mini1.constructor === Mini)
-    assert(mini2.constructor === Mini)
+    const miniBlack = getActorId(1)
+    const miniYellow = getActorId(2)
+    const miniBlue = getActorId(3)
+    const miniBlackBase = getActorId(4)
+    assert(miniBlack.constructor === Mini && GetLevelColor(miniBlack.levelId) === "Black")
+    assert(miniYellow.constructor === Mini && GetLevelColor(miniYellow.levelId) === "Yellow")
+    assert(miniBlue.constructor === Mini && GetLevelColor(miniBlue.levelId) === "Blue")
+    assert(miniBlackBase.constructor === Mini && GetLevelColor(miniBlackBase.levelId) === "Black")
     const frameStack = [
 
        // not sure whether it makes more sense for this line to be here or not...
        // also, levelId doesn't seem to be relevant at all here idk why; the code is complicated
-      new Frame({miniId: null, levelId: mini1.levelId}),
+       new Frame({miniId: null, levelId: miniBlack.levelId}),
 
-      new Frame({miniId: mini1.id, levelId: mini1.levelId}),
-      new Frame({miniId: mini2.id, levelId: mini2.levelId}),
+       new Frame({miniId: miniBlackBase.id, levelId: miniBlackBase.levelId}),
+       new Frame({miniId: miniYellow.id, levelId: miniYellow.levelId}),
+
+       // start
+       new Frame({miniId: miniBlue.id, levelId: miniBlue.levelId}),
+       new Frame({miniId: miniBlack.id, levelId: miniBlack.levelId}),
+       new Frame({miniId: miniYellow.id, levelId: miniYellow.levelId}),
+
+       new Frame({miniId: miniBlue.id, levelId: miniBlue.levelId}),
+       new Frame({miniId: miniBlack.id, levelId: miniBlack.levelId}),
+       new Frame({miniId: miniYellow.id, levelId: miniYellow.levelId}),
+
+       new Frame({miniId: miniBlue.id, levelId: miniBlue.levelId}),
+       new Frame({miniId: miniBlack.id, levelId: miniBlack.levelId}),
+       new Frame({miniId: miniYellow.id, levelId: miniYellow.levelId}),
+       // end
     ]
 
     this.pos = new FramePos(this.pos, frameStack)
@@ -450,7 +481,13 @@ function maybeTeleOut(that, dir) {
   const level = that.pos.frame().level()
   const outPos = LevelOpenings(level)[dir]
   if (outPos && outPos.equals(that.pos)) {
-    that.setPos(that.pos.parent())
+    const parent = that.pos.parent()
+    if (parent === null) {
+      // hack
+      destroyActor(player)
+      return false
+    }
+    that.setPos(parent)
     return true
   } else {
     return false
@@ -543,6 +580,25 @@ function liftedUpdate(lifter, target, dir) {
 
   return success
 }
+
+// function maybeJimmyFrameStackInfinitely(that) {
+//   // is this a good idea lol who knows
+//   if (that !== player) { return }
+//   if (that.pos.frameStack.length === 2) {
+//     const outerColor = GetLevelColor(that.pos.frame().levelId)
+//     switch (outerColor) {
+//       case "Black": {
+//         that.pos.frameStack
+//       } break
+//       case "Blue": {
+
+//       } break
+//       case "Yellow": {
+
+//       } break
+//     }
+//   }
+// }
 
 function allActors(csts) {
   // allActors() -> all actors
