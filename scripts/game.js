@@ -40,6 +40,10 @@ class Pos {
   str() {
     return `(${this.x}, ${this.y})`
   }
+
+  serialize() {
+    return `${this.constructor.name} ${this.x} ${this.y}`
+  }
 }
 
 class FramePos extends Pos {
@@ -92,7 +96,7 @@ class FramePos extends Pos {
 
   str() {
     const sup = Pos.prototype.str.call(this)
-    return `${frameStackToString(this.frameStack)} | ${sup}`
+    return `${frameStackToString(this.frameStack)} ${sup}`
   }
 
   lift(pos) {
@@ -113,6 +117,7 @@ let player
 function InitGame() {
   // note: tiles/actors have already been loaded
   console.log("InitGame()")
+  InitHistory()
   player = allActors(Player)[0]
   assert(player)
   actors.forEach(a=>a.onGameInit())
@@ -121,12 +126,12 @@ function InitGame() {
 function frameStackToString(stack) {
   const frameStrs = ['[']
   for (const frame of stack) {
-    const mini = frame.mini()
-    if (mini) {
-      frameStrs.push(`Mini#${mini.id}@${mini.pos.str()}`)
-    } else {
-      frameStrs.push(`<null Mini>`)
-    }
+    // const mini = frame.mini()
+    // if (mini) {
+    //   frameStrs.push(`Mini#${mini.id}@${mini.pos.str()}`)
+    // } else {
+    //   frameStrs.push(`<null Mini>`)
+    // }
     const color = GetLevelColor(frame.levelId)
     frameStrs.push(` ${color} |`)
   }
@@ -152,20 +157,20 @@ class Frame {
   }
 }
 
-let hist = []
-let histInterval
-function getHist() {
-  return `play("${hist.join('')}")`
+let keyHist = []
+let keyHistInterval
+function getKeyHist() {
+  console.log(`play("${keyHist.join('')}")`)
 }
 function play(moves, dt=50) {
-  assert(hist.length === 0)
-  console.log("about to play history; don't move please")
-  clearInterval(histInterval)
+  assert(keyHist.length === 0)
+  console.log("about to play keyHistory; don't move please")
+  clearInterval(keyHistInterval)
   let ix = 0
-  histInterval = setInterval(() => {
+  keyHistInterval = setInterval(() => {
     if (ix >= moves.length) {
-      clearInterval(histInterval)
-      console.log("done playing history; you can move again")
+      clearInterval(keyHistInterval)
+      console.log("done playing keyHistory; you can move again")
       return
     }
     const dir = int(moves[ix])
@@ -173,16 +178,15 @@ function play(moves, dt=50) {
     ix += 1
   }, dt)
 }
-function RecordToHist(dir) {
-  hist.push(dir)
+function RecordKeyHist(dir) {
+  keyHist.push(dir)
 }
 function Update(dir) {
   if (checkWin()) { return }
 
+  StartEpoch()
   player.update(dir)
-  if (checkWin()) {
-    console.log("you win!")
-  }
+  EndEpoch()
   Raf()
 }
 
@@ -282,6 +286,15 @@ class Actor {
     return false
   }
 
+  setPos(p) {
+    RecordChange({
+      id: this.id,
+      before: { pos: this.pos.clone() },
+      after: { pos: p.clone() },
+    })
+    this.pos = p
+  }
+
   onGameInit() {
     // code that runs on game init
   }
@@ -367,6 +380,10 @@ class Mini extends Actor {
     return pushableUpdate(this, dir)
   }
 
+  setPos(p) {
+    setPosUnliftedHack(this, p)
+  }
+
   level() {
     return getLevel(this.levelId)
   }
@@ -395,6 +412,10 @@ class Crate extends Actor {
 
   update(dir) {
     return pushableUpdate(this, dir)
+  }
+
+  setPos(p) {
+    setPosUnliftedHack(this, p)
   }
 }
 
@@ -430,7 +451,7 @@ function maybeTeleOut(that, dir) {
   const level = that.pos.frame().level()
   const outPos = LevelOpenings(level)[dir]
   if (outPos && outPos.equals(that.pos)) {
-    that.pos = that.pos.parent()
+    that.setPos(that.pos.parent())
     return true
   } else {
     return false
@@ -451,7 +472,8 @@ function maybeTeleIn(that, dir) {
     if (op) {
       // teleport into the mini
       const preOp = posDir(op, oppDir(dir)) // right before entering the room, to try to push
-      that.pos = that.pos.child(preOp, new Frame({miniId: mini.id, levelId: mini.levelId}))
+      const newPos = that.pos.child(preOp, new Frame({miniId: mini.id, levelId: mini.levelId}))
+      that.setPos(newPos)
 
       return true
     }
@@ -473,7 +495,7 @@ function pushableUpdate(that, dir) {
       return true
     } else {
       // undo
-      that.pos = oldPos
+      that.setPos(oldPos)
     }
   }
 
@@ -487,7 +509,7 @@ function pushableUpdate(that, dir) {
       return true
     } else {
       // undo
-      that.pos = oldPos
+      that.setPos(oldPos)
     }
   }
 
@@ -496,9 +518,20 @@ function pushableUpdate(that, dir) {
   // well, if there was either no opening, or we failed to get into the opening
   if (mini && !liftedUpdate(that, mini, dir)) { return false }
 
-  that.pos = nextPos
+  that.setPos(nextPos)
   return true
 }
+
+function setPosUnliftedHack(that, p) {
+  // unlift from FramePos; this is hacky and will break if multiple actors ever have pos as a FramePos
+  RecordChange({
+    id: that.id,
+    before: { pos: new Pos(that.pos) },
+    after: { pos: new Pos(p) },
+  })
+  that.pos = p
+}
+
 
 function liftedUpdate(lifter, target, dir) {
   // lifts target into lifter's framepos, tries to update it, and unlifts it

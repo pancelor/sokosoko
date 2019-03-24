@@ -16,11 +16,19 @@ function registerKeyListeners() {
     "ArrowLeft": 2,
     "KeyS": 3,
     "ArrowDown": 3,
+    "KeyZ": 4,
+    "KeyY": 5,
   }
   function onKeyHold() {
-    assert([0,1,2,3].includes(heldDir))
-    Update(heldDir)
-    RecordToHist(heldDir)
+    assert([0,1,2,3,4,5].includes(heldDir))
+    if (heldDir === 4) {
+      Undo()
+    } else if (heldDir === 5) {
+      Redo()
+    } else {
+      Update(heldDir)
+      RecordKeyHist(heldDir) // TODO this might be confusing since we also have undo.js...
+    }
   }
   function resetHoldInterval(start=true) {
     clearInterval(holdInterval)
@@ -90,7 +98,7 @@ function mouseClickRaw(e) {
   const worldPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize))
   const level = getLevelAt(worldPos)
   const levelPos = worldPos.toLevelPos(level)
-  console.log(`${level.id}: ${worldPos.str()} (local: ${levelPos.str()})`)
+  console.log(`${GetLevelColor(level.id)}(${level.id}): ${worldPos.str()} (local: ${levelPos.str()})`)
 }
 
 function mouseClickView(e) {
@@ -99,7 +107,7 @@ function mouseClickView(e) {
 
   const level = player.pos.level()
   const worldPos = Pos.fromLevel(level, levelPos)
-  console.log(`${level.id}: ${worldPos.str()} (local: ${levelPos.str()})`)
+  console.log(`${GetLevelColor(level.id)}(${level.id}): ${worldPos.str()} (local: ${levelPos.str()})`)
 }
 
 async function redraw() {
