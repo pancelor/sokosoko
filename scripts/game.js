@@ -5,7 +5,6 @@ class Pos {
   }
 
   equals(other) {
-    // _only_ checks x,y coords; no frame checking
     return this.x === other.x && this.y === other.y
   }
 
@@ -46,88 +45,75 @@ class Pos {
   }
 }
 
-class FramePos extends Pos {
-  constructor(pos, frameStack) {
-    super(pos)
-    this.frameStack = [...frameStack]
+class FrameBase {
+  constructor(levelId) {
+    this.levelId = levelId
+    this.parent = null
   }
 
   clone() {
-    const sup = Pos.prototype.clone.call(this)
-    return new FramePos(sup, [...this.frameStack])
-  }
-
-  add(delta) {
-    const sup = Pos.prototype.add.call(this, delta)
-    return new FramePos(sup, [...this.frameStack])
-  }
-
-  scale(delta) {
-    const sup = Pos.prototype.scale.call(this, delta)
-    return new FramePos(sup, [...this.frameStack])
-  }
-
-  frame() {
-    // returns the outermost miniId
-    return back(this.frameStack)
+    return new FrameBase(this.levelId)
   }
 
   mini() {
-    const miniId = this.frame()
-    if (miniId === null) { return null }
-    const a = getActorId(miniId)
+    assert(0, "FrameBase has no mini")
+  }
+
+  level() {
+    return getLevel(this.levelId)
+  }
+
+  equals(other) {
+    if (other.constructor !== FrameBase) { return false }
+    return (this.levelId === other.levelId)
+  }
+
+  str() {
+    return `<base; ${this.levelId}>`
+  }
+}
+
+class Frame {
+  constructor(miniId, parent) {
+    assert(miniId)
+    assert(parent)
+    this.miniId = miniId
+    this.parent = parent.clone()
+  }
+
+  clone() {
+    return new Frame(this.miniId, this.parent.clone())
+  }
+
+  mini() {
+    const a = getActorId(this.miniId)
     assert(a && a.constructor === Mini)
     return a
   }
 
   level() {
     const mini = this.mini()
-    if (mini === null) { return null }
+    assert(mini)
     return getLevel(mini.levelId)
   }
 
-  parent() { // TODO: impl as a cons / linked list ofc
-    const mini = this.mini()
-    if (!mini) { return null }
-    const newStack = this.frameStack.slice(0, this.frameStack.length-1)
-    return new FramePos(mini.pos, newStack)
-  }
+  equals(other) {
+    if (other.constructor !== Frame) { return false }
+    if (this.miniId !== other.miniId) { return false }
 
-  child(pos, frame) {
-    return new FramePos(pos, [...this.frameStack, frame])
+    const p1 = this.parent
+    const p2 = other.parent
+    if (p1 === null) {
+      return (p2 === null)
+    } else {
+      return p1.equals(p2)
+    }
   }
 
   str() {
-    const sup = Pos.prototype.str.call(this)
     const frameStrs = []
-    let fp = this
-    while (fp) {
-      const mini = fp.mini()
-      // assert(mini) // TODO do this <----
-      if (!mini) {
-        frameStrs.push(`<null> |`)
-        assert(fp.parent() === null)
-        break
-      }
-
-//       frameStrs.push(`Mini#${mini.id}@${mini.pos.str()}`)
-      const color = GetLevelColor(mini.levelId)
-      frameStrs.push(` ${color} |`)
-
-      fp = fp.parent()
-    }
-
-    return `[ ${frameStrs.reverse().join(' ')} ${sup}`
-  }
-
-  lift(pos) {
-    // takes a pos and lifts it to be a FramePos with the same frame stack as this
-    return new FramePos(pos, [...this.frameStack])
-  }
-
-  unlift(pos) {
-    // converts to a normal pos
-    return new Pos(this)
+    const mini = this.mini()
+    return `${this.parent.str()} | ${mini.color()}(${mini.id})`
   }
 }
 
@@ -178,7 +164,7 @@ function Update(dir) {
 }
 
 function checkRealWin() {
-  return findActor(Player) === undefined
+  return !findActor(Flag)
 }
 
 function maybeFakeWin() {
@@ -203,8 +189,8 @@ async function drawFancy() {
   const worldImg = await createImageBitmap(canvas)
   const ctx = canvas2.getContext('2d')
   ctx.imageSmoothingEnabled = false
-  const innerFrame = player.pos
-  const outerFrame = player.pos.parent() ? player.pos.parent() : null
+  const innerFrame = player.frameStack
+  const outerFrame = player.frameStack.parent
 
   // draw outer level border
   if (outerFrame) {
@@ -219,8 +205,8 @@ async function drawFancy() {
       0, 0, canvas2.width, canvas2.height
     )
   } else {
-    ctxWith(ctx, {fillStyle: "teal"}, cls)
-    drawImg(ctx, imgFlag, pcoord(9, 12)) // hacky
+    const fillStyle = GetLevelColor(getLevel(5))
+    ctxWith(ctx, {fillStyle}, cls)
   }
 
   // draw inner level
@@ -245,7 +231,6 @@ async function drawFancy() {
 
   if (checkRealWin()) {
     drawMessage(ctx, "You win!")
-    drawImg(ctx, imgPlayer, pcoord(9, 12)) // hacky
   }
 }
 
@@ -295,6 +280,11 @@ class Actor {
     this.pos = p
   }
 
+  setFrameStack(f) {
+    // by default, don't record
+    this.frameStack = f
+  }
+
   onGameInit() {
     // code that runs on game init
   }
@@ -317,38 +307,53 @@ class Player extends Actor {
 
   onGameInit() {
     const miniBlack = findActor(Mini, pcoord(3, 35))
-    const miniYellow = findActor(Mini, pcoord(1, 6))
+    const miniGreen = findActor(Mini, pcoord(1, 6))
     const miniBlue = findActor(Mini, pcoord(6, 14))
     const miniBlackBase = findActor(Mini, pcoord(4, 5))
-    const miniOuter = findActor(Mini, pcoord(3, 43))
-    assert(miniBlack && GetLevelColor(miniBlack.levelId) === "Black")
-    assert(miniYellow && GetLevelColor(miniYellow.levelId) === "Yellow")
-    assert(miniBlue && GetLevelColor(miniBlue.levelId) === "Blue")
-    assert(miniBlackBase && GetLevelColor(miniBlackBase.levelId) === "Black")
-    assert(miniOuter && GetLevelColor(miniOuter.levelId) === "Black")
-    const frameStack = [
-      null,
+    const miniOuter = findActor(Mini, pcoord(4, 43))
+    const black = imgBlackWall.dataset.color
+    const green = imgGreenWall.dataset.color
+    const blue = imgBlueWall.dataset.color
+    assertEqual(miniBlack.color(), black)
+    assertEqual(miniGreen.color(), green)
+    assertEqual(miniBlue.color(), blue)
+    assertEqual(miniBlackBase.color(), black)
+    assertEqual(miniOuter.color(), black)
+    const miniOrder = [
       miniOuter.id,
 
       miniBlackBase.id,
-      miniYellow.id,
+      miniGreen.id,
 
       // start
       miniBlue.id,
       miniBlack.id,
-      miniYellow.id,
+      miniGreen.id,
 
       miniBlue.id,
       miniBlack.id,
-      miniYellow.id,
+      miniGreen.id,
 
       miniBlue.id,
       miniBlack.id,
-      miniYellow.id,
+      miniGreen.id,
       // end
     ]
 
-    this.pos = new FramePos(this.pos, frameStack)
+    let stack = new FrameBase(5)
+    for (const miniId of miniOrder) {
+      stack = new Frame(miniId, stack)
+    }
+    this.frameStack = stack
+  }
+
+  setFrameStack(f) {
+    RecordChange({
+      id: this.id,
+      before: { frameStack: this.frameStack.clone() },
+      after: { frameStack: f.clone() },
+    })
+    this.frameStack = f
   }
 
   update(dir) {
@@ -394,14 +399,6 @@ class Mini extends Actor {
     return this.col
   }
 
-  update(dir) {
-    return pushableUpdate(this, dir)
-  }
-
-  setPos(p) {
-    setPosUnliftedHack(this, p)
-  }
-
   level() {
     return getLevel(this.levelId)
   }
@@ -415,8 +412,13 @@ class Mini extends Actor {
     assert(type === this.name, `expected ${this.name} got ${type}`)
     const p = pcoord(int(x), int(y))
     const levelId = int(id)
-    return new (this)(p, levelId, GetLevelColor(levelId))
+    return new (this)(p, levelId, GetLevelColor(getLevel(levelId)))
   }
+}
+
+class FakeFlag extends Actor {
+  static img = imgFlag
+  static color = "#FFFFFF"
 }
 
 class Flag extends Actor {
@@ -427,14 +429,6 @@ class Flag extends Actor {
 class Crate extends Actor {
   static img = imgCrate
   static color = "#AA6853"
-
-  update(dir) {
-    return pushableUpdate(this, dir)
-  }
-
-  setPos(p) {
-    setPosUnliftedHack(this, p)
-  }
 
   serialize() {
     const extra = (this.img === imgCrateSpecial) ? "1" : "0"
@@ -447,13 +441,13 @@ class Crate extends Actor {
     const p = pcoord(int(x), int(y))
     const that = new (this)(p)
     if (!!int(special)) {
-      that.img = imgCrateSpecial // hacky
+      that.img = imgCrateSpecial
     }
     return that
   }
 }
 
-const allActorTypes = [Player, Flag, Mini, Crate]
+const allActorTypes = [Player, FakeFlag, Flag, Mini, Crate]
 
 function getLevel(id) {
   return levels.find(l=>l.id===id)
@@ -465,21 +459,17 @@ function getLevelAt(pos) {
 
 function maybeTeleOut(that, dir) {
   // if that is standing in a level opening and moving out (dir)
-  //   move that to the parent FramePos (teleport out one level)
+  //   move that to the parent Frame (teleport out one level)
   // else do nothing
   // returns whether the tele happened
-  assert(that.pos.constructor === FramePos)
+  assert(that.frameStack)
 
-  const innerLevel = that.pos.level()
+  const innerLevel = that.frameStack.level()
   const outPos = LevelOpenings(innerLevel)[dir]
   if (outPos && outPos.equals(that.pos)) {
-    const parent = that.pos.parent()
-    if (parent === null) {
-      // hack
-      destroyActor(player)
-      return false
-    }
-    that.setPos(parent)
+    const parent = that.frameStack.parent
+    that.setPos(that.frameStack.mini().pos)
+    that.setFrameStack(parent)
     return true
   } else {
     return false
@@ -488,10 +478,10 @@ function maybeTeleOut(that, dir) {
 
 function maybeTeleIn(that, dir) {
   // if that is standing next to a Mini and is moving into it (dir)
-  //   move that into the mini (teleport out one level)
+  //   move that into the mini. (one tile before the actual entrance)
   // else do nothing
   // returns whether the tele happened
-  assert(that.pos.constructor === FramePos)
+  assert(that.frameStack)
 
   const nextPos = posDir(that.pos, dir)
   const mini = findActor(Mini, nextPos)
@@ -499,9 +489,10 @@ function maybeTeleIn(that, dir) {
     const op = LevelOpenings(mini.level())[oppDir(dir)]
     if (op) {
       // teleport into the mini
-      const preOp = posDir(op, oppDir(dir)) // right before entering the room, to try to push
-      const newPos = that.pos.child(preOp, mini.id)
+      const newPos = posDir(op, oppDir(dir)) // right before entering the room; to try to push anything in the entryway thats in the way
+      const newStack = new Frame(mini.id, that.frameStack)
       that.setPos(newPos)
+      that.setFrameStack(newStack)
 
       return true
     }
@@ -511,12 +502,11 @@ function maybeTeleIn(that, dir) {
 
 function pushableUpdate(that, dir) {
   // DRY without subclassing for pushable objects
-  assert(that.pos.constructor === FramePos)
+  assert(that.frameStack)
 
   const oldPos = that.pos.clone()
+  const oldFrameStack = that.frameStack.clone()
   const nextPos = posDir(that.pos, dir)
-  assert(oldPos.constructor === FramePos)
-  assert(nextPos.constructor === FramePos)
 
   if (maybeTeleOut(that, dir)) {
     if (pushableUpdate(that, dir)) {
@@ -524,13 +514,14 @@ function pushableUpdate(that, dir) {
     } else {
       // undo
       that.setPos(oldPos)
+      that.setFrameStack(oldFrameStack)
     }
   }
 
   if (!CanMoveToTile(nextPos)) { return false }
 
   const crate = findActor(Crate, nextPos)
-  if (crate && !liftedUpdate(that, crate, dir)) { return false }
+  if (crate && !liftedPushableUpdate(that, crate, dir)) { return false }
 
   if (maybeTeleIn(that, dir)) {
     if (pushableUpdate(that, dir)) {
@@ -538,37 +529,28 @@ function pushableUpdate(that, dir) {
     } else {
       // undo
       that.setPos(oldPos)
+      that.setFrameStack(oldFrameStack)
     }
   }
 
   const mini = findActor(Mini, nextPos)
   // how can mini exist if we already called maybeTeleIn?
   // well, if there was either no opening, or we failed to get into the opening
-  if (mini && !liftedUpdate(that, mini, dir)) { return false }
+  if (mini && !liftedPushableUpdate(that, mini, dir)) { return false }
 
   that.setPos(nextPos)
   return true
 }
 
-function setPosUnliftedHack(that, p) {
-  // unlift from FramePos; this is hacky and will break if multiple actors ever have pos as a FramePos
-  RecordChange({
-    id: that.id,
-    before: { pos: new Pos(that.pos) },
-    after: { pos: new Pos(p) },
-  })
-  that.pos = p
-}
-
-
-function liftedUpdate(lifter, target, dir) {
-  // lifts target into lifter's framepos, tries to update it, and unlifts it
+function liftedPushableUpdate(lifter, target, dir) {
+  // lifts target into lifter's frame, tries to update it, and unlifts it
   // returns whether the update was successful
-  assert(lifter.pos.constructor === FramePos)
+  assert(lifter.frameStack)
+  assert(!target.frameStack)
 
-  target.pos = lifter.pos.lift(target.pos)
-  const success = target.update(dir)
-  target.pos = target.pos.unlift()
+  target.frameStack = lifter.frameStack.clone()
+  const success = pushableUpdate(target, dir)
+  delete target.frameStack
 
   return success
 }

@@ -103,16 +103,26 @@ function mouseClickRaw(e) {
   const worldPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize))
   const level = getLevelAt(worldPos)
   const levelPos = worldPos.toLevelPos(level)
-  console.log(`${GetLevelColor(level.id)}(${level.id}): ${worldPos.str()} (local: ${levelPos.str()})`)
+  mouseClickLevel(level, levelPos)
 }
 
 function mouseClickView(e) {
   const levelPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize)).add(pcoord(-4, -4))
+  mouseClickLevel(player.frameStack.level(), levelPos)
+}
+
+function mouseClickLevel(level, levelPos) {
   if (!inbounds(levelPos, {w: 8, h: 8})) { return }
 
-  const level = player.pos.level()
   const worldPos = Pos.fromLevel(level, levelPos)
-  console.log(`${GetLevelColor(level.id)}(${level.id}): ${worldPos.str()} (local: ${levelPos.str()})`)
+  const a = findActor(null, worldPos)
+  const parts = []
+  parts.push(`${GetLevelLabel(level)}(${level.id}): ${worldPos.str()}`)
+  parts.push(`(local: ${levelPos.str()})`)
+  if (a) {
+    parts.push(`${a.constructor.name}#${a.id}`)
+  }
+  console.log(parts.join(' '))
 }
 
 async function redraw() {

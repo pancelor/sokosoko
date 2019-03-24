@@ -85,9 +85,13 @@ function GetTileColor(p) {
   return document.getElementById(name).dataset.color
 }
 
-function GetLevelColor(levelId) {
-  const topleft = Pos.fromLevel(getLevel(levelId), pcoord(0, 0))
-  // return GetTileColor(topleft)
+function GetLevelColor(level) {
+  const topleft = Pos.fromLevel(level, pcoord(0, 0))
+  return GetTileColor(topleft)
+}
+
+function GetLevelLabel(level) {
+  const topleft = Pos.fromLevel(level, pcoord(0, 0))
   const name = getTile(topleft)
   const match = name.match(/^img(?<col>\w+)Wall$/)
   if (!match) { return null }
@@ -102,7 +106,7 @@ function getTile(p) {
   }
 }
 
-function setTile(p, name) { // TODO use me
+function setTile(p, name) {
   if (inbounds(p)) {
     tiles[p.y][p.x] = name
   }

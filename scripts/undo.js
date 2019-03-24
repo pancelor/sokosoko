@@ -120,13 +120,14 @@ function epochToString(e, join=true) {
 }
 
 function Undo() {
+  if (checkRealWin()) { return }
   if (historyCursor <= 0) { return }
   historyCursor -= 1
   const e = gameHistory[historyCursor]
   for (const { id, before, after } of e) {
     const a = getActorId(id)
     for (const prop of Object.keys(after)) {
-      if ([Pos, FramePos].includes(a[prop].constructor)) { // TODO: hacky
+      if ([Pos, Frame].includes(a[prop].constructor)) { // TODO: hacky
         assert(a[prop].equals(after[prop]), `undo error on ${a.serialize()} on prop ${prop}`)
       } else {
         assertEqual(a[prop], after[prop], `undo error on ${a.serialize()} on prop ${prop}`)
@@ -138,13 +139,14 @@ function Undo() {
 }
 
 function Redo() {
+  if (checkRealWin()) { return }
   if (historyCursor >= gameHistory.length) { return }
   const e = gameHistory[historyCursor]
   historyCursor += 1
   for (const { id, before, after } of e) {
     const a = getActorId(id)
     for (const prop of Object.keys(before)) {
-      if ([Pos, FramePos].includes(a[prop].constructor)) { // TODO: hacky
+      if ([Pos, Frame].includes(a[prop].constructor)) { // TODO: hacky
         assert(a[prop].equals(before[prop]), `redo error on ${a.serialize()} on prop ${prop}: expected ${before[prop].serialize()}; got ${a[prop].serialize()}`)
       } else {
         assertEqual(a[prop], before[prop], `redo error on ${a.serialize()} on prop ${prop}`)
