@@ -68,10 +68,10 @@ function registerKeyListeners() {
   })
 }
 
-function redraw() {
+async function redraw() {
   const ctx = canvas.getContext('2d')
   ctx.imageSmoothingEnabled = false
-  DrawGame(ctx)
+  await DrawGame(ctx)
 }
 
 function Raf() {

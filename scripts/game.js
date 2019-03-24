@@ -20,6 +20,13 @@ class Pos {
     })
   }
 
+  scale(m) {
+    return new Pos({
+      x: this.x*m,
+      y: this.y*m,
+    })
+  }
+
   static fromLevel(level, localPos) {
     // takes a level pos and returns a world pos
     return new Pos({x: localPos.x, y: localPos.y + level.begin})
@@ -51,15 +58,32 @@ class FramePos extends Pos {
     return new FramePos(sup, [...this.frameStack])
   }
 
+  scale(delta) {
+    const sup = Pos.prototype.scale.call(this, delta)
+    return new FramePos(sup, [...this.frameStack])
+  }
+
   frame() {
     return back(this.frameStack)
   }
 
-  parent() {
+  mini() {
     const frame = this.frame()
     assert(frame)
+    return frame.mini()
+  }
+
+  level() {
+    const frame = this.frame()
+    assert(frame)
+    return frame.level()
+  }
+
+  parent() {
+    const mini = this.mini()
+    if (!mini) { return null }
     const newStack = this.frameStack.slice(0, this.frameStack.length-1)
-    return new FramePos(frame.mini().pos, newStack)
+    return new FramePos(mini.pos, newStack)
   }
 
   child(pos, frame) {
@@ -96,22 +120,26 @@ function InitGame() {
 function frameStackToString(stack) {
   const chars = ['[']
   for (const frame of stack) {
-    const mini = getActorId(frame.miniId)
-    assert(mini)
-    chars.push(`Mini#${mini.id}@${mini.pos.str()}{${frame.levelId}}, `)
+    const mini = frame.mini()
+    if (mini) {
+      chars.push(`Mini#${mini.id}@${mini.pos.str()}`)
+    } else {
+      chars.push(`<null Mini>`)
+    }
+    chars.push(`{${frame.levelId}},`)
   }
   return chars.join('')
 }
 
 class Frame {
   // a frame is an entry location (from the next level up) and a level id
-  constructor({dir, miniId, levelId}) {
-    this.dir = dir
+  constructor({miniId, levelId}) {
     this.miniId = miniId
     this.levelId = levelId
   }
 
   mini() {
+    if (this.miniId === null) { return null }
     const a = getActorId(this.miniId)
     assert(a.constructor === Mini)
     return a
@@ -134,9 +162,37 @@ function checkWin() {
   return player.pos.frameStack.length === 0
 }
 
-function DrawGame(ctx) {
+async function DrawGame(ctx) {
   DrawTiles(ctx)
   drawActors(ctx)
+
+  await drawFancy()
+}
+
+async function drawFancy() {
+  const worldImg = await createImageBitmap(canvas)
+  const ctx = canvas2.getContext('2d')
+  ctx.imageSmoothingEnabled = false
+  const innerLevel = player.pos.level()
+  const outerLevel = player.pos.parent() ? player.pos.parent().level() : null
+
+  // draw inner level
+  const innerW = 8 * tileSize
+  const innerH = 8 * tileSize
+  const src = Pos.fromLevel(innerLevel, pcoord(0, 0)).scale(tileSize)
+  const dest = pcoord(4, 4).scale(tileSize)
+  ctx.drawImage(worldImg,
+    src.x, src.y, innerW, innerH,
+    dest.x, dest.y, innerW, innerH
+  )
+  // draw frame border
+  ctxWith(ctx, {strokeStyle: "gray", lineWidth: 10, globalAlpha: 0.5}, () => {
+    ctx.strokeRect(dest.x, dest.y, innerW, innerH)
+  })
+  // draw canvas border
+  ctxWith(ctx, {strokeStyle: "black"}, () => {
+    ctx.strokeRect(0, 0, canvas2.width, canvas2.height)
+  })
 }
 
 function drawActors(ctx) {
@@ -187,19 +243,22 @@ class Actor {
   static deserialize(line) {
     const [type, x, y] = line.split(' ')
     assert(type === this.name, `expected ${this.name} got ${type}`)
-    const p = new Pos({x: int(x), y: int(y)})
+    const p = pcoord(int(x), int(y))
     return new (this)(p)
   }
 }
 
 class Player extends Actor {
   static img = imgPlayer
-  static color = "#FFFFFF"
+  static color = "#000000"
 
   onGameInit() {
-    const mini = findActor(Mini, new Pos({x:2, y:2}))
+    const mini = findActor(Mini, pcoord(2, 2))
     assert(mini)
-    const frameStack = [new Frame({miniId: mini.id, levelId: mini.levelId})]
+    const frameStack = [
+      new Frame({miniId: null, levelId: 0}),
+      new Frame({miniId: mini.id, levelId: mini.levelId}),
+    ]
 
     this.pos = new FramePos(this.pos, frameStack)
   }
@@ -220,41 +279,27 @@ class Mini extends Actor {
   }
 
   draw(ctx) {
-    const numPx = 8*8
-    const data = new Uint8ClampedArray(numPx*4);
+    const roomSize = 8
+    const numPx = roomSize*roomSize
+    const pxSize = 4
+    assert(roomSize * pxSize === 32)
     for (let ix = 0; ix < numPx; ix += 1) {
-      const [y, x] = divmod(ix, 8)
-      const p = new Pos({x, y})
-      const a = findActor(p)
+      const [y, x] = divmod(ix, roomSize)
+      const p = Pos.fromLevel(this.level(), pcoord(x, y))
       let colorCode
+      const a = findActor(null, p)
       if (a) {
         colorCode = a.color()
       } else {
         colorCode = GetTileColor(p)
       }
-      const { r, g, b } = hexColor(colorCode)
-      const iR = ix*4
-      const iG = ix*4 + 1
-      const iB = ix*4 + 2
-      const iA = ix*4 + 3
-      data[iR] = r
-      data[iG] = g
-      data[iB] = b
-      data[iA] = 1
+      const screenX = this.pos.x*tileSize + x*pxSize
+      const screenY = this.pos.y*tileSize + y*pxSize
+
+      ctxWith(ctx, {fillStyle: colorCode}, () => {
+        ctx.fillRect(screenX, screenY, pxSize, pxSize)
+      })
     }
-    // const temp = document.createElement("canvas")
-    // temp.width = 8
-    // temp.height = 8
-    // const tempCtx = temp.getContext('2d');
-    // tempCtx.imageSmoothing = false
-    // ctx.putImageData(new ImageData(data, 8, 8), 0, 0)
-
-    let { x, y } = this.pos
-    x *= tileWidth
-    y *= tileHeight
-
-    // const tempData = tempCtx.getImageData(0, 0, temp.width, temp.height)
-    ctx.putImageData(new ImageData(data, 8, 8), x, y)
   }
 
   color() {
@@ -276,9 +321,9 @@ class Mini extends Actor {
   static deserialize(line) {
     const [type, x, y, id] = line.split(' ')
     assert(type === this.name, `expected ${this.name} got ${type}`)
-    const p = new Pos({x: int(x), y: int(y)})
+    const p = pcoord(int(x), int(y))
     const levelId = int(id)
-    const topleft = Pos.fromLevel(getLevel(levelId), new Pos({x: 0, y: 0}))
+    const topleft = Pos.fromLevel(getLevel(levelId), pcoord(0, 0))
     return new (this)(p, levelId, GetTileColor(topleft))
   }
 }

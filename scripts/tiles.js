@@ -29,10 +29,10 @@ function InitTiles() {
 }
 
 function fitCanvasToTiles() {
-  assert(globalExists(() => [tileWidth, tileHeight]))
+  assert(globalExists(() => tileSize))
   const { width, height } = tilesDim()
-  canvas.width = width*tileWidth
-  canvas.height = height*tileHeight
+  canvas.width = width*tileSize
+  canvas.height = height*tileSize
 }
 
 function solid(tileName) {

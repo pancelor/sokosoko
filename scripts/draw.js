@@ -4,7 +4,7 @@ function cls(ctx) {
 
 function drawBkg(ctx) {
   assert(0, 'imgBackground doesnt exist')
-  drawImg(ctx, imgBackground, new Pos({x: 0, y: 0}))
+  drawImg(ctx, imgBackground, pcoord(0, 0))
 }
 
 function ctxWith(ctx, map, cb) {
@@ -27,8 +27,8 @@ function drawImg(ctx, img, tilePos) {
     return
   }
   let { x, y } = tilePos
-  x *= tileWidth
-  y *= tileHeight
+  x *= tileSize
+  y *= tileSize
   ctx.drawImage(img, x, y)
 }
 

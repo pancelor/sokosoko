@@ -93,10 +93,14 @@ function back(arr, i=1) {
   return arr[arr.length-i]
 }
 
+function pcoord(x, y) {
+  return new Pos({x, y})
+}
+
 function posDir(p, dir, len=1) {
   const dx = [1,0,-1,0][dir]
   const dy = [0,-1,0,1][dir]
-  const delta = new Pos({x:len*dx, y:len*dy})
+  const delta = pcoord(len*dx, len*dy)
   return p.add(delta)
 }
 
