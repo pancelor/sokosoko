@@ -38,6 +38,11 @@ function registerKeyListeners() {
     holdInterval = setInterval(onKeyHold, keyRepeatTimeout)
   }
   function onKeyDown(e) {
+    if (e.code === "KeyR") {
+      reset()
+      Raf()
+    }
+
     const dir = keyDirMap[e.code]
     if (dir === undefined) { return }
     heldDir = dir
@@ -123,6 +128,10 @@ function Raf() {
 function init() {
   registerKeyListeners()
   registerMouseListeners()
+  reset()
+}
+
+function reset() {
   InitTiles()
   InitActors()
   InitGame()

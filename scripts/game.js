@@ -232,7 +232,8 @@ async function drawFancy() {
       0, 0, canvas2.width, canvas2.height
     )
   } else {
-    ctxWith(ctx, {fillStyle: "#FFF1E8"}, cls)
+    ctxWith(ctx, {fillStyle: "teal"}, cls)
+    drawImg(ctx, imgFlag, pcoord(9, 12)) // hacky
   }
 
   // draw inner level
@@ -328,14 +329,15 @@ class Player extends Actor {
   static color = "#000000"
 
   onGameInit() {
-    const miniBlack = getActorId(1)
-    const miniYellow = getActorId(2)
-    const miniBlue = getActorId(3)
-    const miniBlackBase = getActorId(4)
-    assert(miniBlack.constructor === Mini && GetLevelColor(miniBlack.levelId) === "Black")
-    assert(miniYellow.constructor === Mini && GetLevelColor(miniYellow.levelId) === "Yellow")
-    assert(miniBlue.constructor === Mini && GetLevelColor(miniBlue.levelId) === "Blue")
-    assert(miniBlackBase.constructor === Mini && GetLevelColor(miniBlackBase.levelId) === "Black")
+    const miniBlack = findActor(Mini, pcoord(3, 35))
+    const miniYellow = findActor(Mini, pcoord(1, 6))
+    const miniBlue = findActor(Mini, pcoord(6, 14))
+    const miniBlackBase = findActor(Mini, pcoord(4, 5))
+    // const miniOuter = findActor(Mini, pcoord(4, 5))
+    assert(miniBlack && GetLevelColor(miniBlack.levelId) === "Black")
+    assert(miniYellow && GetLevelColor(miniYellow.levelId) === "Yellow")
+    assert(miniBlue && GetLevelColor(miniBlue.levelId) === "Blue")
+    assert(miniBlackBase && GetLevelColor(miniBlackBase.levelId) === "Black")
     const frameStack = [
 
        // not sure whether it makes more sense for this line to be here or not...
@@ -438,7 +440,7 @@ class Flag extends Actor {
 
 class Crate extends Actor {
   static img = imgCrate
-  static color = "#DB856B"
+  static color = "#AA6853"
 
   update(dir) {
     return pushableUpdate(this, dir)
@@ -447,9 +449,25 @@ class Crate extends Actor {
   setPos(p) {
     setPosUnliftedHack(this, p)
   }
+
+  serialize() {
+    const extra = (this.img === imgCrateSpecial) ? "1" : "0"
+    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${extra}`
+  }
+
+  static deserialize(line) {
+    const [type, x, y, special] = line.split(' ')
+    assert(type === this.name, `expected ${this.name} got ${type}`)
+    const p = pcoord(int(x), int(y))
+    const that = new (this)(p)
+    if (!!int(special)) {
+      that.img = imgCrateSpecial // hacky
+    }
+    return that
+  }
 }
 
-const allActorTypes = [Player, Crate, Flag, Mini]
+const allActorTypes = [Player, Flag, Mini, Crate]
 
 // function dirTo(p1, p2) {
 //   // returns 0-3 if p2 is adjacent to p1
