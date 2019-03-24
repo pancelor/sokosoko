@@ -118,17 +118,17 @@ function InitGame() {
 }
 
 function frameStackToString(stack) {
-  const chars = ['[']
+  const frameStrs = ['[']
   for (const frame of stack) {
     const mini = frame.mini()
     if (mini) {
-      chars.push(`Mini#${mini.id}@${mini.pos.str()}`)
+      frameStrs.push(`Mini#${mini.id}@${mini.pos.str()}`)
     } else {
-      chars.push(`<null Mini>`)
+      frameStrs.push(`<null Mini>`)
     }
-    chars.push(`{${frame.levelId}},`)
+    frameStrs.push(`{${frame.levelId}},`)
   }
-  return chars.join('')
+  return frameStrs.join(' ')
 }
 
 class Frame {
@@ -177,14 +177,16 @@ async function drawFancy() {
   const outerFrame = player.pos.parent() ? player.pos.parent().frame() : null
 
   // draw outer level
-  if (outerFrame && 0) {
-    const innerW = canvas2.width
-    const innerH = canvas2.height
-    const src = Pos.fromLevel(innerFrame, pcoord(0, 0)).scale(tileSize)
+  if (outerFrame) {
+    const mini = innerFrame.mini()
+    assert(mini)
+    const outerW = 2*tileSize
+    const outerH = 2*tileSize
+    const src = mini.pos.add(pcoord(-0.5, -0.5)).scale(tileSize)
     const dest = pcoord(4, 4).scale(tileSize)
     ctx.drawImage(worldImg,
-      src.x, src.y, innerW, innerH,
-      dest.x, dest.y, innerW, innerH
+      src.x, src.y, outerW, outerH,
+      0, 0, canvas2.width, canvas2.height
     )
   } else {
     ctxWith(ctx, {fillStyle: "lightgray"}, cls)
