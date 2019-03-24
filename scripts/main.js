@@ -1,3 +1,5 @@
+let gameMuted = false
+
 let enableHeldButtons = true
 function disableHeldButtons() {
   enableHeldButtons = false
@@ -136,6 +138,7 @@ function Raf() {
 }
 
 function init() {
+  RunTests()
   registerKeyListeners()
   registerMouseListeners()
   reset()

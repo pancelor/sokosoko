@@ -91,7 +91,7 @@ function ImportTiles() {
 
     while (nextLine()) {
       if (line === '') { break }
-      assert(line.length === 8)
+      assertEqual(line.length, 8)
       const row = []
       for (let code of line) {
         const name = deserTileName[code]

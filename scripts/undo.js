@@ -30,14 +30,30 @@ function EndEpoch() {
   // call this after gravity is over
   const events = collateEpoch(currentEpoch)
 
-  if (events.length === 0) { return }
+  if (events.length === 0) { return [] }
 
   gameHistory.length = historyCursor
   gameHistory.push(events)
   historyCursor += 1
+  return events // might be useful to inspect, but not necessary
+}
+
+function propEqual(p1, p2) {
+  // TODO: hacky
+  if ([Pos, Frame].includes(p1.constructor)) {
+    return p1.equals(p2)
+  } else {
+    return p1 === p2
+  }
 }
 
 function collateEpoch(buffer) {
+  buffer = collateEpoch1(buffer)
+  buffer = collateEpoch2(buffer)
+  return buffer
+}
+
+function collateEpoch1(buffer) {
   // collates records with the same id together; see testCollateEpoch
   const seen = new Map()
   const res = []
@@ -47,7 +63,7 @@ function collateEpoch(buffer) {
     let ix
     if (seen.has(id)) {
       ix = seen.get(id)
-      assert(res[ix].id === delta.id, "id mismatch")
+      assertEqual(res[ix].id, delta.id)
       res[ix].before = {
         ...delta.before,
         ...res[ix].before, // the pre-existing delta takes precedence
@@ -65,37 +81,64 @@ function collateEpoch(buffer) {
   return res
 }
 
-function testCollateEpoch1() {
+function collateEpoch2(buffer) {
+  // remove records without any actual change
+  // this might happen if an object moves and then moves back to its starting position
+  const res = []
+  for (const {id, before, after} of buffer) {
+    const newBefore = objFilter(before, (k, v) => !propEqual(v, after[k]))
+    const newAfter = objFilter(after, (k, v) => !propEqual(v, before[k]))
+    const nBefore = Object.keys(newBefore).length
+    const nAfter = Object.keys(newAfter).length
+    if (nBefore === 0 && nAfter === 0) { continue }
+    res.push({id, before: newBefore, after: newAfter})
+  }
+  return res
+}
+RegisterTest("collateEpoch1 1", () => {
   const buffer = [
     {id: 1, before: { x: 1 }, after: { x: 2 }},
-    {id: 2, unrelatedStuff: true},
+    {id: 2, before: { y: 8 }, after: { y: 9 }},
     {id: 1, before: { x: 2 }, after: { x: 3 }},
   ]
   const newBuffer = collateEpoch(buffer)
-  assert(newBuffer.length === 2)
-  assertObjMatch(newBuffer[0], {id: 1, before: { x: 1 }, after: { x: 3 }})
-  assertObjMatch(newBuffer[1], {id: 2, unrelatedStuff: true})
-} testCollateEpoch1()
-
-function testCollateEpoch2() {
+  assertEqual(newBuffer.length, 2)
+  assertObjEqual(newBuffer[0], {id: 1, before: { x: 1 }, after: { x: 3 }})
+  assertObjEqual(newBuffer[1], {id: 2, before: { y: 8 }, after: { y: 9 }})
+})
+RegisterTest("collateEpoch1 2", () => {
   const buffer = [
     {id: 1, before: { x: 1 }, after: { x: 2 }},
     {id: 1, before: { y: 10 }, after: { y: 11 }},
   ]
   const newBuffer = collateEpoch(buffer)
-  assert(newBuffer.length === 1)
-  assertObjMatch(newBuffer[0], {id: 1, before: { x: 1, y: 10 }, after: { x: 2, y: 11 }})
-} testCollateEpoch2()
-
-function testCollateEpoch3() {
+  assertEqual(newBuffer.length, 1)
+  assertObjEqual(newBuffer[0], {id: 1, before: { x: 1, y: 10 }, after: { x: 2, y: 11 }})
+})
+RegisterTest("collateEpoch1 3", () => {
   const buffer = [
     {id: 1, before: { x: 1 }, after: { x: 2 }},
     {id: 1, before: { x: 2, y: 10 }, after: { x: 3, y: 11 }},
   ]
   const newBuffer = collateEpoch(buffer)
-  assert(newBuffer.length === 1)
-  assertObjMatch(newBuffer[0], {id: 1, before: { x: 1, y: 10 }, after: { x: 3, y: 11 }})
-} testCollateEpoch3()
+  assertEqual(newBuffer.length, 1)
+  assertObjEqual(newBuffer[0], {id: 1, before: { x: 1, y: 10 }, after: { x: 3, y: 11 }})
+})
+RegisterTest("collateEpoch2 1", () => {
+  const buffer = [
+    {id: 1, before: { x: 1 }, after: { x: 1 }},
+  ]
+  const newBuffer = collateEpoch(buffer)
+  assertEqual(newBuffer.length, 0)
+})
+RegisterTest("collateEpoch2 2", () => {
+  const buffer = [
+    {id: 1, before: { x: 1 }, after: { x: 1, y: 2 }},
+  ]
+  const newBuffer = collateEpoch(buffer)
+  assertEqual(newBuffer.length, 1)
+  assertObjEqual(newBuffer[0], {id: 1, before: {}, after: { y: 2 }})
+})
 
 function logHistory() {
   console.log(historyToString())
@@ -127,11 +170,7 @@ function Undo() {
   for (const { id, before, after } of e) {
     const a = getActorId(id)
     for (const prop of Object.keys(after)) {
-      if ([Pos, Frame].includes(a[prop].constructor)) { // TODO: hacky
-        assert(a[prop].equals(after[prop]), `undo error on ${a.serialize()} on prop ${prop}`)
-      } else {
-        assertEqual(a[prop], after[prop], `undo error on ${a.serialize()} on prop ${prop}`)
-      }
+      assert(propEqual(a[prop], after[prop]), `undo error on ${a.serialize()} on prop ${prop}: expected ${after[prop].serialize()}; got ${a[prop].serialize()}`)
     }
     Object.assign(a, before)
   }
@@ -146,11 +185,7 @@ function Redo() {
   for (const { id, before, after } of e) {
     const a = getActorId(id)
     for (const prop of Object.keys(before)) {
-      if ([Pos, Frame].includes(a[prop].constructor)) { // TODO: hacky
-        assert(a[prop].equals(before[prop]), `redo error on ${a.serialize()} on prop ${prop}: expected ${before[prop].serialize()}; got ${a[prop].serialize()}`)
-      } else {
-        assertEqual(a[prop], before[prop], `redo error on ${a.serialize()} on prop ${prop}`)
-      }
+      assert(propEqual(a[prop], before[prop]), `redo error on ${a.serialize()} on prop ${prop}: expected ${before[prop].serialize()}; got ${a[prop].serialize()}`)
     }
     Object.assign(a, after)
   }

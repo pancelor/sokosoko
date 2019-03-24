@@ -71,6 +71,10 @@ class FrameBase {
   str() {
     return `<base; ${this.levelId}>`
   }
+
+  serialize() {
+    return `${this.constructor.name} ${this.levelId}`
+  }
 }
 
 class Frame {
@@ -87,7 +91,8 @@ class Frame {
 
   mini() {
     const a = getActorId(this.miniId)
-    assert(a && a.constructor === Mini)
+    assert(a)
+    assertEqual(a.constructor, Mini)
     return a
   }
 
@@ -111,9 +116,12 @@ class Frame {
   }
 
   str() {
-    const frameStrs = []
     const mini = this.mini()
     return `${this.parent.str()} | ${mini.label()}(${mini.id})`
+  }
+
+  serialize() {
+    return `${this.constructor.name} ${this.miniId} ${this.parent.serialize()}`
   }
 }
 
@@ -158,8 +166,29 @@ function Update(dir) {
   StartEpoch()
   player.update(dir)
   maybeFakeWin()
-  EndEpoch()
+  events = EndEpoch()
+  maybePlaySounds(events)
   Raf()
+}
+
+function maybePlaySounds(events) {
+  let sounds = new Set()
+  for (const {id, before, after} of events) {
+    if (before.pos || after.pos) {
+      sounds.add(getActorId(id).constructor.moveSnd)
+    }
+  }
+  const priority = {
+    sndWalk: 1,
+    sndShove: 2,
+  }
+
+  if (sounds.has(sndWalk) && sounds.has(sndShove)) {
+    sounds.delete(sndWalk)
+  }
+  for (const snd of sounds) {
+    playSound(snd)
+  }
 }
 
 function checkRealWin() {
@@ -256,9 +285,13 @@ class Actor {
     Actor.id += 1
   }
 
-  color(ctx){
+  color(){
     // used to show recursion
     return this.constructor.color
+  }
+
+  moveSound(){
+    return this.constructor.moveSnd
   }
 
   draw(ctx){
@@ -294,7 +327,7 @@ class Actor {
 
   static deserialize(line) {
     const [type, x, y] = line.split(' ')
-    assert(type === this.name, `expected ${this.name} got ${type}`)
+    assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))
     return new (this)(p)
   }
@@ -303,6 +336,7 @@ class Actor {
 class Player extends Actor {
   static img = imgPlayer
   static color = "#000000"
+  static moveSnd = sndWalk
 
   onGameInit() {
     const miniBlack = findActor(Mini, pcoord(3, 35))
@@ -341,6 +375,7 @@ class Player extends Actor {
       stack = new Frame(miniId, stack)
     }
     this.frameStack = stack
+    console.log(stack.serialize());
   }
 
   setFrameStack(f) {
@@ -353,20 +388,17 @@ class Player extends Actor {
   }
 
   update(dir) {
-    const success = pushableUpdate(this, dir)
-    if (success) {
-      sndWalk.play()
-    }
-    return success
+    return pushableUpdate(this, dir)
   }
 }
 
 class Mini extends Actor {
   static img = imgMini
+  static moveSnd = sndShove
 
   constructor(p, levelId, col) {
     super(p)
-    assert(levelId.constructor === Number)
+    assertEqual(levelId.constructor, Number)
     this.levelId = levelId
     this.col = col
   }
@@ -375,7 +407,7 @@ class Mini extends Actor {
     const roomSize = 8
     const numPx = roomSize*roomSize
     const pxSize = 4
-    assert(roomSize * pxSize === 32)
+    assertEqual(roomSize * pxSize, 32)
     for (let ix = 0; ix < numPx; ix += 1) {
       const [y, x] = divmod(ix, roomSize)
       const p = Pos.fromLevel(this.level(), pcoord(x, y))
@@ -413,7 +445,7 @@ class Mini extends Actor {
 
   static deserialize(line) {
     const [type, x, y, id] = line.split(' ')
-    assert(type === this.name, `expected ${this.name} got ${type}`)
+    assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))
     const levelId = int(id)
     return new (this)(p, levelId, GetLevelColor(getLevel(levelId)))
@@ -433,6 +465,7 @@ class Flag extends Actor {
 class Crate extends Actor {
   static img = imgCrate
   static color = "#AA6853"
+  static moveSnd = sndShove
 
   serialize() {
     const extra = (this.img === imgCrateSpecial) ? "1" : "0"
@@ -441,7 +474,7 @@ class Crate extends Actor {
 
   static deserialize(line) {
     const [type, x, y, special] = line.split(' ')
-    assert(type === this.name, `expected ${this.name} got ${type}`)
+    assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))
     const that = new (this)(p)
     if (!!int(special)) {

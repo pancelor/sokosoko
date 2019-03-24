@@ -1,28 +1,3 @@
-// class Tile {
-//   constructor(name) {
-//     this.img = document.getElementById(name)
-//     this.solid = this.constructor.solid
-//   }
-
-//   draw(ctx) {
-//     drawImg(ctx, this.img, this.pos)
-//   }
-// }
-
-// class Floor extends Tile {  static solid = false }
-// class RedFloor extends Floor { static imgName = "red-floor" }
-// class BlueFloor extends Floor { static imgName = "blue-floor" }
-// class GreenFloor extends Floor { static imgName = "green-floor" }
-// class YellowFloor extends Floor { static imgName = "yellow-floor" }
-
-// class Wall extends Tile { static solid = true }
-// class RedWall extends Wall { static imgName = "red-wall" }
-// class BlueWall extends Wall { static imgName = "blue-wall" }
-// class GreenWall extends Wall { static imgName = "green-wall" }
-// class YellowWall extends Wall { static imgName = "yellow-wall" }
-
-// const allTileTypes = [RedFloor, BlueFloor, GreenFloor, YellowFloor, RedWall, BlueWall, GreenWall, YellowWall]
-
 function InitTiles() {
   ImportTiles()
   fitCanvasToTiles()
@@ -127,23 +102,23 @@ function LevelOpenings(level) {
     if (rr === level.begin) {
       const ix = tiles[rr].findIndex(name=>!solid(name))
       if (ix !== -1) {
-        // assert(openings[1] === null) // doesn't really work...
+        // assertEqual(openings[1], null) // doesn't really work...
         openings[1] = Pos.fromLevel(level, {x: ix, y})
       }
     }
     if (rr + 1 === level.end) {
       const ix = tiles[rr].findIndex(name=>!solid(name))
       if (ix !== -1) {
-        // assert(openings[3] === null) // doesn't really work...
+        // assertEqual(openings[3], null) // doesn't really work...
         openings[3] = Pos.fromLevel(level, {x: ix, y})
       }
     }
     if (!solid(tiles[rr][0])) {
-      // assert(openings[2] === null) // doesn't really work...
+      // assertEqual(openings[2], null) // doesn't really work...
       openings[2] = Pos.fromLevel(level, {x: 0, y})
     }
     if (!solid(tiles[rr][lastColumn])) {
-      // assert(openings[0] === null) // doesn't really work...
+      // assertEqual(openings[0], null) // doesn't really work...
       openings[0] = Pos.fromLevel(level, {x: lastColumn, y})
     }
   }
