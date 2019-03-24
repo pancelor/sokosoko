@@ -63,6 +63,10 @@ class FrameBase {
     return getLevel(this.levelId)
   }
 
+  length() {
+    return 1
+  }
+
   equals(other) {
     if (other.constructor !== FrameBase) { return false }
     return (this.levelId === other.levelId)
@@ -100,6 +104,10 @@ class Frame {
     const mini = this.mini()
     assert(mini)
     return getLevel(mini.levelId)
+  }
+
+  length() {
+    return 1 + this.parent.length()
   }
 
   equals(other) {
@@ -172,33 +180,53 @@ function Update(dir) {
 }
 
 function maybePlaySounds(events) {
-  let sounds = new Set()
+  const priority = {
+    // highest
+    sndWin: 1,
+    sndEnter: 11,
+    sndExit: 12,
+    sndShove: 31,
+    sndWalk: 32,
+    // lowest
+  }
+  let best = null
   for (const {id, before, after} of events) {
+    const cst = getActorId(id).constructor
+
+    // figure out what sound this event wants to play
+    let s = null
     if (before.pos || after.pos) {
-      sounds.add(getActorId(id).constructor.moveSnd)
+      if (cst === Player) {
+        s = sndWalk
+      } else if (cst === Crate || cst === Mini) {
+        s = sndShove
+      }
+    }
+    if (cst === Player && (before.frameStack || after.frameStack)) {
+      const isEntering = before.frameStack.length() < after.frameStack.length()
+      s = isEntering ? sndEnter : sndExit
+    }
+
+    if (cst === Player && after.pos && findActor(Flag, after.pos)) {
+      s = sndWin
+    }
+
+    // ongoing minimization to find the best sound to play
+    if (s && (!best || (priority[s.id] < priority[best.id]))) { // .id here seems weird but it doesn't work otherwise; whatever
+      best = s
     }
   }
-  const priority = {
-    sndWalk: 1,
-    sndShove: 2,
-  }
-
-  if (sounds.has(sndWalk) && sounds.has(sndShove)) {
-    sounds.delete(sndWalk)
-  }
-  for (const snd of sounds) {
-    playSound(snd)
-  }
+  playSound(best)
 }
 
 function checkRealWin() {
-  return !findActor(Flag)
+  return findActor(Flag, player.pos)
 }
 
 function maybeFakeWin() {
-  const a = findActor(Flag, player.pos)
+  const a = findActor(FakeFlag, player.pos)
   if (!a) { return false}
-  destroyActor(a)
+  destroyActor(a) // hacky
 }
 
 function destroyActor(a) {
@@ -290,10 +318,6 @@ class Actor {
     return this.constructor.color
   }
 
-  moveSound(){
-    return this.constructor.moveSnd
-  }
-
   draw(ctx){
     drawImg(ctx, this.img, this.pos)
   }
@@ -336,7 +360,6 @@ class Actor {
 class Player extends Actor {
   static img = imgPlayer
   static color = "#000000"
-  static moveSnd = sndWalk
 
   onGameInit() {
     const miniBlack = findActor(Mini, pcoord(3, 35))
@@ -394,7 +417,6 @@ class Player extends Actor {
 
 class Mini extends Actor {
   static img = imgMini
-  static moveSnd = sndShove
 
   constructor(p, levelId, col) {
     super(p)
@@ -465,7 +487,6 @@ class Flag extends Actor {
 class Crate extends Actor {
   static img = imgCrate
   static color = "#AA6853"
-  static moveSnd = sndShove
 
   serialize() {
     const extra = (this.img === imgCrateSpecial) ? "1" : "0"

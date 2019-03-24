@@ -230,6 +230,30 @@ RegisterTest("objFilter", () => {
   )
 })
 
+function argmin(arr) {
+  assert(arr.length > 0, "argmin([]) is not defined")
+  let arg = 0
+  let min = arr[0]
+  for (let i = 0; i < arr.length; i++) {
+    const elem = arr[i]
+    if (elem < min) {
+      arg = i
+      min = elem
+    }
+  }
+  return {arg, min}
+}
+RegisterTest("argmin 1", () => {
+  const {arg, min} = argmin([30,60,25,100])
+  assertEqual(arg, 2)
+  assertEqual(min, 25)
+})
+RegisterTest("argmin 2", () => {
+  const {arg, min} = argmin([1])
+  assertEqual(arg, 0)
+  assertEqual(min, 1)
+})
+
 //
 // functions for use in the chrome dev tools:
 //
@@ -315,6 +339,7 @@ function downloadFile(name, contents, mime_type) {
 }
 
 async function playSound(audioElement) {
+  if (!audioElement) { return }
   audioElement.pause()
   audioElement.currentTime = 0
   await audioElement.play()
