@@ -113,7 +113,7 @@ class Frame {
   str() {
     const frameStrs = []
     const mini = this.mini()
-    return `${this.parent.str()} | ${mini.color()}(${mini.id})`
+    return `${this.parent.str()} | ${mini.label()}(${mini.id})`
   }
 }
 
@@ -135,7 +135,6 @@ function getKeyHist() {
   console.log(`const winStr = "${keyHist.join('')}"`)
 }
 function play(moves, dt=50) {
-  assert(keyHist.length === 0)
   console.log("about to play keyHistory; don't move please")
   clearInterval(keyHistInterval)
   let ix = 0
@@ -311,14 +310,11 @@ class Player extends Actor {
     const miniBlue = findActor(Mini, pcoord(6, 14))
     const miniBlackBase = findActor(Mini, pcoord(4, 5))
     const miniOuter = findActor(Mini, pcoord(4, 43))
-    const black = imgBlackWall.dataset.color
-    const green = imgGreenWall.dataset.color
-    const blue = imgBlueWall.dataset.color
-    assertEqual(miniBlack.color(), black)
-    assertEqual(miniGreen.color(), green)
-    assertEqual(miniBlue.color(), blue)
-    assertEqual(miniBlackBase.color(), black)
-    assertEqual(miniOuter.color(), black)
+    assertEqual(miniBlack.label(), "Black")
+    assertEqual(miniGreen.label(), "Green")
+    assertEqual(miniBlue.label(), "Blue")
+    assertEqual(miniBlackBase.label(), "Black")
+    assertEqual(miniOuter.label(), "Black")
     const miniOrder = [
       miniOuter.id,
 
@@ -397,6 +393,10 @@ class Mini extends Actor {
 
   color() {
     return this.col
+  }
+
+  label() {
+    return GetLevelLabel(this.level())
   }
 
   level() {
