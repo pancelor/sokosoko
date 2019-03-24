@@ -116,7 +116,6 @@ let player
 
 function InitGame() {
   // note: tiles/actors have already been loaded
-  console.log("InitGame()")
   InitHistory()
   player = allActors(Player)[0]
   assert(player)
