@@ -14,12 +14,12 @@ const savedDeserTileName = {
 const tileData = `
   level 0
   99999899
-  99998889
+  98998889
   88998888
   98999889
   98889999
-  98888889
-  98889989
+  98888899
+  98889899
   99999999
 
   level 1
@@ -56,7 +56,7 @@ const tileData = `
   33333333
   32232223
   22232223
-  32222223
+  32222233
   32323223
   32222223
   32222223
@@ -66,7 +66,7 @@ const tileData = `
 
 const actorData = `
   Mini 3 35 0
-  Mini 6 6 1
+  Mini 5 6 1
   Flag 2 5
   Player 1 14
   Mini 2 14 2
