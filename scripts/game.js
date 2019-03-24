@@ -72,18 +72,18 @@ class FramePos extends Pos {
   }
 
   mini() {
-    const frame = this.frame()
-    assert(frame)
-    return frame.mini()
+    const miniId = this.frame()
+    if (this.miniId === null) { return null }
+    const a = getActorId(this.miniId)
+    assert(a && a.constructor === Mini)
+    return a
   }
 
   level() {
-    const frame = this.frame()
-    assert(frame)
-    return frame.level()
+    return getLevel(this.levelId)
   }
 
-  parent() {
+  parent() { // TODO: impl as a cons / linked list ofc
     const mini = this.mini()
     if (!mini) { return null }
     const newStack = this.frameStack.slice(0, this.frameStack.length-1)
@@ -96,7 +96,24 @@ class FramePos extends Pos {
 
   str() {
     const sup = Pos.prototype.str.call(this)
-    return `${frameStackToString(this.frameStack)} ${sup}`
+    const frameStrs = ['[']
+    let fp = this
+    while (fp) {
+      const mini = fp.mini()
+      // assert(mini) // TODO do this <----
+      if (mini) {
+        frameStrs.push(`Mini#${mini.id}@${mini.pos.str()}`)
+      } else {
+        frameStrs.push(`<null Mini>`)
+      }
+
+      const color = GetLevelColor(mini.levelId)
+      frameStrs.push(` ${color} |`)
+
+      fp = fp.parent()
+    }
+
+    return `${frameStrs.join(' ')} ${sup}`
   }
 
   lift(pos) {
@@ -120,40 +137,6 @@ function InitGame() {
   player = allActors(Player)[0]
   assert(player)
   actors.forEach(a=>a.onGameInit())
-}
-
-function frameStackToString(stack) {
-  const frameStrs = ['[']
-  for (const frame of stack) {
-    // const mini = frame.mini()
-    // if (mini) {
-    //   frameStrs.push(`Mini#${mini.id}@${mini.pos.str()}`)
-    // } else {
-    //   frameStrs.push(`<null Mini>`)
-    // }
-    const color = GetLevelColor(frame.levelId)
-    frameStrs.push(` ${color} |`)
-  }
-  return frameStrs.join(' ')
-}
-
-class Frame {
-  // a frame is an entry location (from the next level up) and a level id
-  constructor({miniId, levelId}) {
-    this.miniId = miniId
-    this.levelId = levelId
-  }
-
-  mini() {
-    if (this.miniId === null) { return null }
-    const a = getActorId(this.miniId)
-    assert(a.constructor === Mini)
-    return a
-  }
-
-  level() {
-    return getLevel(this.levelId)
-  }
 }
 
 let keyHist = []
@@ -527,7 +510,7 @@ function maybeTeleIn(that, dir) {
     if (op) {
       // teleport into the mini
       const preOp = posDir(op, oppDir(dir)) // right before entering the room, to try to push
-      const newPos = that.pos.child(preOp, new Frame({miniId: mini.id, levelId: mini.levelId}))
+      const newPos = that.pos.child(preOp, mini.id)
       that.setPos(newPos)
 
       return true
@@ -599,25 +582,6 @@ function liftedUpdate(lifter, target, dir) {
 
   return success
 }
-
-// function maybeJimmyFrameStackInfinitely(that) {
-//   // is this a good idea lol who knows
-//   if (that !== player) { return }
-//   if (that.pos.frameStack.length === 2) {
-//     const outerColor = GetLevelColor(that.pos.frame().levelId)
-//     switch (outerColor) {
-//       case "Black": {
-//         that.pos.frameStack
-//       } break
-//       case "Blue": {
-
-//       } break
-//       case "Yellow": {
-
-//       } break
-//     }
-//   }
-// }
 
 function allActors(csts) {
   // allActors() -> all actors
