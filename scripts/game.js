@@ -353,7 +353,11 @@ class Player extends Actor {
   }
 
   update(dir) {
-    return pushableUpdate(this, dir)
+    const success = pushableUpdate(this, dir)
+    if (success) {
+      sndWalk.play()
+    }
+    return success
   }
 }
 
