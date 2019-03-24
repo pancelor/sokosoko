@@ -140,7 +140,7 @@ function init() {
   registerMouseListeners()
   reset()
 
-  showMap() // temp
+  // showMap() // temp
 }
 
 function reset() {
