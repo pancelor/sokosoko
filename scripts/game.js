@@ -173,22 +173,38 @@ async function drawFancy() {
   const worldImg = await createImageBitmap(canvas)
   const ctx = canvas2.getContext('2d')
   ctx.imageSmoothingEnabled = false
-  const innerLevel = player.pos.level()
-  const outerLevel = player.pos.parent() ? player.pos.parent().level() : null
+  const innerFrame = player.pos.frame()
+  const outerFrame = player.pos.parent() ? player.pos.parent().frame() : null
+
+  // draw outer level
+  if (outerFrame && 0) {
+    const innerW = canvas2.width
+    const innerH = canvas2.height
+    const src = Pos.fromLevel(innerFrame, pcoord(0, 0)).scale(tileSize)
+    const dest = pcoord(4, 4).scale(tileSize)
+    ctx.drawImage(worldImg,
+      src.x, src.y, innerW, innerH,
+      dest.x, dest.y, innerW, innerH
+    )
+  } else {
+    ctxWith(ctx, {fillStyle: "lightgray"}, cls)
+  }
 
   // draw inner level
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
-  const src = Pos.fromLevel(innerLevel, pcoord(0, 0)).scale(tileSize)
+  const src = Pos.fromLevel(innerFrame.level(), pcoord(0, 0)).scale(tileSize)
   const dest = pcoord(4, 4).scale(tileSize)
   ctx.drawImage(worldImg,
     src.x, src.y, innerW, innerH,
     dest.x, dest.y, innerW, innerH
   )
+
   // draw frame border
   ctxWith(ctx, {strokeStyle: "gray", lineWidth: 10, globalAlpha: 0.5}, () => {
     ctx.strokeRect(dest.x, dest.y, innerW, innerH)
   })
+
   // draw canvas border
   ctxWith(ctx, {strokeStyle: "black"}, () => {
     ctx.strokeRect(0, 0, canvas2.width, canvas2.height)

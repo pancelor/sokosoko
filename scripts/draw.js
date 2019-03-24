@@ -1,5 +1,5 @@
 function cls(ctx) {
-  ctx.fillRect(0, 0, canvas.width, canvas.height)
+  ctx.fillRect(0, 0, ctx.canvas.width, ctx.canvas.height)
 }
 
 function drawBkg(ctx) {
