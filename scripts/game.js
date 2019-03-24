@@ -306,7 +306,7 @@ class Player extends Actor {
   static color = "#000000"
 
   onGameInit() {
-    const miniBlack = findActor(Mini, pcoord(3, 35))
+    const miniBlack = findActor(Mini, pcoord(4, 35))
     const miniGreen = findActor(Mini, pcoord(1, 6))
     const miniBlue = findActor(Mini, pcoord(6, 14))
     const miniBlackBase = findActor(Mini, pcoord(4, 5))
