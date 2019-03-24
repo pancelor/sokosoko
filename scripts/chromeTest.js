@@ -8,7 +8,11 @@ function chromeTest() {
       const re = /abc(?<name>\d+)def/
     `)
   } catch (err) {
-    chromeWarning.style.display = null
+    const apology = document.createElement('p')
+    apology.innerText = "\n\nThis game only works in chrome right now; I'm sorry :("
+    canvas.style.display = "none"
+    canvas2.style.display = "none"
+    explanation.appendChild(apology)
   }
 }
 
