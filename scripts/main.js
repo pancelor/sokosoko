@@ -139,8 +139,6 @@ function init() {
   registerKeyListeners()
   registerMouseListeners()
   reset()
-
-  showMap() // temp
 }
 
 function reset() {
