@@ -2,6 +2,9 @@ let gameMuted = false
 function mute() {
   gameMuted = true
 }
+function unmute() {
+  gameMuted = false
+}
 
 let enableHeldButtons = true
 function disableHeldButtons() {

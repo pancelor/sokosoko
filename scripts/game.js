@@ -168,9 +168,11 @@ function Update(dir) {
 }
 
 function maybePlaySounds(events) {
+  if (gameMuted) { return }
   const priority = {
     // highest
-    sndWin: 1,
+    sndBonus: 1,
+    sndWin: 2,
     sndEnter: 11,
     sndExit: 12,
     sndShove: 31,
@@ -197,6 +199,9 @@ function maybePlaySounds(events) {
 
     if (cst === Player && after.pos && findActor(Flag, after.pos)) {
       s = sndWin
+    }
+    if (cst === Crate && after.pos && findActor(Flag, after.pos)) {
+      s = sndBonus
     }
 
     // ongoing minimization to find the best sound to play
