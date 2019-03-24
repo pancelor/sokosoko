@@ -68,19 +68,22 @@ class FramePos extends Pos {
   }
 
   frame() {
+    // returns the outermost miniId
     return back(this.frameStack)
   }
 
   mini() {
     const miniId = this.frame()
-    if (this.miniId === null) { return null }
-    const a = getActorId(this.miniId)
+    if (miniId === null) { return null }
+    const a = getActorId(miniId)
     assert(a && a.constructor === Mini)
     return a
   }
 
   level() {
-    return getLevel(this.levelId)
+    const mini = this.mini()
+    if (mini === null) { return null }
+    return getLevel(mini.levelId)
   }
 
   parent() { // TODO: impl as a cons / linked list ofc
@@ -96,24 +99,25 @@ class FramePos extends Pos {
 
   str() {
     const sup = Pos.prototype.str.call(this)
-    const frameStrs = ['[']
+    const frameStrs = []
     let fp = this
     while (fp) {
       const mini = fp.mini()
       // assert(mini) // TODO do this <----
-      if (mini) {
-        frameStrs.push(`Mini#${mini.id}@${mini.pos.str()}`)
-      } else {
-        frameStrs.push(`<null Mini>`)
+      if (!mini) {
+        frameStrs.push(`<null> |`)
+        assert(fp.parent() === null)
+        break
       }
 
+//       frameStrs.push(`Mini#${mini.id}@${mini.pos.str()}`)
       const color = GetLevelColor(mini.levelId)
       frameStrs.push(` ${color} |`)
 
       fp = fp.parent()
     }
 
-    return `${frameStrs.join(' ')} ${sup}`
+    return `[ ${frameStrs.reverse().join(' ')} ${sup}`
   }
 
   lift(pos) {
@@ -199,10 +203,10 @@ async function drawFancy() {
   const worldImg = await createImageBitmap(canvas)
   const ctx = canvas2.getContext('2d')
   ctx.imageSmoothingEnabled = false
-  const innerFrame = player.pos.frame()
-  const outerFrame = player.pos.parent() ? player.pos.parent().frame() : null
+  const innerFrame = player.pos
+  const outerFrame = player.pos.parent() ? player.pos.parent() : null
 
-  // draw outer level
+  // draw outer level border
   if (outerFrame) {
     const mini = innerFrame.mini()
     assert(mini)
@@ -323,27 +327,25 @@ class Player extends Actor {
     assert(miniBlackBase && GetLevelColor(miniBlackBase.levelId) === "Black")
     assert(miniOuter && GetLevelColor(miniOuter.levelId) === "Black")
     const frameStack = [
+      null,
+      miniOuter.id,
 
-       // also, levelId doesn't seem to be relevant at all here idk why; the code is complicated
-       new Frame({miniId: null, levelId: miniOuter.levelId}),
-       new Frame({miniId: miniOuter.id, levelId: miniOuter.levelId}),
+      miniBlackBase.id,
+      miniYellow.id,
 
-       new Frame({miniId: miniBlackBase.id, levelId: miniBlackBase.levelId}),
-       new Frame({miniId: miniYellow.id, levelId: miniYellow.levelId}),
+      // start
+      miniBlue.id,
+      miniBlack.id,
+      miniYellow.id,
 
-       // start
-       new Frame({miniId: miniBlue.id, levelId: miniBlue.levelId}),
-       new Frame({miniId: miniBlack.id, levelId: miniBlack.levelId}),
-       new Frame({miniId: miniYellow.id, levelId: miniYellow.levelId}),
+      miniBlue.id,
+      miniBlack.id,
+      miniYellow.id,
 
-       new Frame({miniId: miniBlue.id, levelId: miniBlue.levelId}),
-       new Frame({miniId: miniBlack.id, levelId: miniBlack.levelId}),
-       new Frame({miniId: miniYellow.id, levelId: miniYellow.levelId}),
-
-       new Frame({miniId: miniBlue.id, levelId: miniBlue.levelId}),
-       new Frame({miniId: miniBlack.id, levelId: miniBlack.levelId}),
-       new Frame({miniId: miniYellow.id, levelId: miniYellow.levelId}),
-       // end
+      miniBlue.id,
+      miniBlack.id,
+      miniYellow.id,
+      // end
     ]
 
     this.pos = new FramePos(this.pos, frameStack)
@@ -453,18 +455,6 @@ class Crate extends Actor {
 
 const allActorTypes = [Player, Flag, Mini, Crate]
 
-// function dirTo(p1, p2) {
-//   // returns 0-3 if p2 is adjacent to p1
-//   // otherwise null
-//   const dy = p2.y - p1.y
-//   const dx = p2.x - p1.x
-//   if (dy === 0 && dx === 1) { return 0 }
-//   if (dy === -1 && dx === 0) { return 1 }
-//   if (dy === 0 && dx === -1) { return 2 }
-//   if (dy === 1 && dx === 0) { return 3 }
-//   return null
-// }
-
 function getLevel(id) {
   return levels.find(l=>l.id===id)
 }
@@ -478,9 +468,9 @@ function maybeTeleOut(that, dir) {
   //   move that to the parent FramePos (teleport out one level)
   // else do nothing
   // returns whether the tele happened
-  assert(that.pos.frameStack)
+  assert(that.pos.constructor === FramePos)
 
-  const innerLevel = that.pos.frame().level()
+  const innerLevel = that.pos.level()
   const outPos = LevelOpenings(innerLevel)[dir]
   if (outPos && outPos.equals(that.pos)) {
     const parent = that.pos.parent()
@@ -501,7 +491,7 @@ function maybeTeleIn(that, dir) {
   //   move that into the mini (teleport out one level)
   // else do nothing
   // returns whether the tele happened
-  assert(that.pos.frameStack)
+  assert(that.pos.constructor === FramePos)
 
   const nextPos = posDir(that.pos, dir)
   const mini = findActor(Mini, nextPos)
