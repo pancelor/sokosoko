@@ -91,7 +91,8 @@ class FramePos extends Pos {
   }
 
   str() {
-    return `${frameStackToString(this.frameStack)} : ${this.x}, ${this.y}`
+    const sup = Pos.prototype.str.call(this)
+    return `${frameStackToString(this.frameStack)} | ${sup}`
   }
 
   lift(pos) {
@@ -126,7 +127,8 @@ function frameStackToString(stack) {
     } else {
       frameStrs.push(`<null Mini>`)
     }
-    frameStrs.push(`{${frame.levelId}},`)
+    const color = GetLevelColor(frame.levelId)
+    frameStrs.push(` ${color} |`)
   }
   return frameStrs.join(' ')
 }
@@ -150,7 +152,33 @@ class Frame {
   }
 }
 
+let hist = []
+let histInterval
+function getHist() {
+  return `play("${hist.join('')}")`
+}
+function play(moves, dt=50) {
+  assert(hist.length === 0)
+  console.log("about to play history; don't move please")
+  clearInterval(histInterval)
+  let ix = 0
+  histInterval = setInterval(() => {
+    if (ix >= moves.length) {
+      clearInterval(histInterval)
+      console.log("done playing history; you can move again")
+      return
+    }
+    const dir = int(moves[ix])
+    Update(dir)
+    ix += 1
+  }, dt)
+}
+function RecordToHist(dir) {
+  hist.push(dir)
+}
 function Update(dir) {
+  if (checkWin()) { return }
+
   player.update(dir)
   if (checkWin()) {
     console.log("you win!")
@@ -159,7 +187,7 @@ function Update(dir) {
 }
 
 function checkWin() {
-  return player.pos.frameStack.length === 0
+  return !!findActor(Flag, player.pos)
 }
 
 async function DrawGame(ctx) {
@@ -189,7 +217,7 @@ async function drawFancy() {
       0, 0, canvas2.width, canvas2.height
     )
   } else {
-    ctxWith(ctx, {fillStyle: "lightgray"}, cls)
+    ctxWith(ctx, {fillStyle: "white"}, cls)
   }
 
   // draw inner level
@@ -211,6 +239,10 @@ async function drawFancy() {
   ctxWith(ctx, {strokeStyle: "black"}, () => {
     ctx.strokeRect(0, 0, canvas2.width, canvas2.height)
   })
+
+  if (checkWin()) {
+    drawMessage(ctx, "You win!")
+  }
 }
 
 function drawActors(ctx) {
@@ -271,11 +303,18 @@ class Player extends Actor {
   static color = "#000000"
 
   onGameInit() {
-    const mini = findActor(Mini, pcoord(2, 2))
-    assert(mini)
+    const mini1 = getActorId(1)
+    const mini2 = getActorId(2)
+    assert(mini1.constructor === Mini)
+    assert(mini2.constructor === Mini)
     const frameStack = [
-      new Frame({miniId: null, levelId: 0}),
-      new Frame({miniId: mini.id, levelId: mini.levelId}),
+
+       // not sure whether it makes more sense for this line to be here or not...
+       // also, levelId doesn't seem to be relevant at all here idk why; the code is complicated
+      new Frame({miniId: null, levelId: mini1.levelId}),
+
+      new Frame({miniId: mini1.id, levelId: mini1.levelId}),
+      new Frame({miniId: mini2.id, levelId: mini2.levelId}),
     ]
 
     this.pos = new FramePos(this.pos, frameStack)
@@ -341,9 +380,13 @@ class Mini extends Actor {
     assert(type === this.name, `expected ${this.name} got ${type}`)
     const p = pcoord(int(x), int(y))
     const levelId = int(id)
-    const topleft = Pos.fromLevel(getLevel(levelId), pcoord(0, 0))
-    return new (this)(p, levelId, GetTileColor(topleft))
+    return new (this)(p, levelId, GetLevelColor(levelId))
   }
+}
+
+class Flag extends Actor {
+  static img = imgFlag
+  static color = "#FFFFFF"
 }
 
 class Crate extends Actor {
@@ -355,7 +398,7 @@ class Crate extends Actor {
   }
 }
 
-const allActorTypes = [Player, Crate, Mini]
+const allActorTypes = [Player, Crate, Flag, Mini]
 
 // function dirTo(p1, p2) {
 //   // returns 0-3 if p2 is adjacent to p1
@@ -370,9 +413,11 @@ const allActorTypes = [Player, Crate, Mini]
 // }
 
 function getLevel(id) {
-  const l = levels.find(l=>l.id===id)
-  assert(l)
-  return l
+  return levels.find(l=>l.id===id)
+}
+
+function getLevelAt(pos) {
+  return levels.find(l=>l.begin <= pos.y && pos.y < l.end)
 }
 
 function maybeTeleOut(that, dir) {
@@ -381,7 +426,6 @@ function maybeTeleOut(that, dir) {
   // else do nothing
   // returns whether the tele happened
   assert(that.pos.frameStack)
-  assert(0 <= dir && dir < 4) // temp
 
   const level = that.pos.frame().level()
   const outPos = LevelOpenings(level)[dir]
@@ -399,7 +443,6 @@ function maybeTeleIn(that, dir) {
   // else do nothing
   // returns whether the tele happened
   assert(that.pos.frameStack)
-  assert(0 <= dir && dir < 4) // temp
 
   const nextPos = posDir(that.pos, dir)
   const mini = findActor(Mini, nextPos)
@@ -422,8 +465,8 @@ function pushableUpdate(that, dir) {
 
   const oldPos = that.pos.clone()
   const nextPos = posDir(that.pos, dir)
-  assert(oldPos.frameStack) //temp
-  assert(nextPos.frameStack) //temp
+  assert(oldPos.constructor === FramePos)
+  assert(nextPos.constructor === FramePos)
 
   if (maybeTeleOut(that, dir)) {
     if (pushableUpdate(that, dir)) {

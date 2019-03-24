@@ -30,19 +30,14 @@ function InitTiles() {
 
 function fitCanvasToTiles() {
   assert(globalExists(() => tileSize))
-  const { width, height } = tilesDim()
-  canvas.width = width*tileSize
-  canvas.height = height*tileSize
+  const { w, h } = tilesDim()
+  canvas.width = w*tileSize
+  canvas.height = h*tileSize
 }
 
 function solid(tileName) {
   if (tileName === null) { return false }
-  return [
-    "imgRedWall",
-    "imgBlueWall",
-    "imgGreenWall",
-    "imgYellowWall",
-  ].includes(tileName)
+  return !!tileName.match(/^img\w+Wall$/)
 }
 
 function CanMoveToTile(p) {
@@ -51,24 +46,28 @@ function CanMoveToTile(p) {
   return true
 }
 
-function inbounds(p) {
+function inbounds(p, dim) {
   const {x, y} = p
-  const {width, height} = tilesDim()
   if (x == null || y == null) { return false }
-  return 0 <= x && x < width && 0 <= y && y < height
+  if (dim === undefined) {
+    dim = tilesDim()
+  }
+  const {w, h} = dim
+
+  return 0 <= x && x < w && 0 <= y && y < h
 }
 
 function tilesDim() {
   assert(tiles)
   assert(tiles.length > 0)
   return {
-    width: tiles[0].length,
-    height: tiles.length,
+    w: tiles[0].length,
+    h: tiles.length,
   }
 }
 
 function DrawTiles(ctx) {
-  const {width: ncc, height: nrr} = tilesDim()
+  const {w: ncc, h: nrr} = tilesDim()
   for (let rr = 0; rr < nrr; rr++) {
     for (let cc = 0; cc < ncc; cc++) {
       const name = tiles[rr][cc]
@@ -84,6 +83,15 @@ function GetTileColor(p) {
   const name = getTile(p)
   assert(name)
   return document.getElementById(name).dataset.color
+}
+
+function GetLevelColor(levelId) {
+  const topleft = Pos.fromLevel(getLevel(levelId), pcoord(0, 0))
+  // return GetTileColor(topleft)
+  const name = getTile(topleft)
+  const match = name.match(/^img(?<col>\w+)Wall$/)
+  if (!match) { return null }
+  return match.groups.col
 }
 
 function getTile(p) {

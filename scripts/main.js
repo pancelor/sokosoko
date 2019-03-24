@@ -20,6 +20,7 @@ function registerKeyListeners() {
   function onKeyHold() {
     assert([0,1,2,3].includes(heldDir))
     Update(heldDir)
+    RecordToHist(heldDir)
   }
   function resetHoldInterval(start=true) {
     clearInterval(holdInterval)
@@ -68,6 +69,39 @@ function registerKeyListeners() {
   })
 }
 
+function registerMouseListeners() {
+  window.addEventListener("contextmenu", (e) => {
+    e.preventDefault()
+    return false
+  })
+  canvas.addEventListener("mousedown", (e) => {
+    mouseClickRaw(e)
+    e.preventDefault()
+    return false
+  })
+  canvas2.addEventListener("mousedown", (e) => {
+    mouseClickView(e)
+    e.preventDefault()
+    return false
+  })
+}
+
+function mouseClickRaw(e) {
+  const worldPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize))
+  const level = getLevelAt(worldPos)
+  const levelPos = worldPos.toLevelPos(level)
+  console.log(`${level.id}: ${worldPos.str()} (local: ${levelPos.str()})`)
+}
+
+function mouseClickView(e) {
+  const levelPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize)).add(pcoord(-4, -4))
+  if (!inbounds(levelPos, {w: 8, h: 8})) { return }
+
+  const level = player.pos.level()
+  const worldPos = Pos.fromLevel(level, levelPos)
+  console.log(`${level.id}: ${worldPos.str()} (local: ${levelPos.str()})`)
+}
+
 async function redraw() {
   const ctx = canvas.getContext('2d')
   ctx.imageSmoothingEnabled = false
@@ -80,6 +114,7 @@ function Raf() {
 
 function init() {
   registerKeyListeners()
+  registerMouseListeners()
   InitTiles()
   InitActors()
   InitGame()

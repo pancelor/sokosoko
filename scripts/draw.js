@@ -45,13 +45,13 @@ function drawCircle(ctx, p, r) {
   ctx.fill()
 }
 
-function drawMessage(ctx, lines, mainColor="black") {
+function drawMessage(ctx, lines, mainColor="white") {
   if (!Array.isArray(lines)) { lines = [lines] }
-  const W = canvas.width;
-  const H = canvas.height;
+  const W = ctx.canvas.width;
+  const H = ctx.canvas.height;
   const lineHeight = 30
   const msgHeight = lineHeight*lines.length
-  ctxWith(ctx, {globalAlpha: 0.66, fillStyle: "white"}, () => {
+  ctxWith(ctx, {globalAlpha: 0.66, fillStyle: "black"}, () => {
     fillRectCentered(ctx, W/2, H/2, W*0.9 + 10, msgHeight + lineHeight + 10)
   })
   ctxWith(ctx, {globalAlpha: 0.75, fillStyle: mainColor}, () => {
@@ -59,7 +59,7 @@ function drawMessage(ctx, lines, mainColor="black") {
   })
   ctxWith(ctx, {
     font: `${lineHeight}px Consolas`,
-    fillStyle: "white",
+    fillStyle: "black",
     textAlign: "center",
   }, () => {
     let i = 0
