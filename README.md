@@ -13,3 +13,12 @@ option 2: `git clone` this repo; open index.html; play in browser
 Controls:
 * move with `wasd` or arrow keys.
 * undo with `z`; redo with `y`; reset with `r`
+
+## Credits / Inspirations
+
+https://juner.itch.io/sokosoko
+
+Fractal Maze by Mark J. P. Wolf http://www.mathpuzzle.com/18Nov2003.html
+(http://i.stack.imgur.com/hxh62.gif)
+
+https://www.favicon-generator.org/
