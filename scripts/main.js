@@ -257,7 +257,7 @@ function init() {
   registerMouseListeners()
   reset()
 
-  godmodeOn()
+  // godmodeOn()
 }
 
 function reset(levelName) {
