@@ -38,7 +38,7 @@ function registerKeyListeners() {
     "KeyY": 5,
   }
   function onKeyHold() {
-    processInput(heldDir)
+    ProcessInput(heldDir)
   }
   function resetHoldInterval(start=true) {
     clearInterval(holdInterval)
@@ -95,7 +95,7 @@ function registerKeyListeners() {
   })
 }
 
-function processInput(code) {
+function ProcessInput(code) {
   assert([0,1,2,3,4,5].includes(code))
   RecordKeyHist(code)
   if (code === 4) {

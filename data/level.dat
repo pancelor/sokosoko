@@ -52,7 +52,7 @@ const tileData = `
   10111101
   10111101
   10000000
-  10111111
+  11011111
 
   level 4
   33333333
@@ -98,7 +98,7 @@ const actorData = `
 `
 
 const frameStackData = `
-  6
+  5
   miniOuter
   miniBlack2
   miniGreen
