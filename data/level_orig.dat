@@ -59,9 +59,7 @@ levelData['orig'] = {
     xx....xx
     x.xxxx.x
     xxxxxxxx
-
   `,
-
   actorData: `
     Mini 3 35 Black
     Mini 6 14 Blue
@@ -76,7 +74,6 @@ levelData['orig'] = {
     Flag 2 43
     Player 1 14
   `,
-
   frameStackData: `
     Beige
     miniYellow

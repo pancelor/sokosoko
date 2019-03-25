@@ -2,12 +2,15 @@
 // globals
 //
 
-let tiles
 let levels
+let tiles
+let actors
+
+let taggedActors // keep these around so we can reserialize them later
+let savedFrameStack
 
 function LoadLevel(name) {
   console.log("Loading level", name)
-  if (!name) { name = "orig" }
   if (!levelData[name]) {
     console.warn("level not found:", name)
     return
@@ -15,9 +18,9 @@ function LoadLevel(name) {
   const { tileData, actorData, frameStackData } = preloadData(name)
   importTiles(tileData)
   FitCanvasToTiles()
-  const tags = importActors(actorData)
+  importActors(actorData)
   player = allActors(Player)[0]
-  importFrameStack(frameStackData, tags)
+  importFrameStack(frameStackData)
 }
 
 function preloadData(name) {
@@ -26,6 +29,19 @@ function preloadData(name) {
   assert(actorData)
   assert(frameStackData)
   return { tileData, actorData, frameStackData }
+}
+
+function serTile(name) {
+  const match = name.match(/^img\w+((?<floor>Floor)|(?<wall>Wall))$/)
+  assert(match)
+  assert(xor(match.groups.floor, match.groups.wall)) // exactly one is true
+  return match.groups.wall ? 'x' : '.'
+}
+
+function deserTile(code, tag) { // todo: make this type: isWall(code)->bool
+  assert(code === 'x' || code === '.')
+  const isWall = code === 'x'
+  return `img${tag}${isWall ? "Wall" : "Floor"}`
 }
 
 function importTiles(tileData) {
@@ -77,45 +93,6 @@ function importTiles(tileData) {
   }
 }
 
-function serTile(name) {
-  const match = name.match(/^img\w+((?<floor>Floor)|(?<wall>Wall))$/)
-  assert(match)
-  assert(xor(match.groups.floor, match.groups.wall)) // exactly one is true
-  return match.groups.wall ? 'x' : '.'
-}
-
-function deserTile(code, tag) { // todo: make this type: isWall(code)->bool
-  assert(code === 'x' || code === '.')
-  const isWall = code === 'x'
-  return `img${tag}${isWall ? "Wall" : "Floor"}`
-}
-
-function exportLevelString(level) {
-  const lines = []
-  lines.push(`    level ${level.id}`)
-  for (let rr = level.begin; rr < level.end; rr += 1) {
-    const chars = ["    "]
-    for (let imgName of tiles[rr]) {
-      chars.push(serTile(imgName))
-    }
-    lines.push(chars.join(''))
-  }
-  return lines.join("\n")
-}
-
-function exportTilesString() {
-  const lines = []
-  lines.push("  tileData: `")
-  for (let level of levels) {
-    lines.push(exportLevelString(level))
-    lines.push("")
-  }
-  lines.length -= 1 // drop the last newline
-  lines.push("`,")
-  lines.push("")
-  return lines.join("\n")
-}
-
 function buildDeserActorClass() {
   // e.g. buildDeserActorClass()["Player"] -> Player (constructor)
   //   (to go the other way, use constructorVar.name)
@@ -132,7 +109,7 @@ function importActors(actorData) {
   const deserActorClass = buildDeserActorClass()
 
   let lines = sanitizeLines(actorData)
-  let tags = {}
+  taggedActors = {}
   actors = [];
   for (let l of lines) {
     const match = l.match(/^(?<data>[^@]+)\s*(@(?<tag>[\w\d+]+))?$/)
@@ -145,20 +122,21 @@ function importActors(actorData) {
     if (!a) continue
     actors.push(a);
     if (tag) {
-      tags[tag] = a.id
+      taggedActors[tag] = a.id
     }
   }
-  return tags
 }
 
-function importFrameStack(frameStackData, tags={}) {
+function importFrameStack(frameStackData) {
   // imports `frameStackData` into the var `player.frameStack`
-  // tags is a string-to-actor-id map
+  // also uses taggedActors, a string-to-actor-id map
 
   let lines = sanitizeLines(frameStackData)
 
   let stack = null
+  savedFrameStack = []
   for (const l of lines) {
+    savedFrameStack.push(l)
     if (!stack) {
       // first time through the loop
       const level = levelFromTag(l)
@@ -168,7 +146,7 @@ function importFrameStack(frameStackData, tags={}) {
       const match = l.match(/^(?<tag>[\w\d_]+)$/)
       assert(match, `bad tag syntax: ${l}`)
       const tag = match.groups.tag
-      const a = tags[tag]
+      const a = taggedActors[tag]
       assert(a, `tag "${tag}" not found while importing frameStackData`)
       const mini = getActorId(a)
       assert(mini)
@@ -190,42 +168,73 @@ RegisterTest("sanitizeLines", () => {
 
     a
     # line skipped entirely
-    b
+    b @ no tag parsing
     # foo
   `)
-  const expected = ["hello", "comment", "a", "b"]
+  const expected = ["hello", "comment", "a", "b @ no tag parsing"]
   assertEqual(actual.length, expected.length)
   for (let i = 0; i < expected.length; i += 1) {
     assertEqual(actual[i], expected[i])
   }
 })
 
+function exportLevelString(level) {
+  const lines = []
+  lines.push(`    level @${level.tag}`)
+  for (let rr = level.begin; rr < level.end; rr += 1) {
+    const chars = ["    "]
+    for (let imgName of tiles[rr]) {
+      chars.push(serTile(imgName))
+    }
+    lines.push(chars.join(''))
+  }
+  return lines.join("\n")
+}
+
+function exportTilesString() {
+  const lines = []
+  lines.push("  tileData: `")
+  for (let level of levels) {
+    lines.push(exportLevelString(level))
+    lines.push("")
+  }
+  lines.length -= 1 // drop the last newline
+  lines.push("  `,")
+  return lines.join("\n")
+}
+
 function exportActorsString() {
+  assert(taggedActors)
+  const invertedTaggedActors = invertObject(taggedActors)
   const lines = []
   lines.push("  actorData: `")
   for (let a of actors) {
-    lines.push(`    ${a.serialize()}`)
+    let tag = invertedTaggedActors[a.id]
+    tag = tag ? ` @${tag}` : ""
+    lines.push(`    ${a.serialize()}${tag}`)
   }
-  lines.push("`,")
-  lines.push("")
+  lines.push("  `,")
   return lines.join("\n")
 }
 
 function exportFrameStackString() {
+  assert(savedFrameStack)
   const lines = []
   lines.push("  frameStackData: `")
-  // for (let a of actors) {
-  //   lines.push(`    ${a.serialize()}`)
-  // }
-  lines.push("`,")
-  lines.push("")
+  for (let tag of savedFrameStack) {
+    lines.push(`    ${tag}`)
+  }
+  lines.push("  `,")
   return lines.join("\n")
 }
 
-function ExportLevelString() {
+function ExportLevelString(name) {
   const lines = []
+  lines.push(`levelData['${name}'] = {`)
   lines.push(exportTilesString())
   lines.push(exportActorsString())
   lines.push(exportFrameStackString())
+  lines.push("}")
+  lines.push("")
   return lines.join("\n")
 }

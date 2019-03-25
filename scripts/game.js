@@ -380,7 +380,7 @@ class Mini extends Actor {
   }
 
   serialize() {
-    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${this.levelId}`
+    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${this.level().tag}`
   }
 
   static deserialize(line) {

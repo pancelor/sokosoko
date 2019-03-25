@@ -90,8 +90,9 @@ function setTile(p, name) {
   }
 }
 
-function SaveLevel() {
-  downloadFile("level.dat", ExportLevelString())
+function SaveLevel(name) {
+  name = name.toLowerCase()
+  downloadFile(`level_${name}.dat`, ExportLevelString(name))
 }
 
 function LevelOpenings(level) {

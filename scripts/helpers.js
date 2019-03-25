@@ -230,6 +230,36 @@ RegisterTest("objFilter", () => {
   )
 })
 
+function invertObject(obj) {
+  const res = {}
+  for (const k of Object.keys(obj)) {
+    const v = obj[k]
+    if (k == "null" || k == "undefined" || v === null || v === undefined) {
+      assert(0, "can't invert when there are nullishes")
+    }
+    assert(res[v] === undefined, `object is not 1-1: multiple keys have value ${v}`)
+    res[obj[k]] = k
+  }
+  return res
+}
+RegisterTest("invertObject", () => {
+  assertObjEqual(invertObject({}), {})
+  assertObjEqual(invertObject({a: 1}), {1: 'a'})
+  assertObjEqual(invertObject({a: 1, b: 2}), {1: 'a', 2: 'b'})
+  expectError(
+    () => invertObject({a: 1, b: 1}),
+    "multiple keys have value"
+  )
+  expectError(
+    () => invertObject({a: null}),
+    "nullishes"
+  )
+  expectError(
+    () => invertObject({null: 3}),
+    "nullishes"
+  )
+})
+
 function argmin(arr) {
   assert(arr.length > 0, "argmin([]) is not defined")
   let arg = 0

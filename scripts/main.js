@@ -70,7 +70,7 @@ function registerKeyListeners() {
   }
   canvas2.addEventListener("keydown", e => {
     if (e.ctrlKey && e.code === "KeyS") {
-      SaveLevel()
+      SaveLevel(levelCodeInput.value)
       e.preventDefault()
       return false
     }
@@ -257,13 +257,17 @@ function init() {
   registerMouseListeners()
   reset()
 
-  // godmodeOn()
+  godmodeOn()
 }
 
 function reset(levelName) {
+  if (!levelName) { levelName = "orig" }
+  levelName = levelName.toLowerCase()
+  levelCodeInput.value = levelName
   LoadLevel(levelName)
   InitGame()
   canvas2.focus()
+  scrollTo(0, 0)
 
   Raf()
 }
