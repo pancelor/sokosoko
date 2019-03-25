@@ -19,7 +19,7 @@ const tileData = `
   x......x
   xxxxxxxx
 
-  level @Blue
+  level @Yellow
   xxxx.xxx
   xxxx.xxx
   xx....xx
@@ -67,11 +67,11 @@ const actorData = `
   Mini 6 14 Blue @miniBlue
   Mini 4 5 Black @miniBlack2
   Mini 4 43 Black @miniOuter
-  Mini 2 14 2
-  Mini 3 21 1
-  Mini 4 9 3
-  Mini 5 5 0
-  Mini 6 2 2
+  Mini 2 14 Yellow
+  Mini 3 21 Green
+  Mini 4 9 Red
+  Mini 5 5 Black
+  Mini 6 2 Yellow
   Crate 4 4 0
   Crate 4 34 0
   Crate 1 36 1
@@ -83,21 +83,21 @@ const actorData = `
 `
 
 const frameStackData = `
-  ^Beige
-  ^miniOuter
-  ^miniBlack2
-  ^miniGreen
+  Beige
+  miniOuter
+  miniBlack2
+  miniGreen
 
   # start repeats:
-  ^miniBlue
-  ^miniBlack
-  ^miniGreen
+  miniBlue
+  miniBlack
+  miniGreen
 
-  ^miniBlue
-  ^miniBlack
-  ^miniGreen
+  miniBlue
+  miniBlack
+  miniGreen
 
-  ^miniBlue
-  ^miniBlack
-  ^miniGreen
+  miniBlue
+  miniBlack
+  miniGreen
 `

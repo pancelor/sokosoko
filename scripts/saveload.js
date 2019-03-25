@@ -2,9 +2,8 @@
 // globals
 //
 
-let deserActorClass;
-let deserTileName;
-let serTileName;
+let tiles
+let levels
 
 function DoImports() {
   importTiles()
@@ -14,59 +13,7 @@ function DoImports() {
   importFrameStack(tags)
 }
 
-function initActorSerTables() {
-  // e.g. deserActorClass["Player"] -> Player (constructor)
-  //   (to go the other way, use constructorVar.name)
-
-  deserActorClass = {}
-  for (let cst of allActorTypes) {
-    deserActorClass[cst.name] = cst
-  }
-}
-
-function initTileSerTables() {
-  // e.g. serTileName["dirt"] -> 1
-  // e.g. deserTileName[1] -> "dirt"
-
-  serTileName = {}
-  let i = 0
-  for (let img of tilesList.children) {
-    serTileName[img.id] = i
-    i += 1
-  }
-
-  if (globalExists(() => savedDeserTileName)) {
-    deserTileName = savedDeserTileName
-  } else {
-    console.warn("No tile deserialization table found; rebuilding")
-    deserTileName = {}
-    let i = 0
-    for (let img of tilesList.children) {
-      deserTileName[i] = img.id
-      i += 1
-    }
-  }
-}
-
-function exportTilesDeserTable() { // TODO this is broken
-  const lines = []
-  lines.push("const savedDeserTileName = {")
-  let i = 0
-  for (let img of tilesList.children) {
-    lines.push(`  ${i}: "${img.id}",`)
-    i += 1
-  }
-  lines.push("}")
-  lines.push("")
-  return lines.join("\n")
-}
-
-let tiles
-let levels
-
 function importTiles() {
-  initTileSerTables()
-
   // imports `tileData` from level.dat into the global var `tiles`
   if (!globalExists(() => tileData)) {
     console.warn("could not find any saved tileData")
@@ -91,14 +38,15 @@ function importTiles() {
     return true
   }
 
-  const levelHeader = (line) => line.match(/^level (?<id>\d+)$/)
+  const levelHeader = (line) => line.match(/^level\s+@(?<tag>[\w\d_]+)$/)
 
   nextLine()
   while (!eof) {
     const match = levelHeader(line)
     assert(match, "bad level header")
     const level = {}
-    level.id = int(match.groups.id)
+    level.id = levels.length
+    level.tag = match.groups.tag
     level.begin = tiles.length
 
     nextLine()
@@ -106,7 +54,7 @@ function importTiles() {
       assertEqual(line.length, 8)
       const row = []
       for (let code of line) {
-        const name = deserTileName[code]
+        const name = deserTile(code, level.tag)
         assert(name)
         row.push(name)
       }
@@ -122,13 +70,26 @@ function importTiles() {
   // console.log(levels);
 }
 
+function serTile(name) {
+  const match = name.match(/^img\w+((?<floor>Floor)|(?<wall>Wall))$/)
+  assert(match)
+  assert(xor(match.groups.floor, match.groups.wall)) // exactly one is true
+  return match.groups.wall ? 'x' : '.'
+}
+
+function deserTile(code, tag) { // todo: make this type: isWall(code)->bool
+  assert(code === 'x' || code === '.')
+  const isWall = code === 'x'
+  return `img${tag}${isWall ? "Wall" : "Floor"}`
+}
+
 function exportLevelString(level) {
   const lines = []
   lines.push(`  level ${level.id}`)
   for (let rr = level.begin; rr < level.end; rr += 1) {
     const chars = ["  "]
     for (let imgName of tiles[rr]) {
-      chars.push(serTileName[imgName])
+      chars.push(serTile(imgName))
     }
     lines.push(chars.join(''))
   }
@@ -147,8 +108,19 @@ function exportTilesString() {
   return lines.join("\n")
 }
 
+function buildDeserActorClass() {
+  // e.g. buildDeserActorClass()["Player"] -> Player (constructor)
+  //   (to go the other way, use constructorVar.name)
+
+  const res = {}
+  for (let cst of allActorTypes) {
+    res[cst.name] = cst
+  }
+  return res
+}
+
 function importActors() {
-  initActorSerTables()
+  const deserActorClass = buildDeserActorClass()
 
   // imports `actorData` from level.dat into the global var `actors`
   if (!globalExists(() => actorData)) {
@@ -161,12 +133,13 @@ function importActors() {
   let tags = {}
   actors = [];
   for (let l of lines) {
-    let tag
-    ;([l, tag] = l.split('@'))
-    const type = l.split(' ')[0]
+    const match = l.match(/^(?<data>[^@]+)\s*(@(?<tag>[\w\d+]+))?$/)
+    assert(match)
+    const { data, tag } = match.groups
+    const type = data.split(' ')[0]
     const klass = deserActorClass[type]
-    assert(klass !== undefined, `could not find actor type ${type} for deserialization`)
-    const a = klass.deserialize(l)
+    assert(klass !== undefined, `could not find actor type "${type}" for deserialization`)
+    const a = klass.deserialize(data)
     if (!a) continue
     actors.push(a);
     if (tag) {
@@ -190,10 +163,11 @@ function importFrameStack(tags={}) {
   for (const l of lines) {
     if (!stack) {
       // first time through the loop
-      const baseLevelId = int(l)
-      stack = new FrameBase(baseLevelId)
+      const level = levelFromTag(l)
+      assert(level)
+      stack = new FrameBase(level.id)
     } else {
-      const match = l.match(/^\^(?<tag>[\w\d_]+)$/)
+      const match = l.match(/^(?<tag>[\w\d_]+)$/)
       assert(match, `bad tag syntax: ${l}`)
       const tag = match.groups.tag
       const a = tags[tag]
@@ -241,7 +215,6 @@ function exportActorsString() {
 
 function ExportLevelString() {
   const lines = []
-  lines.push(exportTilesDeserTable())
   lines.push(exportTilesString())
   lines.push(exportActorsString())
   return lines.join("\n")

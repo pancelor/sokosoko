@@ -61,11 +61,19 @@ function GetLevelColor(level) {
 }
 
 function GetLevelLabel(level) {
-  const topleft = Pos.fromLevel(level, pcoord(0, 0))
-  const name = getTile(topleft)
-  const match = name.match(/^img(?<col>\w+)Wall$/)
-  if (!match) { return null }
-  return match.groups.col
+  return level.tag
+}
+
+function levelFromTag(tag) {
+  return levels.find(l=>l.tag===tag)
+}
+
+function getLevel(id) {
+  return levels.find(l=>l.id===id)
+}
+
+function getLevelAt(pos) {
+  return levels.find(l=>l.begin <= pos.y && pos.y < l.end)
 }
 
 function getTile(p) {

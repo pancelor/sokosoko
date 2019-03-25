@@ -65,11 +65,13 @@ class FrameBase {
   }
 
   str() {
-    return `<base; ${this.levelId}>`
+    const level = getLevel(this.levelId)
+    return `<base; ${level.tag}>`
   }
 
   serialize() {
-    return `${this.constructor.name} ${this.levelId}`
+    const level = getLevel(this.levelId)
+    return `${this.constructor.name} ${level.tag}`
   }
 }
 
@@ -113,7 +115,7 @@ class Frame {
 
   str() {
     const mini = this.mini()
-    return `${this.parent.str()} | ${mini.label()}(${mini.id})`
+    return `${this.parent.str()} | ${this.level().tag}`
   }
 
   serialize() {
@@ -382,11 +384,12 @@ class Mini extends Actor {
   }
 
   static deserialize(line) {
-    const [type, x, y, id] = line.split(' ')
+    const [type, x, y, tag] = line.split(' ')
     assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))
-    const levelId = int(id)
-    return new (this)(p, levelId, GetLevelColor(getLevel(levelId)))
+    const level = levelFromTag(tag)
+    assert(level, `level "${tag}" doesn't exist`)
+    return new (this)(p, level.id, GetLevelColor(level))
   }
 }
 
@@ -444,14 +447,6 @@ class Crate extends Actor {
 }
 
 const allActorTypes = [Player, FakeFlag, Flag, Mini, Crate]
-
-function getLevel(id) {
-  return levels.find(l=>l.id===id)
-}
-
-function getLevelAt(pos) {
-  return levels.find(l=>l.begin <= pos.y && pos.y < l.end)
-}
 
 function maybeTeleOut(that, dir) {
   // if that is standing in a level opening and moving out (dir)
