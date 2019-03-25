@@ -128,7 +128,7 @@ let player
 function InitGame() {
   // note: tiles/actors have already been loaded
   InitHistory()
-  player = allActors(Player)[0]
+  player = allActors(Player)[0] // hacky; dup
   assert(player)
   actors.forEach(a=>a.onGameInit())
 }
@@ -357,52 +357,26 @@ class Actor {
 }
 
 class LevelLoader extends Actor {
+  static deserialize(line) {
+    const [type, baseLevel, ...tags] = line.split(' ')
+    assertEqual(type, this.name)
 
+    let stack = new FrameBase(baseLevel)
+    for (const t of tags) {
+      const mini = getActorId(taggedActors[t])
+      assert(mini)
+      stack = new Frame(mini.id, stack)
+    }
+    player = allActors(Player)[0] // hacky; dup
+    assert(player)
+    player.frameStack = stack
+    return null // don't create an actor
+  }
 }
 
 class Player extends Actor {
   static img = imgPlayer
   static color = "#000000"
-
-  onGameInit() {
-    const miniBlack = findActor(Mini, pcoord(3, 35))
-    const miniGreen = findActor(Mini, pcoord(1, 6))
-    const miniBlue = findActor(Mini, pcoord(6, 14))
-    const miniBlackBase = findActor(Mini, pcoord(4, 5))
-    const miniOuter = findActor(Mini, pcoord(4, 51))
-    assertEqual(miniBlack.label(), "Black")
-    assertEqual(miniGreen.label(), "Green")
-    assertEqual(miniBlue.label(), "Blue")
-    assertEqual(miniBlackBase.label(), "Black")
-    assertEqual(miniOuter.label(), "Black")
-    const miniOrder = [
-      miniOuter.id,
-
-      miniBlackBase.id,
-      miniGreen.id,
-
-      // start
-      miniBlue.id,
-      miniBlack.id,
-      miniGreen.id,
-
-      miniBlue.id,
-      miniBlack.id,
-      miniGreen.id,
-
-      miniBlue.id,
-      miniBlack.id,
-      miniGreen.id,
-      // end
-    ]
-
-    let stack = new FrameBase(5)
-    for (const miniId of miniOrder) {
-      stack = new Frame(miniId, stack)
-    }
-    this.frameStack = stack
-    console.log(stack.serialize());
-  }
 
   setFrameStack(f) {
     const before = this.frameStack

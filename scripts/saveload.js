@@ -139,6 +139,7 @@ function exportTilesString() {
   return lines.join("\n")
 }
 
+let taggedActors
 function ImportActors() {
   initActorSerTables()
 
@@ -152,11 +153,19 @@ function ImportActors() {
   let lines = sanitizeLines(actorData)
 
   actors = [];
+  taggedActors = {}
   for (let l of lines) {
+    let tag
+    ;([l, tag] = l.split('@'))
     const type = l.split(' ')[0]
     const klass = deserActorClass[type]
     assert(klass !== undefined, `could not find actor type ${type} for deserialization`)
-    actors.push(klass.deserialize(l));
+    const a = klass.deserialize(l)
+    if (!a) continue
+    actors.push(a);
+    if (tag) {
+      taggedActors[tag] = a.id
+    }
   }
 }
 

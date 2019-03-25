@@ -54,7 +54,7 @@ const tileData = `
   10111101
   10111101
   10000000
-  11110111
+  11011111
 
   level 4
   33333333
@@ -89,11 +89,11 @@ const tileData = `
 `
 
 const actorData = `
-  Mini 3 35 0
-  Mini 1 6 1
-  Mini 6 14 4
-  Mini 4 5 0
-  Mini 4 51 0
+  Mini 3 35 0 @miniBlack
+  Mini 1 6 1 @miniGreen
+  Mini 6 14 4 @miniBlue
+  Mini 4 5 0 @miniBlackBase
+  Mini 4 51 0 @miniOuter
   Mini 2 14 2
   Mini 3 21 1
   Mini 4 9 3
@@ -108,4 +108,5 @@ const actorData = `
   FakeFlag 1 4
   Flag 3 51
   Player 1 14
+  LevelLoader 5 miniOuter miniBlackBase miniGreen miniBlue miniBlack miniGreen miniBlue miniBlack miniGreen miniBlue miniBlack miniGreen
 `

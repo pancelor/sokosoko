@@ -155,9 +155,9 @@ RegisterTest("hex", () => {
 
 function hexColor(str) {
   let val, r, g, b
-  val = hex(str); // these semicolons are very important b/c of the ['s coming up
-  [val, b] = divmod(val, 256);
-  [val, g] = divmod(val, 256);
+  val = hex(str)
+  ;([val, b] = divmod(val, 256))
+  ;([val, g] = divmod(val, 256))
   r = val
   return {r, g, b}
 }
