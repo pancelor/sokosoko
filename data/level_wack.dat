@@ -1,103 +1,105 @@
-const tileData = `
-  level @Black
-  xxxxxx.x
-  x.xxxx.x
-  ..xxxx..
-  x.x..xxx
-  x.x..xxx
-  x.x....x
-  x.xxx.xx
-  xxxxx.xx
+levelData['wack'] = {
+  tileData: `
+    level @Black
+    xxxxxx.x
+    x.xxxx.x
+    ..xxxx..
+    x.x..xxx
+    x.x..xxx
+    x.x....x
+    x.xxx.xx
+    xxxxx.xx
 
-  level @Green
-  xxxx.xxx
-  x..x.xxx
-  x......x
-  x...x..x
-  xxx....x
-  xx..xxxx
-  x......x
-  xxxxxxxx
+    level @Green
+    xxxx.xxx
+    x..x.xxx
+    x......x
+    x...x..x
+    xxx....x
+    xx..xxxx
+    x......x
+    xxxxxxxx
 
-  level @Yellow
-  xxxx.xxx
-  xxxx.xxx
-  xx....xx
-  xx......
-  xx.x..xx
-  xx....xx
-  xxxxxxxx
-  xxxxxxxx
+    level @Yellow
+    xxxx.xxx
+    xxxx.xxx
+    xx....xx
+    xx......
+    xx.x..xx
+    xx....xx
+    xxxxxxxx
+    xxxxxxxx
 
-  level @Red
-  xxxxxxxx
-  x......x
-  x.xxxx.x
-  ..xxxx.x
-  x.xxxx.x
-  x.xxxx.x
-  x.......
-  xx.xxxxx
+    level @Red
+    xxxxxxxx
+    x......x
+    x.xxxx.x
+    ..xxxx.x
+    x.xxxx.x
+    x.xxxx.x
+    x.......
+    xx.xxxxx
 
-  level @Blue
-  xxxxxxxx
-  x..x...x
-  ...x...x
-  x.....xx
-  x.x.x..x
-  x......x
-  x......x
-  xxxxxxxx
+    level @Blue
+    xxxxxxxx
+    x..x...x
+    ...x...x
+    x.....xx
+    x.x.x..x
+    x......x
+    x......x
+    xxxxxxxx
 
-  level @Beige
-  xxxxxxxx
-  x......x
-  x......x
-  x......x
-  x......x
-  x......x
-  x......x
-  xxxxxxxx
+    level @Beige
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
 
-`
+  `,
 
-const actorData = `
-  Mini 3 35 Black @miniBlack
-  Mini 1 6 Green @miniGreen
-  Mini 6 14 Blue @miniBlue
-  Mini 4 5 Black @miniBlack2
-  Mini 4 43 Black @miniOuter
-  Mini 2 14 Yellow
-  Mini 3 21 Green
-  Mini 4 9 Red
-  Mini 5 5 Black
-  Mini 6 2 Yellow
-  Crate 4 4 0
-  Crate 4 34 0
-  Crate 1 36 1
-  Crate 1 34 0
-  Crate 2 35 0
-  FakeFlag 1 4
-  Flag 3 43
-  Player 1 14
-`
+  actorData: `
+    Mini 3 35 Black @miniBlack
+    Mini 1 6 Green @miniGreen
+    Mini 6 14 Blue @miniBlue
+    Mini 4 5 Black @miniBlack2
+    Mini 4 43 Black @miniOuter
+    Mini 2 14 Yellow
+    Mini 3 21 Green
+    Mini 4 9 Red
+    Mini 5 5 Black
+    Mini 6 2 Yellow
+    Crate 4 4 0
+    Crate 4 34 0
+    Crate 1 36 1
+    Crate 1 34 0
+    Crate 2 35 0
+    FakeFlag 1 4
+    Flag 3 43
+    Player 1 14
+  `,
 
-const frameStackData = `
-  Beige
-  miniOuter
-  miniBlack2
-  miniGreen
+  frameStackData: `
+    Beige
+    miniOuter
+    miniBlack2
+    miniGreen
 
-  # start repeats:
-  miniBlue
-  miniBlack
-  miniGreen
+    # start repeats:
+    miniBlue
+    miniBlack
+    miniGreen
 
-  miniBlue
-  miniBlack
-  miniGreen
+    miniBlue
+    miniBlack
+    miniGreen
 
-  miniBlue
-  miniBlack
-  miniGreen
-`
+    miniBlue
+    miniBlack
+    miniGreen
+  `,
+}

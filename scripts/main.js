@@ -8,8 +8,8 @@ function godmodeOff() {
   mapOff()
 }
 
-function mapOn() { canvas.style.display=null }
-function mapOff() { canvas.style.display="hidden" }
+function mapOn() { canvas.style.display = null }
+function mapOff() { canvas.style.display = "none" }
 
 let gameMuted = false
 function setGameMuted(x) { gameMuted = x }
@@ -68,7 +68,7 @@ function registerKeyListeners() {
       resetHoldInterval(false)
     }
   }
-  window.addEventListener("keydown", e => {
+  canvas2.addEventListener("keydown", e => {
     if (e.ctrlKey && e.code === "KeyS") {
       SaveLevel()
       e.preventDefault()
@@ -86,7 +86,7 @@ function registerKeyListeners() {
     onKeyDown(e)
     return false
   })
-  window.addEventListener("keyup", e => {
+  canvas2.addEventListener("keyup", e => {
     e.preventDefault()
     if (e.repeat) { return false }
 
@@ -108,6 +108,7 @@ function ProcessInput(code) {
 }
 
 function registerMouseListeners() {
+  mousepos = pcoord(0, 0)
   window.addEventListener("contextmenu", (e) => {
     e.preventDefault()
     return false
@@ -116,6 +117,7 @@ function registerMouseListeners() {
     const info = translateMouseFromMap(e)
     info && mouseClick(info)
     Raf()
+
     e.preventDefault()
     return false
   })
@@ -123,6 +125,8 @@ function registerMouseListeners() {
     const info = translateMouseFromView(e)
     info && mouseClick(info)
     Raf()
+
+    canvas2.focus()
     e.preventDefault()
     return false
   })
@@ -132,6 +136,7 @@ function registerMouseListeners() {
     if (godmode) {
       Raf()
     }
+
     e.preventDefault()
     return false
   })
@@ -234,19 +239,31 @@ function Raf() {
   requestAnimationFrame(redraw)
 }
 
+function registerLevelCodeListener() {
+  levelCodeInput.addEventListener("keydown", (e) => {
+    if (e.code === "Enter") {
+      levelName = levelCodeInput.value
+      reset(levelName)
+    }
+  })
+}
+
 function init() {
   RunTests()
-  mousepos = pcoord(0, 0)
+  canvas.tabIndex = -1 // enable key listeners / focus on the canvases
+  canvas2.tabIndex = -1
+  registerLevelCodeListener()
   registerKeyListeners()
   registerMouseListeners()
   reset()
 
-  godmodeOn()
+  // godmodeOn()
 }
 
-function reset() {
-  DoImports()
+function reset(levelName) {
+  LoadLevel(levelName)
   InitGame()
+  canvas2.focus()
 
   Raf()
 }

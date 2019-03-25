@@ -1,1 +1,2 @@
 const tileSize = 32
+const levelData = {}

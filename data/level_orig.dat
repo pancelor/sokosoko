@@ -1,82 +1,84 @@
-const tileData = `
-  level @Black
-  xxxx.xxx
-  xxxx.xxx
-  ..x..xxx
-  xxx.....
-  xxx...xx
-  xxxxxxxx
-  xxxxxxxx
-  xxxxxxxx
+levelData['orig'] = {
+  tileData: `
+    level @Black
+    xxxx.xxx
+    xxxx.xxx
+    ..x..xxx
+    xxx.....
+    xxx...xx
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
 
-  level @Yellow
-  xxxx.xxx
-  xxxx.xxx
-  x......x
-  x...x..x
-  x......x
-  xxx..xxx
-  x......x
-  xxxxxxxx
+    level @Yellow
+    xxxx.xxx
+    xxxx.xxx
+    x......x
+    x...x..x
+    x......x
+    xxx..xxx
+    x......x
+    xxxxxxxx
 
-  level @Green
-  xxxx.xxx
-  xxxx.xxx
-  xx....xx
-  xx......
-  xx.x..xx
-  xx....xx
-  xxxxxxxx
-  xxxxxxxx
+    level @Green
+    xxxx.xxx
+    xxxx.xxx
+    xx....xx
+    xx......
+    xx.x..xx
+    xx....xx
+    xxxxxxxx
+    xxxxxxxx
 
-  level @Red
-  xxxxxxxx
-  x......x
-  x.xxxx.x
-  ..xxxx.x
-  x.xxxx.x
-  x.xxxx.x
-  x.......
-  x.xxxxxx
+    level @Red
+    xxxxxxxx
+    x......x
+    x.xxxx.x
+    ..xxxx.x
+    x.xxxx.x
+    x.xxxx.x
+    x.......
+    x.xxxxxx
 
-  level @Blue
-  xxxxxxxx
-  x..x...x
-  ...x...x
-  x......x
-  x.x.x..x
-  x......x
-  x......x
-  xxxxxxxx
+    level @Blue
+    xxxxxxxx
+    x..x...x
+    ...x...x
+    x......x
+    x.x.x..x
+    x......x
+    x......x
+    xxxxxxxx
 
-  level @Beige
-  xxxxxxxx
-  x......x
-  xx....xx
-  x......x
-  x......x
-  xx....xx
-  x.xxxx.x
-  xxxxxxxx
+    level @Beige
+    xxxxxxxx
+    x......x
+    xx....xx
+    x......x
+    x......x
+    xx....xx
+    x.xxxx.x
+    xxxxxxxx
 
-`
+  `,
 
-const actorData = `
-  Mini 3 35 Black
-  Mini 6 14 Blue
-  Mini 5 43 Yellow @miniYellow
-  Mini 2 14 Green
-  Mini 3 21 Yellow
-  Mini 4 9 Red
-  Crate 4 34 0
-  Crate 1 36 0
-  Crate 1 34 0
-  Crate 2 35 0
-  Flag 2 43
-  Player 1 14
-`
+  actorData: `
+    Mini 3 35 Black
+    Mini 6 14 Blue
+    Mini 5 43 Yellow @miniYellow
+    Mini 2 14 Green
+    Mini 3 21 Yellow
+    Mini 4 9 Red
+    Crate 4 34 0
+    Crate 1 36 0
+    Crate 1 34 0
+    Crate 2 35 0
+    Flag 2 43
+    Player 1 14
+  `,
 
-const frameStackData = `
-  Beige
-  miniYellow
-`
+  frameStackData: `
+    Beige
+    miniYellow
+  `,
+}

@@ -5,21 +5,31 @@
 let tiles
 let levels
 
-function DoImports() {
-  importTiles()
-  FitCanvasToTiles()
-  const tags = importActors()
-  player = allActors(Player)[0]
-  importFrameStack(tags)
-}
-
-function importTiles() {
-  // imports `tileData` from level.dat into the global var `tiles`
-  if (!globalExists(() => tileData)) {
-    console.warn("could not find any saved tileData")
-    tiles = [[]]
+function LoadLevel(name) {
+  console.log("Loading level", name)
+  if (!name) { name = "orig" }
+  if (!levelData[name]) {
+    console.warn("level not found:", name)
     return
   }
+  const { tileData, actorData, frameStackData } = preloadData(name)
+  importTiles(tileData)
+  FitCanvasToTiles()
+  const tags = importActors(actorData)
+  player = allActors(Player)[0]
+  importFrameStack(frameStackData, tags)
+}
+
+function preloadData(name) {
+  const { tileData, actorData, frameStackData } = levelData[name]
+  assert(tileData)
+  assert(actorData)
+  assert(frameStackData)
+  return { tileData, actorData, frameStackData }
+}
+
+function importTiles(tileData) {
+  // imports `tileData` into the global var `tiles`
 
   tiles = []
   levels = []
@@ -65,9 +75,6 @@ function importTiles() {
     assert(level.begin < level.end)
     levels.push(level)
   }
-
-  // console.log(exportTilesString());
-  // console.log(levels);
 }
 
 function serTile(name) {
@@ -85,9 +92,9 @@ function deserTile(code, tag) { // todo: make this type: isWall(code)->bool
 
 function exportLevelString(level) {
   const lines = []
-  lines.push(`  level ${level.id}`)
+  lines.push(`    level ${level.id}`)
   for (let rr = level.begin; rr < level.end; rr += 1) {
-    const chars = ["  "]
+    const chars = ["    "]
     for (let imgName of tiles[rr]) {
       chars.push(serTile(imgName))
     }
@@ -98,12 +105,13 @@ function exportLevelString(level) {
 
 function exportTilesString() {
   const lines = []
-  lines.push("const tileData = `")
+  lines.push("  tileData: `")
   for (let level of levels) {
     lines.push(exportLevelString(level))
     lines.push("")
   }
-  lines.push("`")
+  lines.length -= 1 // drop the last newline
+  lines.push("`,")
   lines.push("")
   return lines.join("\n")
 }
@@ -119,15 +127,9 @@ function buildDeserActorClass() {
   return res
 }
 
-function importActors() {
-  const deserActorClass = buildDeserActorClass()
-
+function importActors(actorData) {
   // imports `actorData` from level.dat into the global var `actors`
-  if (!globalExists(() => actorData)) {
-    console.warn("could not find any saved actorData")
-    actors = []
-    return
-  }
+  const deserActorClass = buildDeserActorClass()
 
   let lines = sanitizeLines(actorData)
   let tags = {}
@@ -149,13 +151,9 @@ function importActors() {
   return tags
 }
 
-function importFrameStack(tags={}) {
-  // imports `frameStackData` from level.dat into the var `player.frameStack`
+function importFrameStack(frameStackData, tags={}) {
+  // imports `frameStackData` into the var `player.frameStack`
   // tags is a string-to-actor-id map
-  if (!globalExists(() => frameStackData)) {
-    console.warn("could not find any saved frameStackData")
-    return
-  }
 
   let lines = sanitizeLines(frameStackData)
 
@@ -204,11 +202,22 @@ RegisterTest("sanitizeLines", () => {
 
 function exportActorsString() {
   const lines = []
-  lines.push("const actorData = `")
+  lines.push("  actorData: `")
   for (let a of actors) {
-    lines.push(`  ${a.serialize()}`)
+    lines.push(`    ${a.serialize()}`)
   }
-  lines.push("`")
+  lines.push("`,")
+  lines.push("")
+  return lines.join("\n")
+}
+
+function exportFrameStackString() {
+  const lines = []
+  lines.push("  frameStackData: `")
+  // for (let a of actors) {
+  //   lines.push(`    ${a.serialize()}`)
+  // }
+  lines.push("`,")
   lines.push("")
   return lines.join("\n")
 }
@@ -217,5 +226,6 @@ function ExportLevelString() {
   const lines = []
   lines.push(exportTilesString())
   lines.push(exportActorsString())
+  lines.push(exportFrameStackString())
   return lines.join("\n")
 }
