@@ -6,6 +6,15 @@ let deserActorClass;
 let deserTileName;
 let serTileName;
 
+function DoImports() {
+  importTiles()
+  FitCanvasToTiles()
+  taggedActors = {}
+  importActors()
+  player = allActors(Player)[0]
+  importFrameStack()
+}
+
 function initActorSerTables() {
   // e.g. deserActorClass["Player"] -> Player (constructor)
   //   (to go the other way, use constructorVar.name)
@@ -56,7 +65,7 @@ function exportTilesDeserTable() { // TODO this is broken
 let tiles
 let levels
 
-function ImportTiles() {
+function importTiles() {
   initTileSerTables()
 
   // imports `tileData` from level.dat into the global var `tiles`
@@ -140,7 +149,7 @@ function exportTilesString() {
 }
 
 let taggedActors
-function ImportActors() {
+function importActors() {
   initActorSerTables()
 
   // imports `actorData` from level.dat into the global var `actors`
@@ -153,7 +162,6 @@ function ImportActors() {
   let lines = sanitizeLines(actorData)
 
   actors = [];
-  taggedActors = {}
   for (let l of lines) {
     let tag
     ;([l, tag] = l.split('@'))
@@ -167,6 +175,35 @@ function ImportActors() {
       taggedActors[tag] = a.id
     }
   }
+}
+
+function importFrameStack() {
+  assert(taggedActors)
+  // imports `frameStackData` from level.dat into the var `player.frameStack`
+  if (!globalExists(() => frameStackData)) {
+    console.warn("could not find any saved frameStackData")
+    return
+  }
+
+  let lines = sanitizeLines(frameStackData)
+
+  let stack = null
+  for (const l of lines) {
+    if (!stack) {
+      // first time through the loop
+      const baseLevelId = int(l)
+      stack = new FrameBase(baseLevelId)
+    } else {
+      const a = taggedActors[l]
+      assert(a, `tag "@${l}" not found while importing frameStackData`)
+      const mini = getActorId(a)
+      assert(mini)
+      stack = new Frame(mini.id, stack)
+    }
+  }
+  player = allActors(Player)[0] // hacky; dup
+  assert(player)
+  player.frameStack = stack
 }
 
 function sanitizeLines(lineChunk) {

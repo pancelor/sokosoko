@@ -1,9 +1,4 @@
-function InitTiles() {
-  ImportTiles()
-  fitCanvasToTiles()
-}
-
-function fitCanvasToTiles() {
+function FitCanvasToTiles() {
   assert(globalExists(() => tileSize))
   const { w, h } = tilesDim()
   canvas.width = w*tileSize

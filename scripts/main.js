@@ -241,8 +241,7 @@ function init() {
 }
 
 function reset() {
-  InitTiles()
-  InitActors()
+  DoImports()
   InitGame()
 
   Raf()

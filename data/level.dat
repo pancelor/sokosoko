@@ -92,7 +92,7 @@ const actorData = `
   Mini 3 35 0 @miniBlack
   Mini 1 6 1 @miniGreen
   Mini 6 14 4 @miniBlue
-  Mini 4 5 0 @miniBlackBase
+  Mini 4 5 5 @miniPurple
   Mini 4 51 0 @miniOuter
   Mini 2 14 2
   Mini 3 21 1
@@ -108,5 +108,24 @@ const actorData = `
   FakeFlag 1 4
   Flag 3 51
   Player 1 14
-  LevelLoader 5 miniOuter miniBlackBase miniGreen miniBlue miniBlack miniGreen miniBlue miniBlack miniGreen miniBlue miniBlack miniGreen
+`
+
+const frameStackData = `
+  6
+  miniOuter
+  miniPurple
+  miniGreen
+
+  # start repeats:
+  miniBlue
+  miniBlack
+  miniGreen
+
+  miniBlue
+  miniBlack
+  miniGreen
+
+  miniBlue
+  miniBlack
+  miniGreen
 `

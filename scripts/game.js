@@ -128,8 +128,6 @@ let player
 function InitGame() {
   // note: tiles/actors have already been loaded
   InitHistory()
-  player = allActors(Player)[0] // hacky; dup
-  assert(player)
   actors.forEach(a=>a.onGameInit())
 }
 
@@ -232,8 +230,7 @@ async function DrawView() {
       0, 0, canvas2.width, canvas2.height
     )
   } else {
-    const lastLevelId = back(levels).id
-    const fillStyle = GetLevelColor(getLevel(lastLevelId))
+    const fillStyle = GetLevelColor(innerFrame.level())
     ctxWith(ctx, {fillStyle}, cls)
   }
 
@@ -266,10 +263,6 @@ async function DrawView() {
 
 function drawActors(ctx) {
   allActors().forEach(e=>e.draw(ctx))
-}
-
-function InitActors() {
-  ImportActors()
 }
 
 class Actor {
@@ -353,24 +346,6 @@ class Actor {
     assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))
     return new (this)(p)
-  }
-}
-
-class LevelLoader extends Actor {
-  static deserialize(line) {
-    const [type, baseLevel, ...tags] = line.split(' ')
-    assertEqual(type, this.name)
-
-    let stack = new FrameBase(baseLevel)
-    for (const t of tags) {
-      const mini = getActorId(taggedActors[t])
-      assert(mini)
-      stack = new Frame(mini.id, stack)
-    }
-    player = allActors(Player)[0] // hacky; dup
-    assert(player)
-    player.frameStack = stack
-    return null // don't create an actor
   }
 }
 
@@ -506,7 +481,7 @@ class Crate extends Actor {
   }
 }
 
-const allActorTypes = [LevelLoader, Player, FakeFlag, Flag, Mini, Crate]
+const allActorTypes = [Player, FakeFlag, Flag, Mini, Crate]
 
 function getLevel(id) {
   return levels.find(l=>l.id===id)
