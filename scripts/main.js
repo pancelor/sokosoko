@@ -1,10 +1,12 @@
+let godmode = true
+function setGodmode(x) { godmode = x }
+const enableGodmode = () => setGodmode(true)
+const disableGodmode = () => setGodmode(false)
+
 let gameMuted = false
-function mute() {
-  gameMuted = true
-}
-function unmute() {
-  gameMuted = false
-}
+function setGameMuted(x) { gameMuted = x }
+const mute = () => setGameMuted(true)
+const unmute = () => setGameMuted(false)
 
 let enableHeldButtons = true
 function disableHeldButtons() {
@@ -96,33 +98,53 @@ function registerMouseListeners() {
     return false
   })
   canvas.addEventListener("mousedown", (e) => {
-    mouseClickRaw(e)
+    const info = translateMouseFromMap(e)
+    info && mouseClick(info)
+    Raf()
     e.preventDefault()
     return false
   })
   canvas2.addEventListener("mousedown", (e) => {
-    mouseClickView(e)
+    const info = translateMouseFromView(e)
+    info && mouseClick(info)
+    Raf()
+    e.preventDefault()
+    return false
+  })
+  canvas.addEventListener("mousemove", (e) => {
+    const info = translateMouseFromMap(e)
+    info && mouseMove(info)
+    Raf()
+    e.preventDefault()
+    return false
+  })
+  canvas2.addEventListener("mousemove", (e) => {
+    const info = translateMouseFromView(e)
+    info && mouseMove(info)
+    Raf()
     e.preventDefault()
     return false
   })
 }
 
-function mouseClickRaw(e) {
+function translateMouseFromMap(e) {
   const worldPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize))
-  const level = getLevelAt(worldPos)
-  const levelPos = worldPos.toLevelPos(level)
-  mouseClickLevel(level, levelPos)
+  return {e, worldPos}
 }
 
-function mouseClickView(e) {
+function translateMouseFromView(e) {
   const levelPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize)).add(pcoord(-4, -4))
-  mouseClickLevel(player.frameStack.level(), levelPos)
-}
-
-function mouseClickLevel(level, levelPos) {
   if (!inbounds(levelPos, {w: 8, h: 8})) { return }
 
+  const level = player.frameStack.level()
   const worldPos = Pos.fromLevel(level, levelPos)
+  return {e, worldPos}
+}
+
+let storedActor = null
+function mouseClick({e, worldPos}) {
+  const level = getLevelAt(worldPos)
+  const levelPos = worldPos.toLevelPos(level)
   const a = findActor(null, worldPos)
   const parts = []
   parts.push(`${GetLevelLabel(level)}(${level.id}): ${worldPos.str()}`)
@@ -131,12 +153,62 @@ function mouseClickLevel(level, levelPos) {
     parts.push(`${a.constructor.name}#${a.id}`)
   }
   console.log(parts.join(' '))
+
+  if (godmode) {
+    StartEpoch()
+    _godmodeMouseClick(e, worldPos)
+    EndEpoch()
+  }
+}
+
+let mousepos
+function mouseMove({e, worldPos}) {
+  mousepos = worldPos
+}
+
+function _godmodeMouseClick(e, worldPos) {
+  if (e.button === 0) {
+    // left click: paste (or move old pasted thing)
+    if (!storedActor) { return }
+    storedActor.setPos(worldPos)
+    storedActor.setDead(false)
+  } else if (e.button === 1) {
+    // middle click: copy
+    storedActor = findActor(null, worldPos)
+    if (!storedActor) { return }
+    storedActor = Actor.clone(storedActor)
+  } else if (e.button === 2) {
+    // right click: cut
+    storedActor = findActor(null, worldPos)
+    if (!storedActor) { return }
+    storedActor.die()
+  } else { assert(0, "unknown mouse button") }
+}
+
+function drawGodmode(ctx) {
+  if (!godmode) { return }
+  if (!storedActor) { return }
+
+  // mark storedActor
+  const { x, y } = storedActor.pos
+  ctxWith(ctx, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
+    ctx.fillRect(x*tileSize, y*tileSize, tileSize, tileSize)
+  })
+
+  // mark mousepos
+  drawImg(ctx, storedActor.img, mousepos)
+  ctxWith(ctx, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
+    ctx.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
+  })
+
 }
 
 async function redraw() {
   const ctx = canvas.getContext('2d')
   ctx.imageSmoothingEnabled = false
-  await DrawGame(ctx)
+  DrawGame(ctx)
+  drawGodmode(ctx)
+  await DrawView(ctx)
 }
 
 function Raf() {
@@ -145,11 +217,14 @@ function Raf() {
 
 function init() {
   RunTests()
+  mousepos = pcoord(0, 0)
   registerKeyListeners()
   registerMouseListeners()
   reset()
 
-  showMap() // temp
+  if (godmode) {
+    showMap()
+  }
 }
 
 function reset() {

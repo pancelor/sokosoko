@@ -181,7 +181,8 @@ function maybePlaySounds(events) {
   }
   let best = null
   for (const {id, before, after} of events) {
-    const cst = getActorId(id).constructor
+    const a = getActorId(id)
+    const cst = a.constructor
 
     // figure out what sound this event wants to play
     let s = null
@@ -200,7 +201,7 @@ function maybePlaySounds(events) {
     if (cst === Player && after.pos && findActor(Flag, after.pos)) {
       s = sndWin
     }
-    if (cst === Crate && after.pos && findActor(Flag, after.pos)) {
+    if (cst === Crate && a.isSpecial() && after.pos && findActor(Flag, after.pos)) {
       s = sndBonus
     }
 
@@ -227,14 +228,12 @@ function destroyActor(a) { // hacky; don't use me
   actors.splice(ix, 1)
 }
 
-async function DrawGame(ctx) {
+function DrawGame(ctx) {
   DrawTiles(ctx)
   drawActors(ctx)
-
-  await drawFancy()
 }
 
-async function drawFancy() {
+async function DrawView() {
   const worldImg = await createImageBitmap(canvas)
   const ctx = canvas2.getContext('2d')
   ctx.imageSmoothingEnabled = false
@@ -339,8 +338,12 @@ class Actor {
   }
 
   die() {
+    this.setDead(true)
+  }
+
+  setDead(b) {
     const before = this.dead
-    const after = true
+    const after = b
     RecordChange({
       id: this.id,
       before: { dead: before },
@@ -351,6 +354,12 @@ class Actor {
 
   onGameInit() {
     // code that runs on game init
+  }
+
+  static clone(a) {
+    const new_ = a.constructor.deserialize(a.serialize())
+    actors.push(new_)
+    return new_
   }
 
   serialize() {
@@ -436,6 +445,7 @@ class Mini extends Actor {
   }
 
   draw(ctx) {
+    if (this.dead) { return }
     const roomSize = 8
     const numPx = roomSize*roomSize
     const pxSize = 4
@@ -498,8 +508,12 @@ class Crate extends Actor {
   static img = imgCrate
   static color = "#AA6853"
 
+  isSpecial() {
+    return this.img === imgCrateSpecial
+  }
+
   serialize() {
-    const extra = (this.img === imgCrateSpecial) ? "1" : "0"
+    const extra = this.isSpecial() ? "1" : "0"
     return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${extra}`
   }
 
