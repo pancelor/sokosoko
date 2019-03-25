@@ -129,14 +129,18 @@ function registerMouseListeners() {
   canvas.addEventListener("mousemove", (e) => {
     const info = translateMouseFromMap(e)
     info && mouseMove(info)
-    Raf()
+    if (godmode) {
+      Raf()
+    }
     e.preventDefault()
     return false
   })
   canvas2.addEventListener("mousemove", (e) => {
     const info = translateMouseFromView(e)
     info && mouseMove(info)
-    Raf()
+    if (godmode) {
+      Raf()
+    }
     e.preventDefault()
     return false
   })

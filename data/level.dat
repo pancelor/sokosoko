@@ -101,6 +101,7 @@ const actorData = `
   Mini 6 2 2
   Mini 4 3 3
   Mini 1 43 3
+  Mini 1 46 1 @miniGreenShell
   Crate 4 34 0
   Crate 1 36 1
   Crate 1 34 0
@@ -114,7 +115,7 @@ const frameStackData = `
   6
   miniOuter
   miniPurple
-  miniGreen
+  miniGreenShell
 
   # start repeats:
   miniBlue

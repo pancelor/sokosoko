@@ -416,6 +416,10 @@ class Mini extends Actor {
     return getLevel(this.levelId)
   }
 
+  str() {
+    return `${this.label()}${this.pos.str()}`
+  }
+
   serialize() {
     return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${this.levelId}`
   }
