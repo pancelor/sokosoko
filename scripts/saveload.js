@@ -193,8 +193,11 @@ function importFrameStack(tags={}) {
       const baseLevelId = int(l)
       stack = new FrameBase(baseLevelId)
     } else {
-      const a = tags[l]
-      assert(a, `tag "@${l}" not found while importing frameStackData`)
+      const match = l.match(/^\^(?<tag>[\w\d_]+)$/)
+      assert(match, `bad tag syntax: ${l}`)
+      const tag = match.groups.tag
+      const a = tags[tag]
+      assert(a, `tag "${tag}" not found while importing frameStackData`)
       const mini = getActorId(a)
       assert(mini)
       stack = new Frame(mini.id, stack)
