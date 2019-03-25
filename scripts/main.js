@@ -1,4 +1,4 @@
-let godmode = true
+let godmode = false
 function setGodmode(x) { godmode = x }
 const enableGodmode = () => setGodmode(true)
 const disableGodmode = () => setGodmode(false)

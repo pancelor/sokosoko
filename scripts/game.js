@@ -201,7 +201,7 @@ function maybePlaySounds(events) {
     if (cst === Player && after.pos && findActor(Flag, after.pos)) {
       s = sndWin
     }
-    if (cst === Crate && a.isSpecial() && after.pos && findActor(Flag, after.pos)) {
+    if (cst === Crate && a.isSpecial() && after.collected) {
       s = sndBonus
     }
 
@@ -212,6 +212,8 @@ function maybePlaySounds(events) {
   }
   playSound(best)
 }
+
+let gotBonus = false
 
 function checkRealWin() {
   return findActor(Flag, player.pos)
@@ -278,7 +280,9 @@ async function DrawView() {
   })
 
   if (checkRealWin()) {
-    drawMessage(ctx, "You win!")
+    const lines = ["You win!"]
+    if (gotBonus) lines.push("excellent work")
+    drawMessage(ctx, lines)
   }
 }
 
@@ -515,6 +519,23 @@ class Crate extends Actor {
   serialize() {
     const extra = this.isSpecial() ? "1" : "0"
     return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${extra}`
+  }
+
+  setPos(p) {
+    Actor.prototype.setPos.call(this, p)
+    if (!this.isSpecial()) return
+    if (!findActor(Flag, this.pos)) return
+    this.collect()
+  }
+
+  collect() {
+    this.setDead(true)
+    RecordChange({ // hack to talk to the sound system
+      id: this.id,
+      before: {},
+      after: { collected: true },
+    })
+    gotBonus = true
   }
 
   static deserialize(line) {

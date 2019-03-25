@@ -40,7 +40,7 @@ function initTileSerTables() {
   }
 }
 
-function exportTilesDeserTable() {
+function exportTilesDeserTable() { // TODO this is broken
   const lines = []
   lines.push("const savedDeserTileName = {")
   let i = 0
