@@ -400,12 +400,13 @@ function downloadFile(name, contents, mime_type) {
 
 async function playSound(audioElement) {
   if (!audioElement) { return }
+  // console.log(audioElement.id);
   audioElement.pause()
   audioElement.currentTime = 0
   try {
     await audioElement.play()
   } catch (err) {
-    console.warn(`playSound(${audioElement.id}) failed`)
+    // console.warn(`playSound(${audioElement.id}) failed`)
   }
 }
 

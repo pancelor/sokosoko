@@ -9,10 +9,9 @@ let serTileName;
 function DoImports() {
   importTiles()
   FitCanvasToTiles()
-  taggedActors = {}
-  importActors()
+  const tags = importActors()
   player = allActors(Player)[0]
-  importFrameStack()
+  importFrameStack(tags)
 }
 
 function initActorSerTables() {
@@ -148,7 +147,6 @@ function exportTilesString() {
   return lines.join("\n")
 }
 
-let taggedActors
 function importActors() {
   initActorSerTables()
 
@@ -160,7 +158,7 @@ function importActors() {
   }
 
   let lines = sanitizeLines(actorData)
-
+  let tags = {}
   actors = [];
   for (let l of lines) {
     let tag
@@ -172,14 +170,15 @@ function importActors() {
     if (!a) continue
     actors.push(a);
     if (tag) {
-      taggedActors[tag] = a.id
+      tags[tag] = a.id
     }
   }
+  return tags
 }
 
-function importFrameStack() {
-  assert(taggedActors)
+function importFrameStack(tags={}) {
   // imports `frameStackData` from level.dat into the var `player.frameStack`
+  // tags is a string-to-actor-id map
   if (!globalExists(() => frameStackData)) {
     console.warn("could not find any saved frameStackData")
     return
@@ -194,7 +193,7 @@ function importFrameStack() {
       const baseLevelId = int(l)
       stack = new FrameBase(baseLevelId)
     } else {
-      const a = taggedActors[l]
+      const a = tags[l]
       assert(a, `tag "@${l}" not found while importing frameStackData`)
       const mini = getActorId(a)
       assert(mini)

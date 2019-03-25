@@ -132,65 +132,18 @@ function InitGame() {
 }
 
 function Update(dir) {
-  if (checkRealWin()) { return }
+  if (checkWin()) { return }
 
   StartEpoch()
   player.update(dir)
   maybeFakeWin()
   events = EndEpoch()
-  maybePlaySounds(events)
   Raf()
-}
-
-function maybePlaySounds(events) {
-  if (gameMuted) { return }
-  const priority = {
-    // highest
-    sndBonus: 1,
-    sndWin: 2,
-    sndEnter: 11,
-    sndExit: 12,
-    sndShove: 31,
-    sndWalk: 32,
-    // lowest
-  }
-  let best = null
-  for (const {id, before, after} of events) {
-    const a = getActorId(id)
-    const cst = a.constructor
-
-    // figure out what sound this event wants to play
-    let s = null
-    if (before.pos || after.pos) {
-      if (cst === Player) {
-        s = sndWalk
-      } else if (cst === Crate || cst === Mini) {
-        s = sndShove
-      }
-    }
-    if (cst === Player && (before.frameStack || after.frameStack)) {
-      const isEntering = before.frameStack.length() < after.frameStack.length()
-      s = isEntering ? sndEnter : sndExit
-    }
-
-    if (cst === Player && after.pos && findActor(Flag, after.pos)) {
-      s = sndWin
-    }
-    if (cst === Crate && a.isSpecial() && after.collected) {
-      s = sndBonus
-    }
-
-    // ongoing minimization to find the best sound to play
-    if (s && (!best || (priority[s.id] < priority[best.id]))) { // .id here seems weird but it doesn't work otherwise; whatever
-      best = s
-    }
-  }
-  playSound(best)
 }
 
 let gotBonus = false
 
-function checkRealWin() {
+function checkWin() {
   return findActor(Flag, player.pos)
 }
 
@@ -254,7 +207,7 @@ async function DrawView() {
     ctx.strokeRect(0, 0, canvas2.width, canvas2.height)
   })
 
-  if (checkRealWin()) {
+  if (checkWin()) {
     const lines = ["You win!"]
     if (gotBonus) lines.push("excellent work")
     drawMessage(ctx, lines)
@@ -365,7 +318,11 @@ class Player extends Actor {
   }
 
   update(dir) {
-    return pushableUpdate(this, dir)
+    const success = pushableUpdate(this, dir)
+    if (checkWin()) {
+      PlayAndRecordSound(sndWin)
+    }
+    return success
   }
 }
 
@@ -470,6 +427,7 @@ class Crate extends Actor {
       before: {},
       after: { collected: true },
     })
+    PlayAndRecordSound(sndBonus)
     gotBonus = true
   }
 
@@ -548,6 +506,7 @@ function pushableUpdate(that, dir) {
 
   if (maybeTeleOut(that, dir)) {
     if (pushableUpdate(that, dir)) {
+      PlayAndRecordSound(sndExit)
       return true
     } else {
       // undo
@@ -563,6 +522,7 @@ function pushableUpdate(that, dir) {
 
   if (maybeTeleIn(that, dir)) {
     if (pushableUpdate(that, dir)) {
+      PlayAndRecordSound(sndEnter)
       return true
     } else {
       // undo
@@ -576,6 +536,11 @@ function pushableUpdate(that, dir) {
   // well, if there was either no opening, or we failed to get into the opening
   if (mini && !liftedPushableUpdate(that, mini, dir)) { return false }
 
+  if (that.constructor === Player) {
+    PlayAndRecordSound(sndWalk)
+  } else if (that.constructor === Crate || that.constructor === Mini) {
+    PlayAndRecordSound(sndShove)
+  }
   that.setPos(nextPos)
   return true
 }
