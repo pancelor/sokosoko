@@ -69,28 +69,32 @@ function ImportTiles() {
   tiles = []
   levels = []
 
-  let lines = tileData.trim().split('\n').map(l=>l.trim())
+  let lines = sanitizeLines(tileData)
   let line
-  let line_ix = 0
+  let line_ix = 0 // the index of the next line
+  let eof = false
   function nextLine() {
-    if (line_ix === lines.length) { return false }
+    if (line_ix === lines.length) {
+      eof = true
+      return false
+    }
     line = lines[line_ix]
     line_ix += 1
     return true
   }
 
-  function parseLevel() {
-    const level = {}
-    const good = nextLine()
-    if (!good) { return false }
+  const levelHeader = (line) => line.match(/^level (?<id>\d+)$/)
 
-    const match = line.match(/^level (?<id>\d+)$/)
+  nextLine()
+  while (!eof) {
+    const match = levelHeader(line)
     assert(match, "bad level header")
+    const level = {}
     level.id = int(match.groups.id)
     level.begin = tiles.length
 
-    while (nextLine()) {
-      if (line === '') { break }
+    nextLine()
+    while (!eof && !levelHeader(line)) {
       assertEqual(line.length, 8)
       const row = []
       for (let code of line) {
@@ -99,14 +103,12 @@ function ImportTiles() {
         row.push(name)
       }
       tiles.push(row)
+      nextLine()
     }
     level.end = tiles.length // level lives in `tiles` from level.begin to level.end (not inclusive on `end`)
     assert(level.begin < level.end)
     levels.push(level)
-    return true
   }
-
-  while (parseLevel()) {}
 
   // console.log(exportTilesString());
   // console.log(levels);
@@ -147,7 +149,8 @@ function ImportActors() {
     return
   }
 
-  let lines = actorData.trim().split('\n').map(l=>l.trim())
+  let lines = sanitizeLines(actorData)
+
   actors = [];
   for (let l of lines) {
     const type = l.split(' ')[0]
@@ -156,6 +159,26 @@ function ImportActors() {
     actors.push(klass.deserialize(l));
   }
 }
+
+function sanitizeLines(lineChunk) {
+  return lineChunk.split('\n').map(l=>l.split('#')[0].trim()).filter(l=>l.length > 0)
+}
+RegisterTest("sanitizeLines", () => {
+  const actual = sanitizeLines(`
+    hello
+    comment   # not included
+
+    a
+    # line skipped entirely
+    b
+    # foo
+  `)
+  const expected = ["hello", "comment", "a", "b"]
+  assertEqual(actual.length, expected.length)
+  for (let i = 0; i < expected.length; i += 1) {
+    assertEqual(actual[i], expected[i])
+  }
+})
 
 function exportActorsString() {
   const lines = []

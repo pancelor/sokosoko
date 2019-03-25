@@ -266,6 +266,14 @@ function serialize(x) {
 // functions for use in the chrome dev tools:
 //
 
+function singleEventListener(evName, cb) {
+  const handler = (e) => {
+    window.removeEventListener("keydown", handler)
+    return cb(e)
+  }
+  window.addEventListener("keydown", handler)
+}
+
 function addDiffListener(evName, ignore=[]) {
   // e.g. addDiffListener("mousewheel", ["timestamp"])
   let last = null;
@@ -312,14 +320,55 @@ function listen(evName) {
   window.addEventListener(evName, console.log)
 }
 
+let keyHist = null
+function recordingToggle() {
+  // returns the new state of the recording
+  const wasOn = !!keyHist
+  if (wasOn) {
+    recordingStop()
+    return false
+  } else {
+    recordingStart()
+    return true
+  }
+}
+function recordingStart() {
+  console.log("Recording inputs...")
+  keyHist = []
+}
+function recordingStop() {
+  console.log("Recorded inputs:");
+  console.log(keyHist.join(''))
+  keyHist = null
+}
+function RecordKeyHist(dir) {
+  if (!keyHist) return
+  keyHist.push(dir)
+}
+
+function play(moves, dt=50) {
+  let ix = 0
+  const keyHistInterval = setInterval(() => {
+    if (ix >= moves.length) {
+      clearInterval(keyHistInterval)
+      return
+    }
+    const dir = int(moves[ix])
+    Update(dir)
+    ix += 1
+  }, dt)
+
+  singleEventListener("keydown", e=>clearInterval(keyHistInterval))
+}
 function autowin(dt=5) {
   reset()
   const winStr = "01033330000000302110323003300111123331103332222110220122222221211111210333333033212233001111111130011203322333333033011112111112210002330011111122232211032301033333303301000000031222220000030330011222212230000022221111110330332221110233300111111133333033211322221112222222111111110111111222203322101012222222121111110111111222221222222121111110111111222221222222121111110111111211221100333033323022330013221010000000333032321"
   play(winStr, dt)
 }
-
-function showMap() {
-  canvas.style.display=null
+function boring() {
+  // run this after pushing the box inside black up
+  const str = "22221222222221111111011111122221222222221111111011111122220332211012222222211111110111111"
+  play(str, 1)
 }
 
 //

@@ -1,7 +1,15 @@
 let godmode = false
-function setGodmode(x) { godmode = x }
-const enableGodmode = () => setGodmode(true)
-const disableGodmode = () => setGodmode(false)
+function godmodeOn() {
+  godmode = true
+  mapOn()
+}
+function godmodeOff() {
+  godmode = false
+  mapOff()
+}
+
+function mapOn() { canvas.style.display=null }
+function mapOff() { canvas.style.display="hidden" }
 
 let gameMuted = false
 function setGameMuted(x) { gameMuted = x }
@@ -9,7 +17,7 @@ const mute = () => setGameMuted(true)
 const unmute = () => setGameMuted(false)
 
 let enableHeldButtons = true
-function disableHeldButtons() {
+function singleButtons() {
   enableHeldButtons = false
 }
 
@@ -30,15 +38,7 @@ function registerKeyListeners() {
     "KeyY": 5,
   }
   function onKeyHold() {
-    assert([0,1,2,3,4,5].includes(heldDir))
-    if (heldDir === 4) {
-      Undo()
-    } else if (heldDir === 5) {
-      Redo()
-    } else {
-      Update(heldDir)
-      RecordKeyHist(heldDir) // TODO this might be confusing since we also have undo.js...
-    }
+    processInput(heldDir)
   }
   function resetHoldInterval(start=true) {
     clearInterval(holdInterval)
@@ -51,6 +51,9 @@ function registerKeyListeners() {
     if (e.code === "KeyR") {
       reset()
       Raf()
+    }
+    if (e.code === "KeyP") {
+      recordingToggle()
     }
 
     const dir = keyDirMap[e.code]
@@ -90,6 +93,18 @@ function registerKeyListeners() {
     onKeyUp(e)
     return false
   })
+}
+
+function processInput(code) {
+  assert([0,1,2,3,4,5].includes(code))
+  RecordKeyHist(code)
+  if (code === 4) {
+    Undo()
+  } else if (code === 5) {
+    Redo()
+  } else {
+    Update(code) // code is dir
+  }
 }
 
 function registerMouseListeners() {
@@ -222,9 +237,7 @@ function init() {
   registerMouseListeners()
   reset()
 
-  if (godmode) {
-    showMap()
-  }
+  godmodeOn()
 }
 
 function reset() {

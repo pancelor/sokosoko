@@ -133,29 +133,6 @@ function InitGame() {
   actors.forEach(a=>a.onGameInit())
 }
 
-let keyHist = []
-let keyHistInterval
-function getKeyHist() {
-  console.log(`const winStr = "${keyHist.join('')}"`)
-}
-function play(moves, dt=50) {
-  console.log("about to play keyHistory; don't move please")
-  clearInterval(keyHistInterval)
-  let ix = 0
-  keyHistInterval = setInterval(() => {
-    if (ix >= moves.length) {
-      clearInterval(keyHistInterval)
-      console.log("done playing keyHistory; you can move again")
-      return
-    }
-    const dir = int(moves[ix])
-    Update(dir)
-    ix += 1
-  }, dt)
-}
-function RecordKeyHist(dir) {
-  keyHist.push(dir)
-}
 function Update(dir) {
   if (checkRealWin()) { return }
 
@@ -255,7 +232,8 @@ async function DrawView() {
       0, 0, canvas2.width, canvas2.height
     )
   } else {
-    const fillStyle = GetLevelColor(getLevel(5))
+    const lastLevelId = back(levels).id
+    const fillStyle = GetLevelColor(getLevel(lastLevelId))
     ctxWith(ctx, {fillStyle}, cls)
   }
 
@@ -378,6 +356,10 @@ class Actor {
   }
 }
 
+class LevelLoader extends Actor {
+
+}
+
 class Player extends Actor {
   static img = imgPlayer
   static color = "#000000"
@@ -387,7 +369,7 @@ class Player extends Actor {
     const miniGreen = findActor(Mini, pcoord(1, 6))
     const miniBlue = findActor(Mini, pcoord(6, 14))
     const miniBlackBase = findActor(Mini, pcoord(4, 5))
-    const miniOuter = findActor(Mini, pcoord(4, 43))
+    const miniOuter = findActor(Mini, pcoord(4, 51))
     assertEqual(miniBlack.label(), "Black")
     assertEqual(miniGreen.label(), "Green")
     assertEqual(miniBlue.label(), "Blue")
@@ -550,7 +532,7 @@ class Crate extends Actor {
   }
 }
 
-const allActorTypes = [Player, FakeFlag, Flag, Mini, Crate]
+const allActorTypes = [LevelLoader, Player, FakeFlag, Flag, Mini, Crate]
 
 function getLevel(id) {
   return levels.find(l=>l.id===id)
