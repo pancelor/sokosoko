@@ -442,6 +442,13 @@ function singleButtons() {
   enableHeldButtons = false
 }
 
+// TODO: instead of
+//    levelData['fooName'] = {...}
+// use
+//    levelData.push({ name: "fooName", ...})
+// to avoid bugs where i forget to change the name (add asserts)
+// then change this function to work again
+// Also, "level" is already taken; maybe rename the old word "level" to "layer"?
 function listLevels() {
   for (const name of Object.keys(levelData)) {
     console.log('  ', name)
