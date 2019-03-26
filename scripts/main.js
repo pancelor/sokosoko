@@ -90,7 +90,7 @@ function registerKeyListeners() {
   }
   canvas2.addEventListener("keydown", e => {
     if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") {
-      SaveLevel(levelCodeInput.value)
+      SaveLevel(currentLevelName)
       e.preventDefault()
       return false
     }
@@ -280,7 +280,7 @@ function loadLevel(levelName) {
 
 function devmodeInit() {
   godmodeOn()
-  loadLevel('pdox')
+  loadLevel('newp')
 }
 
 function init() {

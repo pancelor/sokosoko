@@ -1,0 +1,35 @@
+levelData['newp'] = {
+  tileData: `
+    level @Red
+    xxxxxxxx
+    x.xxxx.x
+    x......x
+    x......x
+    .x....x.
+    x......x
+    x.xxxx.x
+    xxxxxxxx
+
+    level @Beige
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+  `,
+  actorData: `
+    Mini 2 20 Red
+    Mini 4 11 Red
+    Mini 5 10 Red
+    Player 2 13
+    Crate 3 12 0
+    Crate 6 9 0
+    Crate 5 12 0
+  `,
+  frameStackData: `
+    Beige
+  `,
+}
