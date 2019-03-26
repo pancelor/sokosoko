@@ -41,8 +41,8 @@ levelData['kill'] = {
     xxxxx.xx
 
     level @Purple
-    xxxxx.xx
-    x.....xx
+    xxxxxx.x
+    x......x
     x.xxxxxx
     x......x
     xxxxx..x
@@ -70,7 +70,7 @@ levelData['kill'] = {
     Crate 2 20 0
     Mini 6 21 Blue
     Flag 4 10
-    Crate 1 20 0
+    Crate 1 20 1
     Crate 2 43 0
     Mini 3 45 Red @m2
     Mini 1 45 Red
@@ -79,6 +79,7 @@ levelData['kill'] = {
     Crate 3 33 0
     Crate 4 28 0
     Player 5 36
+    Mini 1 35 Blue
   `,
   frameStackData: `
     Beige
