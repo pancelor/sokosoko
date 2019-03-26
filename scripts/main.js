@@ -296,6 +296,7 @@ let currentLevelName
 function reset() {
   const success = loadLevel(currentLevelName)
   assert(success)
+  recordingStart()
 }
 function loadLevel(levelName) {
   if (!ImportLevel(levelName)) { return false }
@@ -326,7 +327,8 @@ function init() {
   registerLevelCodeListener()
   registerKeyListeners()
   registerMouseListeners()
-  loadLevel('orig')
+  currentLevelName = 'orig'
+  reset()
 
   devmodeInit()
 }

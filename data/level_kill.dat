@@ -23,10 +23,10 @@ levelData['kill'] = {
     level @Blue
     x.xxxxxx
     x......x
-    xxxxxx.x
+    xxxxx..x
     xxx.xx.x
     ....x...
-    xxx....x
+    xxx.x..x
     xxx....x
     xxxxxxxx
 
@@ -44,25 +44,25 @@ levelData['kill'] = {
     xxxxxx.x
     x......x
     x.xxxxxx
-    x.....xx
-    xxx...xx
-    xx....xx
+    x......x
+    xxxx...x
+    x......x
     x...xxxx
     xxxxxxxx
 
     level @Yellow
     xxxxxx.x
     xx.....x
-    x...x..x
-    x...xx..
-    x...xxxx
-    x...x..x
-    xxxxx.xx
+    x...x...
+    x...x.xx
+    x...x.xx
+    x...x.xx
+    xxxxx..x
     xxxxxxxx
   `,
   actorData: `
-    Player 4 36
-    Mini 3 22 Yellow
+    Player 5 36
+    Mini 5 18 Yellow
     Mini 3 13 Purple @m3
     Mini 5 33 Blue
     Mini 2 38 Blue

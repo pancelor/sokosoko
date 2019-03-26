@@ -363,11 +363,11 @@ function recordingToggle() {
   }
 }
 function recordingStart() {
-  console.log("Recording inputs...")
+  console.log("Recording moves...")
   keyHist = []
 }
 function recordingStop() {
-  console.log("Recorded inputs:");
+  console.log("Recorded moves:");
   console.log(keyHist.join(''))
   keyHist = null
 }
