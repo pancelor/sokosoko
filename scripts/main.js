@@ -329,6 +329,6 @@ function init() {
   registerMouseListeners()
   reset('orig')
 
-  devmodeInit()
+  // devmodeInit()
 }
 window.onload = init
