@@ -45,9 +45,9 @@ levelData['kill'] = {
     x......x
     x.xxxxxx
     x......x
-    xxxx...x
+    xxxxx..x
+    x...xx.x
     x......x
-    x...xxxx
     xxxxxxxx
 
     level @Yellow
@@ -75,8 +75,7 @@ levelData['kill'] = {
     Crate 2 43 0
     Mini 3 45 Red @m2
     Mini 1 45 Red
-    Mini 1 34 Green
-    Mini 1 35 Green
+    Mini 1 9 Green
     Mini 2 45 Red
     Crate 3 33 0
     Crate 4 28 0
