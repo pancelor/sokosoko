@@ -40,6 +40,7 @@ function registerKeyListeners() {
   }
   function onKeyDown(e) {
     if (e.code === "KeyR") {
+      if (godmode) return // too confusing; ctrl-r instead pls
       clearInterval(holdInterval)
       reset()
       Raf()
