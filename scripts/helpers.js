@@ -420,6 +420,7 @@ function mapOn() { canvas.style.display = null }
 function mapOff() { canvas.style.display = "none" }
 
 let gameMuted = false
+function muteToggle() { setGameMuted(!gameMuted) }
 function setGameMuted(x) { gameMuted = x }
 const mute = () => setGameMuted(true)
 const unmute = () => setGameMuted(false)
@@ -460,6 +461,7 @@ function downloadFile(name, contents, mime_type) {
 }
 
 async function playSound(audioElement) {
+  if (gameMuted) { return }
   if (!audioElement) { return }
   // console.log(audioElement.id);
   audioElement.pause()

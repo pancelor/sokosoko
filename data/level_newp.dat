@@ -29,6 +29,16 @@ levelData['newp'] = {
     x......x
     x......x
     xxxxxxxx
+
+    level @Green
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x.......
+    x......x
+    x......x
+    xxxx.xxx
   `,
   actorData: `
     Mini 4 11 Red
@@ -37,10 +47,19 @@ levelData['newp'] = {
     Crate 3 12 0
     Crate 6 9 0
     Crate 5 12 0
+
+    # holy shit check this situation out: play('0130012221003003333303222222', 200)
+    # the blue guy eats the box that's inside the red guy omg
     Mini 2 20 Red
     Mini 3 20 Blue
     Mini 6 14 Blue
     Crate 4 20 0
+
+    # pdox2; enter from right and try to push the mini out of itself
+    # not sure if the current (hacky) check will catch this
+    Mini 1 9 Green
+    Mini 5 28 Green
+    Crate 6 28 0
   `,
   frameStackData: `
     Beige

@@ -45,6 +45,8 @@ function registerKeyListeners() {
       Raf()
     } else if (e.code === "KeyP") {
       recordingToggle()
+    } else if (e.code === "KeyM") {
+      muteToggle()
     } else {
       const dir = keyDirMap[e.code]
       if (dir === undefined) { return }

@@ -13,6 +13,7 @@ option 2: `git clone` this repo; open index.html; play in browser
 Controls:
 * move with `wasd` or arrow keys.
 * undo with `z`; redo with `y`; reset with `r`
+* toggle mute with `m`
 
 ## Credits / Inspirations
 

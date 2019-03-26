@@ -479,13 +479,25 @@ function maybeTeleOut(that, dir) {
   const innerLevel = that.frameStack.level()
   const outPos = LevelOpenings(innerLevel)[dir]
   if (outPos && outPos.equals(that.pos)) {
+    // prepare to teleport
+    const oldPos = that.pos
+    const oldFrameStack = that.frameStack
+
     const parent = that.frameStack.parent
     that.setPos(that.frameStack.mini().pos)
     that.setFrameStack(parent)
-    return true
-  } else {
-    return false
+
+    // that has now teleported; try to move
+    if (pushableUpdate(that, dir)) {
+      that.playTeleOutSound()
+      return true
+    } else {
+      // undo
+      that.setPos(oldPos)
+      that.setFrameStack(oldFrameStack)
+    }
   }
+  return false
 }
 
 function maybeTeleIn(that, dir) {
@@ -501,71 +513,77 @@ function maybeTeleIn(that, dir) {
   if (mini) {
     const op = LevelOpenings(mini.level())[oppDir(dir)]
     if (op) {
-      // teleport into the mini
+      // prepare to teleport
+      const oldPos = that.pos
+      const oldFrameStack = that.frameStack
+
       const newPos = posDir(op, oppDir(dir)) // right before entering the room; to try to push anything in the entryway thats in the way
       const newStack = new Frame(mini.id, that.frameStack)
       that.setPos(newPos)
       that.setFrameStack(newStack)
 
-      return true
+      // that has now teleported; try to move
+      if (pushableUpdate(that, dir)) {
+        that.playTeleInSound()
+        return true
+      } else {
+        // undo
+        that.setPos(oldPos)
+        that.setFrameStack(oldFrameStack)
+      }
     }
   }
   return false
+}
+
+function maybeConsume(that, food, dir) {
+  // dir is the direction the _mini_ is moving
+  assert(food.frameStack)
+  if (that.constructor !== Mini) return false
+
+  if (maybeTeleIn(food, oppDir(dir))) {
+    that.playMoveSound()
+    that.setPos(posDir(that.pos, dir))
+    return true
+  } else {
+    return false
+  }
 }
 
 function pushableUpdate(that, dir) {
   // DRY without subclassing for pushable objects
   assert(that.frameStack)
 
-  const oldPos = that.pos
-  const oldFrameStack = that.frameStack
   const nextPos = posDir(that.pos, dir)
 
-  if (maybeTeleOut(that, dir)) {
-    if (pushableUpdate(that, dir)) {
-      that.playTeleOutSound()
-      return true
-    } else {
-      // undo
-      that.setPos(oldPos)
-      that.setFrameStack(oldFrameStack)
-    }
-  }
-
+  if (maybeTeleOut(that, dir)) { return true }
   if (!CanMoveToTile(nextPos)) { return false }
 
   const crate = findActor(Crate, nextPos)
-  if (crate && !liftedPushableUpdate(that, crate, dir)) { return false }
+  if (crate && lifted(that, crate, ()=>maybeConsume(that, crate, dir))) { return true }
+  if (crate && !lifted(that, crate, ()=>pushableUpdate(crate, dir))) { return false }
 
-  if (maybeTeleIn(that, dir)) {
-    if (pushableUpdate(that, dir)) {
-      that.playTeleInSound()
-      return true
-    } else {
-      // undo
-      that.setPos(oldPos)
-      that.setFrameStack(oldFrameStack)
-    }
-  }
+  if (maybeTeleIn(that, dir)) { return true }
 
   const mini = findActor(Mini, nextPos)
   // how can mini exist if we already called maybeTeleIn?
   // well, if there was either no opening, or we failed to get into the opening
-  if (mini && !liftedPushableUpdate(that, mini, dir)) { return false }
+  if (mini && lifted(that, mini, ()=>maybeConsume(that, mini, dir))) { return true }
+  if (mini && !lifted(that, mini, ()=>pushableUpdate(mini, dir))) { return false }
 
   that.playMoveSound()
   that.setPos(nextPos)
   return true
 }
 
-function liftedPushableUpdate(lifter, target, dir) {
-  // lifts target into lifter's frame, tries to update it, and unlifts it
-  // returns whether the update was successful
+function lifted(lifter, target, cb) {
+  // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it
+  // returns whatever cb returns
   assert(lifter.frameStack)
   assert(!target.frameStack)
 
   target.frameStack = lifter.frameStack
-  const success = pushableUpdate(target, dir)
+  const success = cb()
   delete target.frameStack
 
   return success
