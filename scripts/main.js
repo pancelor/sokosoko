@@ -1,26 +1,3 @@
-let godmode = false
-function godmodeOn() {
-  godmode = true
-  mapOn()
-}
-function godmodeOff() {
-  godmode = false
-  mapOff()
-}
-
-function mapOn() { canvas.style.display = null }
-function mapOff() { canvas.style.display = "none" }
-
-let gameMuted = false
-function setGameMuted(x) { gameMuted = x }
-const mute = () => setGameMuted(true)
-const unmute = () => setGameMuted(false)
-
-let enableHeldButtons = true
-function singleButtons() {
-  enableHeldButtons = false
-}
-
 function registerLevelCodeListener() {
   levelCodeInput.addEventListener("keydown", (e) => {
     if (e.code === "Enter") {
