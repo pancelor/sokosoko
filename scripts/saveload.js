@@ -6,7 +6,9 @@ let levels
 let tiles
 let actors
 
-let taggedActors // keep these around so we can reserialize them later
+let taggedActors // make this local?
+
+// keep these around so we can reserialize them later:
 let savedFrameStack
 
 function ImportLevel(name) {
@@ -65,7 +67,7 @@ function importTiles(tileData) {
     return true
   }
 
-  const levelHeader = (line) => line.match(/^level\s+@(?<tag>[\w\d_]+)$/)
+  const levelHeader = (line) => line.match(/^level\s+@(?<name>[\w\d_]+)$/)
 
   nextLine()
   while (!eof) {
@@ -73,7 +75,7 @@ function importTiles(tileData) {
     assert(match, "bad level header")
     const level = {}
     level.id = levels.length
-    level.tag = match.groups.tag
+    level.name = match.groups.name
     level.begin = tiles.length
 
     nextLine()
@@ -81,7 +83,7 @@ function importTiles(tileData) {
       assertEqual(line.length, 8)
       const row = []
       for (let code of line) {
-        const name = deserTile(code, level.tag)
+        const name = deserTile(code, level.name)
         assert(name)
         row.push(name)
       }
@@ -120,9 +122,9 @@ function importActors(actorData) {
     const klass = deserActorClass[type]
     assert(klass !== undefined, `could not find actor type "${type}" for deserialization`)
     const a = klass.deserialize(data)
-    if (!a) continue
     actors.push(a);
     if (tag) {
+      a.tag = tag
       taggedActors[tag] = a.id
     }
   }
@@ -140,7 +142,7 @@ function importFrameStack(frameStackData) {
     savedFrameStack.push(l)
     if (!stack) {
       // first time through the loop
-      const level = levelFromTag(l)
+      const level = levelFromName(l)
       assert(level)
       stack = new FrameBase(level.id)
     } else {
@@ -181,7 +183,7 @@ RegisterTest("sanitizeLines", () => {
 
 function exportLevelString(level) {
   const lines = []
-  lines.push(`    level @${level.tag}`)
+  lines.push(`    level @${level.name}`)
   for (let rr = level.begin; rr < level.end; rr += 1) {
     const chars = ["    "]
     for (let imgName of tiles[rr]) {
@@ -205,13 +207,10 @@ function exportTilesString() {
 }
 
 function exportActorsString() {
-  assert(taggedActors)
-  const invertedTaggedActors = invertObject(taggedActors)
   const lines = []
   lines.push("  actorData: `")
   for (let a of actors) {
-    let tag = invertedTaggedActors[a.id]
-    tag = tag ? ` @${tag}` : ""
+    const tag = a.tag ? ` @${a.tag}` : ""
     lines.push(`    ${a.serialize()}${tag}`)
   }
   lines.push("  `,")

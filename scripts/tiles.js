@@ -60,12 +60,8 @@ function GetLevelColor(level) {
   return GetTileColor(topleft)
 }
 
-function GetLevelLabel(level) {
-  return level.tag
-}
-
-function levelFromTag(tag) {
-  return levels.find(l=>l.tag===tag)
+function levelFromName(name) {
+  return levels.find(l=>l.name===name)
 }
 
 function getLevel(id) {

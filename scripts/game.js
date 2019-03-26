@@ -66,12 +66,12 @@ class FrameBase {
 
   str() {
     const level = getLevel(this.levelId)
-    return `<base; ${level.tag}>`
+    return `<base; ${level.name}>`
   }
 
   serialize() {
     const level = getLevel(this.levelId)
-    return `${this.constructor.name} ${level.tag}`
+    return `${this.constructor.name} ${level.name}`
   }
 }
 
@@ -115,7 +115,7 @@ class Frame {
 
   str() {
     const mini = this.mini()
-    return `${this.parent.str()} | ${this.level().tag}`
+    return `${this.parent.str()} | ${this.level().name}`
   }
 
   serialize() {
@@ -233,6 +233,7 @@ class Actor {
     this.id = Actor.id
     Actor.id += 1
     this.dead = false
+    // note that actors might have a `tag` attribute, set by the level loader
   }
 
   color(){
@@ -367,28 +368,24 @@ class Mini extends Actor {
     return this.col
   }
 
-  label() {
-    return GetLevelLabel(this.level())
-  }
-
   level() {
     return getLevel(this.levelId)
   }
 
   str() {
-    return `${this.label()}${this.pos.str()}`
+    return `${this.level().name}${this.pos.str()}`
   }
 
   serialize() {
-    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${this.level().tag}`
+    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${this.level().name}`
   }
 
   static deserialize(line) {
-    const [type, x, y, tag] = line.split(' ')
+    const [type, x, y, levelName] = line.split(' ')
     assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))
-    const level = levelFromTag(tag)
-    assert(level, `level "${tag}" doesn't exist`)
+    const level = levelFromName(levelName)
+    assert(level, `level "${levelName}" doesn't exist`)
     return new (this)(p, level.id, GetLevelColor(level))
   }
 }

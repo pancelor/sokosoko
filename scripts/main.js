@@ -191,10 +191,13 @@ function mouseClick({e, worldPos}) {
   const levelPos = worldPos.toLevelPos(level)
   const a = findActor(null, worldPos)
   const parts = []
-  parts.push(`${GetLevelLabel(level)}(${level.id}): ${worldPos.str()}`)
+  parts.push(`${level.name}(${level.id}): ${worldPos.str()}`)
   parts.push(`(local: ${levelPos.str()})`)
   if (a) {
     parts.push(`${a.constructor.name}#${a.id}`)
+    if (a.tag) {
+      parts.push(`@${a.tag}`)
+    }
   }
   console.log(parts.join(' '))
 
