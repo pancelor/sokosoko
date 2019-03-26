@@ -55,6 +55,10 @@ class FrameBase {
     return getLevel(this.levelId)
   }
 
+  mapMini(f) {
+    return []
+  }
+
   length() {
     return 1
   }
@@ -94,6 +98,10 @@ class Frame {
     const mini = this.mini()
     assert(mini)
     return getLevel(mini.levelId)
+  }
+
+  mapMini(f) {
+    return [f(this.mini()), ...this.parent.mapMini(f)]
   }
 
   length() {

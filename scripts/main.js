@@ -50,6 +50,7 @@ function registerKeyListeners() {
     } else if (e.code === "Space") {
       if (godmode) {
         editingTiles = !editingTiles
+        if (editingTiles) storedActor = null
         Raf()
       }
     } else {
@@ -235,10 +236,13 @@ function _godmodeMouseClick(e, worldPos) {
     if (e.button === 0) {
       // left click: paste (or move old pasted thing)
       if (!storedActor) { return }
+      if (findActor(null, worldPos)) {
+        console.warn("overlap")
+        return
+      }
       storedActor.setPos(worldPos)
-      const wasCut = storedActor.dead
       storedActor.setDead(false)
-      storedActor = wasCut ? null : Actor.clone(storedActor)
+      storedActor = null
     } else if (e.button === 1) {
       // middle click: copy
       storedActor = findActor(null, worldPos)

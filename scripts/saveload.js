@@ -124,8 +124,9 @@ function importActors(actorData) {
     const a = klass.deserialize(data)
     actors.push(a);
     if (tag) {
-      a.tag = tag
+      assert(!taggedActors[tag], `trying to tag multiple actors as @${tag}`)
       taggedActors[tag] = a.id
+      a.tag = tag
     }
   }
 }
