@@ -50,21 +50,20 @@ function registerKeyListeners() {
   function onKeyHold() {
     const dir = back(heldDirs)
     if (dir === undefined) {
-      resetHoldInterval(false)
+      clearInterval(holdInterval)
       return
     }
     ProcessInput(dir)
   }
-  function resetHoldInterval(start=true) {
+  function startHoldInterval() {
     clearInterval(holdInterval)
-    if (!start) { return }
     onKeyHold()
     if (!enableHeldButtons) { return }
     holdInterval = setInterval(onKeyHold, holdIntervalLength)
   }
   function onKeyDown(e) {
     if (e.code === "KeyR") {
-      resetHoldInterval(false)
+      clearInterval(holdInterval)
       reset()
       Raf()
     } else if (e.code === "KeyP") {
@@ -77,13 +76,17 @@ function registerKeyListeners() {
         heldDirs.push(dir)
       }
 
-      resetHoldInterval()
+      startHoldInterval()
     }
   }
   function onKeyUp(e) {
     const dir = keyDirMap[e.code]
     if (dir === undefined) { return }
+    const keyWasCurrent = (dir === back(heldDirs))
     heldDirs = heldDirs.filter(d=>d!==dir)
+    if (keyWasCurrent) {
+      startHoldInterval() // do next held button on stack immediately
+    }
   }
   canvas2.addEventListener("keydown", e => {
     if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") {
