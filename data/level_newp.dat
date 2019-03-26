@@ -39,6 +39,26 @@ levelData['newp'] = {
     x......x
     x......x
     xxxx.xxx
+
+    level @Purple
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x.......
+    x......x
+    x......x
+    xxxx.xxx
+
+    level @Yellow
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x.......
+    x......x
+    x......x
+    xxxxxxxx
   `,
   actorData: `
     Mini 4 11 Red
@@ -55,11 +75,20 @@ levelData['newp'] = {
     Mini 6 14 Blue
     Crate 4 20 0
 
-    # pdox2; enter from right and try to push the mini out of itself
+    # pdox2; try to push the mini out of itself
     # not sure if the current (hacky) check will catch this
     Mini 1 9 Green
     Mini 5 28 Green
     Crate 6 28 0
+
+    # pdox3; infinite consume loop (but indirect)
+    Mini 3 9 Purple
+    Mini 6 36 Yellow
+    Crate 7 36 0
+    Crate 7 44 0
+    Mini 6 44 Beige
+    Crate 5 44 0
+    Mini 4 44 Purple
   `,
   frameStackData: `
     Beige

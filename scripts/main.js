@@ -251,7 +251,7 @@ function loadLevel(levelName) {
   currentLevelName = levelName
   InitGame()
   canvas2.focus()
-  scrollTo(0, 0)
+  // scrollTo(0, 0)
 
   Raf()
   return true

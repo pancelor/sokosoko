@@ -543,11 +543,31 @@ function maybeConsume(that, food, dir) {
 
   if (maybeTeleIn(food, oppDir(dir))) {
     that.playMoveSound()
-    that.setPos(posDir(that.pos, dir))
+    const newMiniPos = posDir(that.pos, dir)
+    if (findActor([Crate, Mini, Player], newMiniPos)) {
+      // this is _very_ weird; eating the food has pushed some stuff around
+      // in a way such that the food's old position is occupied again.
+      // (e.g. green or purple/yellow room of level_newp.dat)
+
+      // Im so so conflicted about what to do here;
+      // I think we should succeed and evaporate the food out of existence
+      // That seems to be the case in the green room of level_newp.dat
+      // But what about the purple/yellow combo? which block gets eaten?
+      // Wouldn't it be all of them but none of them at once? so now the three
+      // remaining objects are weird half-and-half glitchy abominations?
+      // (could randomize which one is murdered, but that seems like
+      // a cop out and a bad experience as a player imo)
+
+      console.warn("infinite nastiness occurs") // this doesn't even catch everything ....
+      // edit: god im playing with it more and everything is so fucky;
+      // return false here is no good... but return true isn't great either
+
+      return false
+    }
+    that.setPos(newMiniPos)
     return true
-  } else {
-    return false
   }
+  return false
 }
 
 function pushableUpdate(that, dir) {
@@ -580,6 +600,8 @@ function lifted(lifter, target, cb) {
   // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it
   // returns whatever cb returns
   assert(lifter.frameStack)
+
+  // TODO: get player here and break the assert? is that possible
   assert(!target.frameStack)
 
   target.frameStack = lifter.frameStack
