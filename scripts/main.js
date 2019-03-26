@@ -69,13 +69,13 @@ function registerKeyListeners() {
     }
   }
   canvas2.addEventListener("keydown", e => {
-    if (e.ctrlKey && e.code === "KeyS") {
+    if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") {
       SaveLevel(levelCodeInput.value)
       e.preventDefault()
       return false
     }
 
-    if (e.ctrlKey) {
+    if (e.ctrlKey || e.metaKey) {
       // don't preventDefault on keyboard shortcuts
       return
     }
