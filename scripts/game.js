@@ -488,17 +488,13 @@ function maybeTeleOut(that, dir) {
   }
 }
 
-let hack_tele_count = 0
 function maybeTeleIn(that, dir) {
-  hack_tele_count += 1
-  if (hack_tele_count > 1000) {
-    assert(0, "infinite mini recursion")
-  }
   // if that is standing next to a Mini and is moving into it (dir)
   //   move that into the mini. (one tile before the actual entrance)
   // else do nothing
   // returns whether the tele happened
   assert(that.frameStack)
+  assert(that.frameStack.length() < 1000, "infinite mini recursion") // hacky check; check it better and delete `that`, i think
 
   const nextPos = posDir(that.pos, dir)
   const mini = findActor(Mini, nextPos)
