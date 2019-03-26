@@ -210,6 +210,11 @@ function exportActorsString() {
   const lines = []
   lines.push("  actorData: `")
   for (let a of actors) {
+    if (a.dead) {
+      continue
+      // this is hacky; idk if the editor should even
+      // mess with killing/reviving actors. but it lets undos work...
+    }
     const tag = a.tag ? ` @${a.tag}` : ""
     lines.push(`    ${a.serialize()}${tag}`)
   }

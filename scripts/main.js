@@ -48,7 +48,10 @@ function registerKeyListeners() {
     } else if (e.code === "KeyM") {
       muteToggle()
     } else if (e.code === "Space") {
-      if (godmode) editingTiles = !editingTiles
+      if (godmode) {
+        editingTiles = !editingTiles
+        Raf()
+      }
     } else {
       const dir = keyDirMap[e.code]
       if (dir === undefined) { return }
@@ -112,6 +115,13 @@ function ProcessInput(code) {
   }
 }
 
+function lockScroll(cb) {
+  const x = scrollX
+  const y = scrollY
+  cb()
+  scrollTo(x,y)
+}
+
 function registerMouseListeners() {
   mousepos = pcoord(0, 0)
   window.addEventListener("contextmenu", (e) => {
@@ -122,6 +132,8 @@ function registerMouseListeners() {
     const info = translateMouseFromMap(e)
     info && mouseClick(info)
     Raf()
+
+    lockScroll(()=>canvas2.focus())
 
     e.preventDefault()
     return false
@@ -151,6 +163,7 @@ function registerMouseListeners() {
     if (godmode) {
       Raf()
     }
+
     e.preventDefault()
     return false
   })
@@ -196,6 +209,17 @@ function mouseClick({e, worldPos}) {
 let mousepos
 function mouseMove({e, worldPos}) {
   mousepos = worldPos
+  if (godmode) {
+    const LMB = e.buttons & (1<<0)
+    const RMB = e.buttons & (1<<1)
+    if (editingTiles) {
+      if (LMB && !RMB) {
+        setTileWall(worldPos)
+      } else if (RMB && !LMB) {
+        setTileFloor(worldPos)
+      }
+    }
+  }
 }
 
 let editingTiles = false
@@ -212,8 +236,9 @@ function _godmodeMouseClick(e, worldPos) {
       // left click: paste (or move old pasted thing)
       if (!storedActor) { return }
       storedActor.setPos(worldPos)
+      const wasCut = storedActor.dead
       storedActor.setDead(false)
-      storedActor = null
+      storedActor = wasCut ? null : Actor.clone(storedActor)
     } else if (e.button === 1) {
       // middle click: copy
       storedActor = findActor(null, worldPos)
@@ -231,7 +256,7 @@ function _godmodeMouseClick(e, worldPos) {
 function drawGodmode(ctx) {
   if (!godmode) { return }
   if (editingTiles) {
-    ctxWith(ctx, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
+    ctxWith(ctx, {globalAlpha: 0.10, fillStyle: "white"}, ()=>{
       ctx.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
     })
   } else {
@@ -281,7 +306,7 @@ function loadLevel(levelName) {
 
 function devmodeInit() {
   godmodeOn()
-  loadLevel('newp')
+  loadLevel('kill')
 }
 
 function init() {
