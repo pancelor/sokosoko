@@ -8,9 +8,6 @@ let actors
 
 let taggedActors // make this local?
 
-// keep these around so we can reserialize them later:
-let savedFrameStack
-
 function ImportLevel(name) {
   console.log("Loading level", name)
   if (!levelData[name]) {
@@ -138,9 +135,7 @@ function importFrameStack(frameStackData) {
   let lines = sanitizeLines(frameStackData)
 
   let stack = null
-  savedFrameStack = []
   for (const l of lines) {
-    savedFrameStack.push(l)
     if (!stack) {
       // first time through the loop
       const level = levelFromName(l)
@@ -215,6 +210,7 @@ function exportActorsString() {
       continue
       // this is hacky; idk if the editor should even
       // mess with killing/reviving actors. but it lets undos work...
+      // edit: wait no it doesn't really b/c you can't undo creating an actor (not easily)
     }
     const tag = a.tag ? ` @${a.tag}` : ""
     lines.push(`    ${a.serialize()}${tag}`)
@@ -224,11 +220,22 @@ function exportActorsString() {
 }
 
 function exportFrameStackString() {
-  assert(savedFrameStack)
   const lines = []
   lines.push("  frameStackData: `")
-  for (let tag of savedFrameStack) {
-    lines.push(`    ${tag}`)
+  let frame = player.frameStack
+  while (true) {
+    if (frame.constructor === FrameBase) {
+      lines.splice(1, 0, `    ${frame.level().name}`)
+      break
+    } else {
+      let tag = frame.mini().tag
+      if (tag === undefined) {
+        tag = frame.mini().serialize()
+        console.warn("mini in frameStack doesn't have a tag:", tag)
+      }
+      lines.splice(1, 0, `    ${tag}`)
+      frame = frame.parent
+    }
   }
   lines.push("  `,")
   return lines.join("\n")

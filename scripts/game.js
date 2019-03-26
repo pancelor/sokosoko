@@ -344,6 +344,7 @@ class Player extends Actor {
   }
 
   update(dir) {
+    hack_seen_teles = new Set()
     const success = pushableUpdate(this, dir)
     maybeFakeWin()
     if (checkWin()) {
@@ -517,6 +518,7 @@ function maybeTeleOut(that, dir) {
   return false
 }
 
+let hack_seen_teles
 function maybeTeleIn(that, dir) {
   // if that is standing next to a Mini and is moving into it (dir)
   //   move that into the mini. (one tile before the actual entrance)
@@ -530,6 +532,13 @@ function maybeTeleIn(that, dir) {
   if (mini) {
     const op = LevelOpenings(mini.level())[oppDir(dir)]
     if (op) {
+      if (hack_seen_teles.has(mini.id)) {
+        console.warn('infinite mini recursion detected')
+        that.die()
+        return true
+      }
+      hack_seen_teles.add(mini.id)
+
       // prepare to teleport
       const oldPos = that.pos
       const oldFrameStack = that.frameStack

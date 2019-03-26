@@ -22,10 +22,10 @@ levelData['kill'] = {
 
     level @Blue
     xxxxxxxx
-    xxxxxx..
+    xxxx....
     x......x
     xxxxx..x
-    xxxxx..x
+    xxx.x..x
     ....x..x
     xxx....x
     xxxxxxxx
@@ -61,7 +61,7 @@ levelData['kill'] = {
     xxxxxxxx
   `,
   actorData: `
-    Player 5 18
+    Player 5 21
     Crate 2 9 0
     Mini 1 18 Green @m2
     Crate 1 10 0
@@ -90,6 +90,8 @@ levelData['kill'] = {
     Crate 2 21 0
     Mini 6 19 Blue
     Mini 3 38 Blue
+    Crate 3 21 0
+    Crate 5 18 0
   `,
   frameStackData: `
     Beige
