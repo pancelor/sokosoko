@@ -389,7 +389,9 @@ function play(moves, dt=50) {
   }, dt)
 
   singleEventListener("keydown", e=>{
-    console.log("Aborted at", ix);
+    if (ix < moves.length) {
+      console.log("Aborted at", ix);
+    }
     clearInterval(keyHistInterval)
   })
 }

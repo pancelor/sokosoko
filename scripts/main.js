@@ -272,6 +272,11 @@ function loadLevel(levelName) {
   return true
 }
 
+function devmodeInit() {
+  godmodeOn()
+  loadLevel('wack')
+}
+
 function init() {
   RunTests()
   canvas.tabIndex = -1 // enable key listeners / focus on the canvases
@@ -281,6 +286,6 @@ function init() {
   registerMouseListeners()
   loadLevel('orig')
 
-  // godmodeOn()
+  devmodeInit()
 }
 window.onload = init

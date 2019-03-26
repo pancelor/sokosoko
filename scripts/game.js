@@ -138,7 +138,6 @@ function Update(dir) {
 
   StartEpoch()
   player.update(dir)
-  maybeFakeWin()
   events = EndEpoch()
   Raf()
 }
@@ -151,7 +150,7 @@ function checkWin() {
 
 function maybeFakeWin() {
   const a = findActor(FakeFlag, player.pos)
-  if (!a) { return false}
+  if (!a) { return false }
   a.die()
 }
 
@@ -321,6 +320,7 @@ class Player extends Actor {
 
   update(dir) {
     const success = pushableUpdate(this, dir)
+    maybeFakeWin()
     if (checkWin()) {
       PlayAndRecordSound(sndWin)
     }
@@ -501,7 +501,7 @@ function pushableUpdate(that, dir) {
 
   if (maybeTeleOut(that, dir)) {
     if (pushableUpdate(that, dir)) {
-      PlayAndRecordSound(sndExit)
+      if (that === player) PlayAndRecordSound(sndExit)
       return true
     } else {
       // undo
@@ -517,7 +517,7 @@ function pushableUpdate(that, dir) {
 
   if (maybeTeleIn(that, dir)) {
     if (pushableUpdate(that, dir)) {
-      PlayAndRecordSound(sndEnter)
+      if (that === player) PlayAndRecordSound(sndEnter)
       return true
     } else {
       // undo
