@@ -293,9 +293,8 @@ function Raf() {
 }
 
 let currentLevelName
-function reset() {
-  const success = loadLevel(currentLevelName)
-  assert(success)
+function reset(name=null) {
+  const success = loadLevel(name || currentLevelName)
   recordingStart()
 }
 function loadLevel(levelName) {
@@ -327,8 +326,7 @@ function init() {
   registerLevelCodeListener()
   registerKeyListeners()
   registerMouseListeners()
-  currentLevelName = 'orig'
-  reset()
+  reset('orig')
 
   devmodeInit()
 }
