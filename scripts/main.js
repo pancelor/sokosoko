@@ -280,7 +280,7 @@ function loadLevel(levelName) {
 
 function devmodeInit() {
   godmodeOn()
-  loadLevel('wack')
+  loadLevel('pdox')
 }
 
 function init() {

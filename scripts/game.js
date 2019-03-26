@@ -251,6 +251,10 @@ class Actor {
     return false
   }
 
+  playTeleInSound() {}
+  playTeleOutSound() {}
+  playMoveSound() {}
+
   setPos(p) {
     const before = this.pos
     const after = p
@@ -319,6 +323,18 @@ class Player extends Actor {
     this.frameStack = after
   }
 
+  playMoveSound() {
+    PlayAndRecordSound(sndWalk)
+  }
+
+  playTeleInSound() {
+    PlayAndRecordSound(sndEnter)
+  }
+
+  playTeleOutSound() {
+    PlayAndRecordSound(sndExit)
+  }
+
   update(dir) {
     const success = pushableUpdate(this, dir)
     maybeFakeWin()
@@ -362,6 +378,10 @@ class Mini extends Actor {
         ctx.fillRect(screenX, screenY, pxSize, pxSize)
       })
     }
+  }
+
+  playMoveSound() {
+    PlayAndRecordSound(sndShove)
   }
 
   color() {
@@ -420,6 +440,10 @@ class Crate extends Actor {
     this.collect()
   }
 
+  playMoveSound() {
+    PlayAndRecordSound(sndShove)
+  }
+
   collect() {
     this.setDead(true)
     RecordChange({ // hack to talk to the sound system
@@ -464,7 +488,12 @@ function maybeTeleOut(that, dir) {
   }
 }
 
+let hack_tele_count = 0
 function maybeTeleIn(that, dir) {
+  hack_tele_count += 1
+  if (hack_tele_count > 1000) {
+    assert(0, "infinite mini recursion")
+  }
   // if that is standing next to a Mini and is moving into it (dir)
   //   move that into the mini. (one tile before the actual entrance)
   // else do nothing
@@ -498,7 +527,7 @@ function pushableUpdate(that, dir) {
 
   if (maybeTeleOut(that, dir)) {
     if (pushableUpdate(that, dir)) {
-      if (that === player) PlayAndRecordSound(sndExit)
+      that.playTeleOutSound()
       return true
     } else {
       // undo
@@ -514,7 +543,7 @@ function pushableUpdate(that, dir) {
 
   if (maybeTeleIn(that, dir)) {
     if (pushableUpdate(that, dir)) {
-      if (that === player) PlayAndRecordSound(sndEnter)
+      that.playTeleInSound()
       return true
     } else {
       // undo
@@ -528,11 +557,7 @@ function pushableUpdate(that, dir) {
   // well, if there was either no opening, or we failed to get into the opening
   if (mini && !liftedPushableUpdate(that, mini, dir)) { return false }
 
-  if (that.constructor === Player) {
-    PlayAndRecordSound(sndWalk)
-  } else if (that.constructor === Crate || that.constructor === Mini) {
-    PlayAndRecordSound(sndShove)
-  }
+  that.playMoveSound()
   that.setPos(nextPos)
   return true
 }

@@ -1,0 +1,43 @@
+levelData['pdox'] = {
+  tileData: `
+    level @Red
+    xxxxxxxx
+    x.xxxx.x
+    x......x
+    x......x
+    ........
+    x......x
+    x......x
+    xxxxxxxx
+
+    level @Blue
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    ........
+    x......x
+    x.xxxx.x
+    xxxxxxxx
+
+    level @Beige
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+  `,
+  actorData: `
+   Mini 2 20 Red
+   Mini 3 21 Red
+   Mini 7 4 Blue
+   Mini 7 12 Red
+   Player 4 20
+  `,
+  frameStackData: `
+    Beige
+  `,
+}
