@@ -21,9 +21,19 @@ function singleButtons() {
   enableHeldButtons = false
 }
 
+function registerLevelCodeListener() {
+  levelCodeInput.addEventListener("keydown", (e) => {
+    if (e.code === "Enter") {
+      let name = levelCodeInput.value.toLowerCase()
+      if (!name) { name = "orig" }
+      if (!loadLevel(name)) { levelCodeInput.value = "" }
+    }
+  })
+}
+
 function registerKeyListeners() {
-  const keyRepeatTimeout = 125
-  let heldDir = null
+  const holdIntervalLength = 150
+  let heldDirs = []
   let holdInterval
   const keyDirMap = {
     "KeyD": 0,
@@ -38,35 +48,42 @@ function registerKeyListeners() {
     "KeyY": 5,
   }
   function onKeyHold() {
-    ProcessInput(heldDir)
+    const dir = back(heldDirs)
+    if (dir === undefined) {
+      resetHoldInterval(false)
+      return
+    }
+    ProcessInput(dir)
   }
   function resetHoldInterval(start=true) {
     clearInterval(holdInterval)
     if (!start) { return }
     onKeyHold()
     if (!enableHeldButtons) { return }
-    holdInterval = setInterval(onKeyHold, keyRepeatTimeout)
+    holdInterval = setInterval(onKeyHold, holdIntervalLength)
   }
   function onKeyDown(e) {
     if (e.code === "KeyR") {
+      resetHoldInterval(false)
       reset()
       Raf()
-    }
-    if (e.code === "KeyP") {
+    } else if (e.code === "KeyP") {
       recordingToggle()
-    }
+    } else {
+      const dir = keyDirMap[e.code]
+      if (dir === undefined) { return }
 
-    const dir = keyDirMap[e.code]
-    if (dir === undefined) { return }
-    heldDir = dir
-    resetHoldInterval()
+      if (!heldDirs.includes(dir)) {
+        heldDirs.push(dir)
+      }
+
+      resetHoldInterval()
+    }
   }
   function onKeyUp(e) {
     const dir = keyDirMap[e.code]
     if (dir === undefined) { return }
-    if (heldDir === dir) {
-      resetHoldInterval(false)
-    }
+    heldDirs = heldDirs.filter(d=>d!==dir)
   }
   canvas2.addEventListener("keydown", e => {
     if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") {
@@ -239,13 +256,20 @@ function Raf() {
   requestAnimationFrame(redraw)
 }
 
-function registerLevelCodeListener() {
-  levelCodeInput.addEventListener("keydown", (e) => {
-    if (e.code === "Enter") {
-      levelName = levelCodeInput.value
-      reset(levelName)
-    }
-  })
+let currentLevelName
+function reset() {
+  const success = loadLevel(currentLevelName)
+  assert(success)
+}
+function loadLevel(levelName) {
+  if (!ImportLevel(levelName)) { return false }
+  currentLevelName = levelName
+  InitGame()
+  canvas2.focus()
+  scrollTo(0, 0)
+
+  Raf()
+  return true
 }
 
 function init() {
@@ -255,21 +279,8 @@ function init() {
   registerLevelCodeListener()
   registerKeyListeners()
   registerMouseListeners()
-  reset()
+  loadLevel('orig')
 
   // godmodeOn()
 }
-
-function reset(levelName) {
-  if (!levelName) { levelName = "orig" }
-  levelName = levelName.toLowerCase()
-  levelCodeInput.value = levelName
-  LoadLevel(levelName)
-  InitGame()
-  canvas2.focus()
-  scrollTo(0, 0)
-
-  Raf()
-}
-
 window.onload = init

@@ -9,11 +9,11 @@ let actors
 let taggedActors // keep these around so we can reserialize them later
 let savedFrameStack
 
-function LoadLevel(name) {
+function ImportLevel(name) {
   console.log("Loading level", name)
   if (!levelData[name]) {
     console.warn("level not found:", name)
-    return
+    return false
   }
   const { tileData, actorData, frameStackData } = preloadData(name)
   importTiles(tileData)
@@ -21,6 +21,7 @@ function LoadLevel(name) {
   importActors(actorData)
   player = allActors(Player)[0]
   importFrameStack(frameStackData)
+  return true
 }
 
 function preloadData(name) {
