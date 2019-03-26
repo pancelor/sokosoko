@@ -72,6 +72,11 @@ function getLevelAt(pos) {
   return levels.find(l=>l.begin <= pos.y && pos.y < l.end)
 }
 
+// function getLevelTileName(level, type) {
+//   assert(type === "Wall" || type === "Floor")
+//   return `img${level.name}${type}`
+// }
+
 function getTile(p) {
   if (inbounds(p)) {
     return tiles[p.y][p.x]
@@ -84,6 +89,20 @@ function setTile(p, name) {
   if (inbounds(p)) {
     tiles[p.y][p.x] = name
   }
+}
+
+function setTileWall(p) {
+  let name = getTile(p)
+  assert(name)
+  name = name.replace("Floor", "Wall")
+  setTile(p, name)
+}
+
+function setTileFloor(p) {
+  let name = getTile(p)
+  assert(name)
+  name = name.replace("Wall", "Floor")
+  setTile(p, name)
 }
 
 function SaveLevel(name) {

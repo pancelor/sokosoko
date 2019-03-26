@@ -47,6 +47,8 @@ function registerKeyListeners() {
       recordingToggle()
     } else if (e.code === "KeyM") {
       muteToggle()
+    } else if (e.code === "Space") {
+      if (godmode) editingTiles = !editingTiles
     } else {
       const dir = keyDirMap[e.code]
       if (dir === undefined) { return }
@@ -76,6 +78,10 @@ function registerKeyListeners() {
 
     if (e.ctrlKey || e.metaKey) {
       // don't preventDefault on keyboard shortcuts
+      return false
+    }
+    if (e.code === "Tab") {
+      // let user tab out to level code input
       return
     }
 
@@ -192,41 +198,57 @@ function mouseMove({e, worldPos}) {
   mousepos = worldPos
 }
 
+let editingTiles = false
 function _godmodeMouseClick(e, worldPos) {
-  if (e.button === 0) {
-    // left click: paste (or move old pasted thing)
-    if (!storedActor) { return }
-    storedActor.setPos(worldPos)
-    storedActor.setDead(false)
-  } else if (e.button === 1) {
-    // middle click: copy
-    storedActor = findActor(null, worldPos)
-    if (!storedActor) { return }
-    storedActor = Actor.clone(storedActor)
-  } else if (e.button === 2) {
-    // right click: cut
-    storedActor = findActor(null, worldPos)
-    if (!storedActor) { return }
-    storedActor.die()
-  } else { assert(0, "unknown mouse button") }
+  if (editingTiles) {
+    if (e.button === 0) {
+      setTileWall(worldPos)
+    } else if (e.button === 2) {
+      setTileFloor(worldPos)
+    }
+  } else {
+    // assert we're editing actors
+    if (e.button === 0) {
+      // left click: paste (or move old pasted thing)
+      if (!storedActor) { return }
+      storedActor.setPos(worldPos)
+      storedActor.setDead(false)
+      storedActor = null
+    } else if (e.button === 1) {
+      // middle click: copy
+      storedActor = findActor(null, worldPos)
+      if (!storedActor) { return }
+      storedActor = Actor.clone(storedActor)
+    } else if (e.button === 2) {
+      // right click: cut
+      storedActor = findActor(null, worldPos)
+      if (!storedActor) { return }
+      storedActor.die()
+    } else { assert(0, "unknown mouse button") }
+  }
 }
 
 function drawGodmode(ctx) {
   if (!godmode) { return }
-  if (!storedActor) { return }
+  if (editingTiles) {
+    ctxWith(ctx, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
+      ctx.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
+    })
+  } else {
+    if (!storedActor) { return }
 
-  // mark storedActor
-  const { x, y } = storedActor.pos
-  ctxWith(ctx, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
-    ctx.fillRect(x*tileSize, y*tileSize, tileSize, tileSize)
-  })
+    // mark storedActor
+    const { x, y } = storedActor.pos
+    ctxWith(ctx, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
+      ctx.fillRect(x*tileSize, y*tileSize, tileSize, tileSize)
+    })
 
-  // mark mousepos
-  drawImg(ctx, storedActor.img, mousepos)
-  ctxWith(ctx, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
-    ctx.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
-  })
-
+    // mark mousepos
+    drawImg(ctx, storedActor.img, mousepos)
+    ctxWith(ctx, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
+      ctx.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
+    })
+  }
 }
 
 async function redraw() {
@@ -264,8 +286,14 @@ function devmodeInit() {
 
 function init() {
   RunTests()
-  canvas.tabIndex = -1 // enable key listeners / focus on the canvases
-  canvas2.tabIndex = -1
+
+  // enable key listeners / focus on the canvases
+  // probably tabIndex = -1 makes more sense
+  // but 0 works on my machine to tab and shift-tab
+  // between canvas2 and levelCodeInput
+  canvas.tabIndex = 0
+  canvas2.tabIndex = 0
+
   registerLevelCodeListener()
   registerKeyListeners()
   registerMouseListeners()

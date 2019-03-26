@@ -34,14 +34,14 @@ function drawImg(ctx, img, tilePos) {
 
 function drawLine(ctx, p1, p2) {
   ctx.beginPath()
-  ctx.moveTo(p1.canvasX(), p1.canvasY())
-  ctx.lineTo(p2.canvasX(), p2.canvasY())
+  ctx.moveTo(p1.x*tileSize, p1.y*tileSize)
+  ctx.lineTo(p2.x*tileSize, p2.y*tileSize)
   ctx.stroke()
 }
 
 function drawCircle(ctx, p, r) {
   ctx.beginPath()
-  ctx.arc(p.canvasX(), p.canvasY(), r, 0, 2 * Math.PI)
+  ctx.arc(p.x*tileSize, p.y*tileSize, r, 0, 2 * Math.PI)
   ctx.fill()
 }
 

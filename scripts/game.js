@@ -484,7 +484,8 @@ function maybeTeleOut(that, dir) {
     const oldFrameStack = that.frameStack
 
     const parent = that.frameStack.parent
-    that.setPos(that.frameStack.mini().pos)
+    const mini = that.frameStack.mini()
+    that.setPos(mini.pos)
     that.setFrameStack(parent)
 
     // that has now teleported; try to move
@@ -492,6 +493,14 @@ function maybeTeleOut(that, dir) {
       that.playTeleOutSound()
       return true
     } else {
+      // pretty sure this is a bad idea; the physics don't work
+      // (e.g. if `that` is pushing against a wall, the normal force gets
+      // transmitted to the player inside the mini, not the mini itself)
+      // // try to counter-push the mini we're teleporting out of
+      // if (lifted(that, mini, ()=>pushableUpdate(mini, oppDir(dir)))) {
+      //   return true
+      // }
+
       // undo
       that.setPos(oldPos)
       that.setFrameStack(oldFrameStack)
@@ -544,7 +553,8 @@ function maybeConsume(that, food, dir) {
   if (maybeTeleIn(food, oppDir(dir))) {
     that.playMoveSound()
     const newMiniPos = posDir(that.pos, dir)
-    if (findActor([Crate, Mini, Player], newMiniPos)) {
+    const wtf = findActor([Crate, Mini], newMiniPos)
+    if (wtf) {
       // this is _very_ weird; eating the food has pushed some stuff around
       // in a way such that the food's old position is occupied again.
       // (e.g. green or purple/yellow room of level_newp.dat)
@@ -562,7 +572,7 @@ function maybeConsume(that, food, dir) {
       // edit: god im playing with it more and everything is so fucky;
       // return false here is no good... but return true isn't great either
 
-      return false
+      wtf.die()
     }
     that.setPos(newMiniPos)
     return true
