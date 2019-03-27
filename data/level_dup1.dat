@@ -1,0 +1,90 @@
+levelData['kill'] = {
+  tileData: `
+    level @Red
+    xxx.xxxx
+    x......x
+    x......x
+    .....x..
+    xxxxxxxx
+    x.xxx..x
+    x..xxx.x
+    xxxxxxxx
+
+    level @Beige
+    xxxxxxxx
+    xxxx...x
+    xxxx...x
+    xxxxxx.x
+    x......x
+    x.x.x..x
+    x.x.xxxx
+    xxxxxxxx
+
+    level @Blue
+    xxx.xxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    level @Green
+    xxxxxxxx
+    xx..xxxx
+    x..xxxxx
+    xxxxx.xx
+    xxx...xx
+    xxx.xxxx
+    xxxxx...
+    xxxxx.xx
+
+    level @Purple
+    xxxxxx.x
+    x......x
+    x.xxxxxx
+    x......x
+    xxxxx..x
+    x...xx.x
+    x......x
+    xxxxxxxx
+
+    level @Yellow
+    xxxxxx.x
+    xx.....x
+    x...x...
+    x...x.xx
+    x...x.xx
+    x...x.xx
+    xxxxx..x
+    xxxxxxxx
+  `,
+  actorData: `
+    Mini 3 14 Yellow
+    Mini 1 14 Purple @m3
+    Mini 5 33 Blue
+    Mini 2 38 Blue @mt1
+    Mini 7 3 Red
+    Mini 1 38 Blue
+    Mini 3 19 Blue @mt2
+    Flag 5 9
+    Crate 2 43 0
+    Mini 3 45 Red @m2
+    Mini 1 45 Red
+    Mini 2 45 Red
+    Crate 3 33 0
+    Crate 4 28 0
+    Player 3 21
+    Mini 5 13 Blue
+    Mini 6 13 Blue
+    Crate 2 33 0
+    Crate 5 12 0
+  `,
+  frameStackData: `
+    Beige
+    m3
+    mt1
+    mt2
+  `,
+}
