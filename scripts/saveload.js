@@ -241,7 +241,7 @@ function exportFrameStackString() {
   return lines.join("\n")
 }
 
-function ExportLevelString(name) {
+function Export(name) {
   const lines = []
   lines.push(`levelData['${name}'] = {`)
   lines.push(exportTilesString())

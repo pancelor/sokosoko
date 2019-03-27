@@ -107,7 +107,7 @@ function setTileFloor(p) {
 
 function SaveLevel(name) {
   name = name.toLowerCase()
-  downloadFile(`level_${name}.dat`, ExportLevelString(name))
+  downloadFile(`level_${name}.dat`, Export(name))
 }
 
 function LevelOpenings(level) {
