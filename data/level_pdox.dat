@@ -20,7 +20,7 @@ levelData['pdox'] = {
     x.xxxx.x
     xxxxxxxx
 
-    level @Beige
+    level @White
     xxxxxxxx
     x......x
     x......x
@@ -38,6 +38,6 @@ levelData['pdox'] = {
    Player 4 20
   `,
   frameStackData: `
-    Beige
+    White
   `,
 }

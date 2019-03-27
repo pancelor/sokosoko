@@ -10,7 +10,7 @@ levelData['empt'] = {
     x......x
     xxxxxxxx
 
-    level @Beige
+    level @White
     xxxxxxxx
     x......x
     x......x
@@ -94,6 +94,6 @@ levelData['empt'] = {
     Crate 1 9 0
   `,
   frameStackData: `
-    Beige
+    White
   `,
 }

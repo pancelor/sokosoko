@@ -50,7 +50,7 @@ levelData['wack'] = {
     x......x
     xxxxxxxx
 
-    level @Beige
+    level @White
     xxxxxxxx
     x......x
     x......x
@@ -84,7 +84,7 @@ levelData['wack'] = {
   `,
 
   frameStackData: `
-    Beige
+    White
     miniOuter
     miniBlack2
     miniGreen

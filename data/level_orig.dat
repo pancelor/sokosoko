@@ -50,7 +50,7 @@ levelData['orig'] = {
     x......x
     xxxxxxxx
 
-    level @Beige
+    level @White
     xxxxxxxx
     x......x
     xx....xx
@@ -75,7 +75,7 @@ levelData['orig'] = {
     Player 1 14
   `,
   frameStackData: `
-    Beige
+    White
     miniYellow
   `,
 }

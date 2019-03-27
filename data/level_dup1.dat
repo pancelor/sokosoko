@@ -10,7 +10,7 @@ levelData['dup1'] = {
     x......x
     xxxxxxxx
 
-    level @Beige
+    level @White
     xxxxxxxx
     xxxx...x
     xxxx...x
@@ -75,6 +75,6 @@ levelData['dup1'] = {
     Mini 4 14 Blue
   `,
   frameStackData: `
-    Beige
+    White
   `,
 }

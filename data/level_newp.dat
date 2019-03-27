@@ -10,7 +10,7 @@ levelData['newp'] = {
     x.xxxx.x
     xxxxxxxx
 
-    level @Beige
+    level @White
     xxxxxxxx
     x......x
     x......x
@@ -86,11 +86,11 @@ levelData['newp'] = {
     Mini 6 36 Yellow
     Crate 7 36 0
     Crate 7 44 0
-    Mini 6 44 Beige
+    Mini 6 44 White
     Crate 5 44 0
     Mini 4 44 Purple
   `,
   frameStackData: `
-    Beige
+    White
   `,
 }
