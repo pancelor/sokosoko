@@ -525,7 +525,7 @@ function maybeTeleIn(that, dir) {
   // else do nothing
   // returns whether the tele happened
   assert(that.frameStack)
-  assert(that.frameStack.length() < 1000, "infinite mini recursion") // hacky check; check it better and delete `that`, i think
+  assert(that.frameStack.length() < 1000, "HACK infinite mini recursion") // hacky check; check it better and delete `that`, i think
 
   const nextPos = posDir(that.pos, dir)
   const mini = findActor(Mini, nextPos)
@@ -534,6 +534,7 @@ function maybeTeleIn(that, dir) {
     if (op) {
       if (hack_seen_teles.has(mini.id)) {
         console.warn('infinite mini recursion detected')
+        PlayAndRecordSound(sndInfinite)
         that.die()
         return true
       }
@@ -586,6 +587,7 @@ function maybeConsume(that, food, dir) {
       // a cop out and a bad experience as a player imo)
 
       console.warn("infinite nastiness occurs") // this doesn't even catch everything ....
+      PlayAndRecordSound(sndInfinite)
       // edit: god im playing with it more and everything is so fucky;
       // return false here is no good... but return true isn't great either
 
