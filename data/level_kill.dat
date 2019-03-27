@@ -2,12 +2,12 @@ levelData['kill'] = {
   tileData: `
     level @Red
     xxx.xxxx
-    x......x
-    x......x
+    x.....xx
+    x.x....x
     .....x..
-    xxxxxxxx
+    xxxxxx.x
     x.xxx..x
-    x..xxx.x
+    xxx.xx.x
     xxxxxxxx
 
     level @Beige
@@ -22,32 +22,32 @@ levelData['kill'] = {
 
     level @Blue
     x.xxxxxx
-    x.....xx
-    xxxxx..x
+    x......x
+    xxxxxx.x
     x...x..x
     ....x...
-    xxx....x
+    xxx.x..x
     xxx....x
     xxxxxxxx
 
     level @Green
     xxxxxxxx
-    xx..xxxx
-    x..xxxxx
-    xxxxx.xx
     xxx...xx
-    xxx.xxxx
-    xxxxx...
-    xxxxx.xx
+    x......x
+    x.xx...x
+    x......x
+    ...x...x
+    xx.xxxxx
+    xx.xxxxx
 
     level @Purple
     xxxxxx.x
     x......x
     x.xxxxxx
-    x......x
-    xxxxx..x
-    x...xx.x
-    x......x
+    x.x...xx
+    x.x...xx
+    x.x...xx
+    x....xxx
     xxxxxxxx
 
     level @Yellow
@@ -64,7 +64,7 @@ levelData['kill'] = {
     Mini 5 33 Blue
     Mini 6 20 Blue
     Mini 7 3 Red
-    Mini 1 38 Blue @m5
+    Mini 3 36 Blue @m5
     Crate 3 21 0
     Mini 6 21 Blue
     Crate 5 43 1
@@ -72,13 +72,11 @@ levelData['kill'] = {
     Mini 5 45 Red
     Mini 4 45 Red
     Crate 3 33 0
-    Crate 4 28 0
-    Player 5 36
+    Player 1 36
     Crate 2 33 0
     Mini 2 19 Yellow
-    Mini 5 12 Blue
-    Mini 3 13 Purple @m6
-    Flag 3 11
+    Mini 4 13 Purple @m6
+    Flag 3 10
   `,
   frameStackData: `
     Beige
