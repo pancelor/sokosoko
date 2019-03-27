@@ -40,7 +40,7 @@ function registerKeyListeners() {
   }
   function onKeyDown(e) {
     if (e.code === "KeyR") {
-      if (godmode) return // too confusing; ctrl-r instead pls
+      if (devmode) return // too confusing; ctrl-r instead pls
       clearInterval(holdInterval)
       reset()
       Raf()
@@ -49,7 +49,7 @@ function registerKeyListeners() {
     } else if (e.code === "KeyM") {
       muteToggle()
     } else if (e.code === "Space") {
-      if (godmode) {
+      if (devmode) {
         editingTiles = !editingTiles
         if (editingTiles) storedActor = null
         Raf()
@@ -152,7 +152,7 @@ function registerMouseListeners() {
   canvas.addEventListener("mousemove", (e) => {
     const info = translateMouseFromMap(e)
     info && mouseMove(info)
-    if (godmode) {
+    if (devmode) {
       Raf()
     }
 
@@ -162,7 +162,7 @@ function registerMouseListeners() {
   canvas2.addEventListener("mousemove", (e) => {
     const info = translateMouseFromView(e)
     info && mouseMove(info)
-    if (godmode) {
+    if (devmode) {
       Raf()
     }
 
@@ -201,9 +201,9 @@ function mouseClick({e, worldPos}) {
   }
   console.log(parts.join(' '))
 
-  if (godmode) {
+  if (devmode) {
     StartEpoch()
-    _godmodeMouseClick(e, worldPos)
+    _devmodeMouseClick(e, worldPos)
     EndEpoch()
   }
 }
@@ -211,7 +211,7 @@ function mouseClick({e, worldPos}) {
 let mousepos
 function mouseMove({e, worldPos}) {
   mousepos = worldPos
-  if (godmode) {
+  if (devmode) {
     const LMB = e.buttons & (1<<0)
     const RMB = e.buttons & (1<<1)
     if (editingTiles) {
@@ -225,7 +225,7 @@ function mouseMove({e, worldPos}) {
 }
 
 let editingTiles = false
-function _godmodeMouseClick(e, worldPos) {
+function _devmodeMouseClick(e, worldPos) {
   if (editingTiles) {
     if (e.button === 0) {
       setTileWall(worldPos)
@@ -258,8 +258,8 @@ function _godmodeMouseClick(e, worldPos) {
   }
 }
 
-function drawGodmode(ctx) {
-  if (!godmode) { return }
+function drawDevmode(ctx) {
+  if (!devmode) { return }
   if (editingTiles) {
     ctxWith(ctx, {globalAlpha: 0.10, fillStyle: "white"}, ()=>{
       ctx.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
@@ -285,7 +285,7 @@ async function redraw() {
   const ctx = canvas.getContext('2d')
   ctx.imageSmoothingEnabled = false
   DrawGame(ctx)
-  drawGodmode(ctx)
+  drawDevmode(ctx)
   await DrawView(ctx)
 }
 
@@ -310,7 +310,7 @@ function loadLevel(levelName) {
 }
 
 function devmodeInit() {
-  godmodeOn()
+  devmodeOn()
   loadLevel('kill')
 }
 
@@ -329,6 +329,6 @@ function init() {
   registerMouseListeners()
   reset('orig')
 
-  // devmodeInit()
+  if (window.location.hash.match(/\bdev\b/)) devmodeInit()
 }
 window.onload = init

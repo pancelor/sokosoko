@@ -418,13 +418,13 @@ const win = (dt=1) => playSolution("win", dt)
 const bonus = (dt=1) => playSolution("bonus", dt)
 const cheese = (dt=50) => playSolution("cheese", dt)
 
-let godmode = false
-function godmodeOn() {
-  godmode = true
+let devmode = false
+function devmodeOn() {
+  devmode = true
   mapOn()
 }
-function godmodeOff() {
-  godmode = false
+function devmodeOff() {
+  devmode = false
   mapOff()
 }
 
