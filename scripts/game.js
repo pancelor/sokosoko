@@ -533,7 +533,7 @@ function maybeTeleIn(that, dir) {
     const op = LevelOpenings(mini.level())[oppDir(dir)]
     if (op) {
       if (hack_seen_teles.has(mini.id)) {
-        console.warn('infinite mini recursion detected')
+        console.warn('infinite mini recursion detected; killing', serialize(that))
         PlayAndRecordSound(sndInfinite)
         that.die()
         return true
