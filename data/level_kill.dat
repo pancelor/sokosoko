@@ -21,24 +21,24 @@ levelData['kill'] = {
     xxxxxxxx
 
     level @Blue
-    xxxxx.xx
-    x...x.xx
-    ....x...
-    xxx.x..x
-    xxx.xx.x
-    xxx.xx.x
-    xxx....x
+    xxxxxx.x
+    x....x.x
+    .....x..
+    xxxx.x.x
+    xxxx.x.x
+    xxxx...x
+    xxxxxxxx
     xxxxxxxx
 
     level @Green
-    xxxxxxxx
-    xxxxxxxx
-    xxxxxxxx
-    xxxx....
-    xxxx.x.x
-    .......x
-    xxxxxxxx
-    xxxxxxxx
+    xxxxx.xx
+    xxxxx.xx
+    xxxxx.xx
+    xxxxx...
+    xxxxx..x
+    xxxxx..x
+    xxxxx.xx
+    xxxxx.xx
 
     level @Purple
     xxxxxx.x
@@ -65,7 +65,7 @@ levelData['kill'] = {
     Mini 6 27 Blue
     Mini 7 3 Red
     Mini 3 37 Blue @m5
-    Crate 3 20 0
+    Crate 4 20 0
     Mini 6 28 Blue
     Crate 5 43 1
     Mini 6 45 Red @m2
@@ -74,10 +74,11 @@ levelData['kill'] = {
     Crate 3 33 0
     Player 1 36
     Crate 2 33 0
-    Mini 2 17 Yellow
+    Mini 3 17 Yellow
     Mini 4 13 Purple @m6
     Flag 3 10
-    Mini 6 18 Yellow
+    Mini 6 18 Green @m7
+    Crate 2 18 0
   `,
   frameStackData: `
     Beige
