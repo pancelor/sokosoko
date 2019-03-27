@@ -310,8 +310,10 @@ function loadLevel(levelName) {
 }
 
 function devmodeInit() {
-  devmodeOn()
-  loadLevel('kill')
+  const match = window.location.hash.match(/^(#(?<dev>dev))?(#(?<level>[\w\d_]+))?$/)
+  const { dev, level } = match.groups
+  if (level) loadLevel(level)
+  if (dev) devmodeOn()
 }
 
 function init() {
@@ -329,6 +331,6 @@ function init() {
   registerMouseListeners()
   reset('orig')
 
-  if (window.location.hash.match(/\bdev\b/)) devmodeInit()
+  devmodeInit()
 }
 window.onload = init
