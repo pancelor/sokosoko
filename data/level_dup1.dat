@@ -4,10 +4,10 @@ levelData['dup1'] = {
     xxx.xxxx
     x......x
     x......x
-    .....x..
-    xxxxxxxx
-    x.xxx..x
-    x..xxx.x
+    x......x
+    x......x
+    x......x
+    x......x
     xxxxxxxx
 
     level @Beige
@@ -16,8 +16,8 @@ levelData['dup1'] = {
     xxxx...x
     xxxxxx.x
     x......x
-    x.x.x..x
-    x.x.xxxx
+    x......x
+    x......x
     xxxxxxxx
 
     level @Blue
@@ -31,17 +31,17 @@ levelData['dup1'] = {
     xxxxxxxx
 
     level @Green
+    xx.xxxxx
+    x...xxxx
+    x...x..x
+    x...x..x
+    xxxx...x
     xxxxxxxx
-    xx..xxxx
-    x..xxxxx
-    xxxxx.xx
-    xxx...xx
-    xxx.xxxx
-    xxxxx...
-    xxxxx.xx
+    xxxxxxxx
+    xxxxxxxx
 
     level @Purple
-    xxxxxx.x
+    xxx.xxxx
     x......x
     x......x
     x......x
@@ -61,26 +61,20 @@ levelData['dup1'] = {
     xxxxxxxx
   `,
   actorData: `
-    Mini 3 14 Yellow
-    Mini 1 14 Purple @m3
-    Mini 2 38 Blue @mt1
-    Mini 7 3 Red
-    Mini 3 19 Blue @mt2
+    Mini 3 3 Red
+    Mini 3 19 Green
     Flag 5 9
     Crate 2 43 0
-    Mini 3 45 Red @m2
+    Mini 3 45 Red
     Mini 1 45 Red
     Mini 2 45 Red
     Crate 4 28 0
-    Player 3 21
-    Mini 5 13 Blue
-    Mini 6 13 Blue
-    Crate 5 12 0
+    Player 5 13
+    Mini 2 26 Blue
+    Mini 6 14 Red
+    Mini 4 14 Blue
   `,
   frameStackData: `
     Beige
-    m3
-    mt1
-    mt2
   `,
 }
