@@ -12,37 +12,37 @@ levelData['kill'] = {
 
     level @Beige
     xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
     xxxxxxxx
+    xx....xx
+    xx..xxxx
+    xx..x.xx
+    xx..x.xx
+    xxxxx.xx
+    xxxxx.xx
 
     level @Blue
     xxxxxx.x
     x....x.x
     .....x..
     xxxx.x.x
-    xxxx.x.x
-    xxxx...x
+    xx.x.x.x
+    xx.....x
     xxxxxxxx
     xxxxxxxx
 
     level @Green
-    xxxxx.xx
-    xxxxx.xx
-    xxxxx.xx
+    xxx.xxxx
+    xxx.xxxx
+    xxx...xx
     xxxxx...
-    xxxxx..x
-    xxxxx..x
-    xxxxx.xx
+    x.xxx..x
+    x.xxx..x
+    x.....xx
     xxxxx.xx
 
     level @Purple
-    xxxxxx.x
-    x......x
+    xx.xxxxx
+    ........
     x.xxxxxx
     x.xx...x
     x.x..x.x
@@ -59,6 +59,16 @@ levelData['kill'] = {
     ...x...x
     xx.xxxxx
     xx.xxxxx
+
+    level @Black
+    xxxxxxxx
+    xxxxxxxx
+    xx...xxx
+    x....xxx
+    x....xxx
+    x...xxxx
+    xx.xxxxx
+    xx.xxxxx
   `,
   actorData: `
     Mini 5 33 Blue
@@ -71,14 +81,19 @@ levelData['kill'] = {
     Mini 6 45 Red @m2
     Mini 5 45 Red
     Mini 4 45 Red
-    Crate 3 33 0
-    Player 1 36
-    Crate 2 33 0
+    Player 3 33
     Mini 3 17 Yellow
-    Mini 4 13 Purple @m6
-    Flag 3 10
+    Mini 2 13 Purple @m6
+    Flag 5 10
     Mini 6 18 Green @m7
     Crate 2 18 0
+    Mini 2 12 Black
+    Crate 2 32 0
+    Mini 4 52 Purple
+    Crate 0 33 0
+    Crate 2 33 0
+    Mini 3 12 Green
+    Mini 1 28 Beige
   `,
   frameStackData: `
     Beige

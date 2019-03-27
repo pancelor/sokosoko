@@ -249,6 +249,7 @@ function _devmodeMouseClick(e, worldPos) {
       storedActor = findActor(null, worldPos)
       if (!storedActor) { return }
       storedActor = Actor.clone(storedActor)
+      storedActor.die()
     } else if (e.button === 2) {
       // right click: cut
       storedActor = findActor(null, worldPos)
