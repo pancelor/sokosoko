@@ -188,19 +188,18 @@ function translateMouseFromView(e) {
 
 let storedActor = null
 function mouseClick({e, worldPos}) {
-  const room = getRoomAt(worldPos)
-  const roomPos = worldPos.toRoomPos(room)
-  const a = findActor(null, worldPos)
-  const parts = []
-  parts.push(`${room.name}(${room.id}): ${worldPos.str()}`)
-  parts.push(`(local: ${roomPos.str()})`)
-  if (a) {
-    parts.push(`${a.constructor.name}#${a.id}`)
-    if (a.tag) {
-      parts.push(`@${a.tag}`)
-    }
-  }
-  console.log(parts.join(' '))
+  // const roomPos = worldPos.toRoomPos()
+  // const a = findActor(null, worldPos)
+  // const parts = []
+  // parts.push(`${room.name}(${room.id}): ${worldPos.str()}`)
+  // parts.push(`(local: ${roomPos.str()})`)
+  // if (a) {
+  //   parts.push(`${a.constructor.name}#${a.id}`)
+  //   if (a.tag) {
+  //     parts.push(`@${a.tag}`)
+  //   }
+  // }
+  // console.log(parts.join(' '))
 
   if (devmode) {
     StartEpoch()

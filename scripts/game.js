@@ -27,13 +27,28 @@ class Pos {
     return new Pos({x: localPos.x, y: localPos.y + room.begin})
   }
 
-  toRoomPos(room) {
+  room() { // todo: import logic to here
+    return getRoomAt(this)
+  }
+
+  toRoomPos() {
     // takes a world pos and returns a room pos
-    return new Pos({x: this.x, y: this.y - room.begin})
+    return new Pos({x: this.x, y: this.y - this.room().begin})
   }
 
   str() {
     return `(${this.x}, ${this.y})`
+  }
+
+  roomSerialize() {
+    const roomPos = this.toRoomPos()
+    return `${this.room().name} ${roomPos.x} ${roomPos.y}`
+  }
+
+  static roomDeserialize(name, x, y) {
+    const room = roomFromName(name)
+    assert(room, `Room "${name} doesn't exist`)
+    return Pos.fromRoom(room, pcoord(int(x), int(y)))
   }
 
   serialize() {
@@ -69,13 +84,11 @@ class FrameBase {
   }
 
   str() {
-    const room = getRoom(this.roomId)
-    return `<base; ${room.name}>`
+    return `<base; ${this.room().name}>`
   }
 
   serialize() {
-    const room = getRoom(this.roomId)
-    return `${this.constructor.name} ${room.name}`
+    return `${this.constructor.name} ${this.room().name}`
   }
 }
 
@@ -387,10 +400,12 @@ class Actor {
   }
 
   serialize() {
-    return `${this.constructor.name} ${this.pos.x} ${this.pos.y}`
+    const tag = this.tag ? ` @${this.tag}` : ""
+    return `${this.constructor.name} ${this.pos.roomSerialize()}${tag}`
   }
 
   static deserialize(line) {
+    // TODO: we dont want to do deser until next commit
     const [type, x, y] = line.split(' ')
     assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))
@@ -465,7 +480,7 @@ class Mini extends Actor {
 
   roomPos() {
     // the position of this mini within its containing room
-    return this.pos.toRoomPos(getRoomAt(this.pos))
+    return this.pos.toRoomPos()
   }
 
   str() {
@@ -473,10 +488,12 @@ class Mini extends Actor {
   }
 
   serialize() {
-    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${this.room().name}`
+    const tag = this.tag ? ` @${this.tag}` : ""
+    return `${this.constructor.name} ${this.pos.roomSerialize()} ${this.room().name}${tag}`
   }
 
   static deserialize(line) {
+    // TODO
     const [type, x, y, roomName] = line.split(' ')
     assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))
@@ -515,11 +532,13 @@ class Crate extends Actor {
   }
 
   serialize() {
-    const extra = this.special ? "1" : "0"
-    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${extra}`
+    const spStr = this.special ? "1" : "0"
+    const tag = this.tag ? ` @${this.tag}` : ""
+    return `${this.constructor.name} ${this.pos.roomSerialize()} ${spStr}${tag}`
   }
 
   static deserialize(line) {
+    // todo
     const [type, x, y, special] = line.split(' ')
     assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))

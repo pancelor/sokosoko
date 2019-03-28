@@ -483,6 +483,13 @@ function viewOffset() {
   return pcoord(4, 4)
 }
 
+function reserializeAllLevels() {
+  for (const { name } of levelData) {
+    assert(Import(name))
+    SaveLevel(name)
+  }
+}
+
 //
 // misc
 //

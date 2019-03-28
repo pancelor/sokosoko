@@ -100,6 +100,11 @@ function importTiles(tileData) {
     room.end = tiles.length // room lives in `tiles` from room.begin to room.end (not inclusive on `end`)
     assert(room.begin < room.end)
     rooms.push(room)
+
+    // TODO use this once saved coords arent global
+    // const row = []
+    // for (let i = 0; i < 8; i += 1) row.push("imgInternalXall")
+    // tiles.push(row)
   }
 }
 
@@ -222,8 +227,7 @@ function exportActorsString() {
       // mess with killing/reviving actors. but it lets undos work...
       // edit: wait no it doesn't really b/c you can't undo creating an actor (not easily)
     }
-    const tag = a.tag ? ` @${a.tag}` : ""
-    lines.push(`    ${a.serialize()}${tag}`)
+    lines.push(`    ${a.serialize()}`)
   }
   lines.push("  `,")
   return lines.join("\n")
