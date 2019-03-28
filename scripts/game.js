@@ -47,7 +47,7 @@ class Pos {
 
   static roomDeserialize(name, x, y) {
     const room = roomFromName(name)
-    assert(room, `Room "${name} doesn't exist`)
+    assert(room, `Room "${name}" doesn't exist`)
     return Pos.fromRoom(room, pcoord(int(x), int(y)))
   }
 
@@ -405,10 +405,9 @@ class Actor {
   }
 
   static deserialize(line) {
-    // TODO: we dont want to do deser until next commit
-    const [type, x, y] = line.split(' ')
+    const [type, rName, rx, ry] = line.split(' ')
     assertEqual(type, this.name)
-    const p = pcoord(int(x), int(y))
+    const p = Pos.roomDeserialize(rName, rx, ry)
     return new (this)(p)
   }
 }
@@ -493,12 +492,11 @@ class Mini extends Actor {
   }
 
   static deserialize(line) {
-    // TODO
-    const [type, x, y, roomName] = line.split(' ')
+    const [type, rName, rx, ry, innerRoomName] = line.split(' ')
     assertEqual(type, this.name)
-    const p = pcoord(int(x), int(y))
-    const room = roomFromName(roomName)
-    assert(room, `room "${roomName}" doesn't exist`)
+    const p = Pos.roomDeserialize(rName, rx, ry)
+    const room = roomFromName(innerRoomName)
+    assert(room, `room "${innerRoomName}" doesn't exist`)
     return new (this)(p, room.id, room.name)
   }
 }
@@ -538,10 +536,9 @@ class Crate extends Actor {
   }
 
   static deserialize(line) {
-    // todo
-    const [type, x, y, special] = line.split(' ')
+    const [type, rName, rx, ry, special] = line.split(' ')
     assertEqual(type, this.name)
-    const p = pcoord(int(x), int(y))
+    const p = Pos.roomDeserialize(rName, rx, ry)
     return new (this)(p, !!int(special))
   }
 }
