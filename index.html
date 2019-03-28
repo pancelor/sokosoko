@@ -5,7 +5,7 @@
   <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 </head>
 <body>
-  <canvas id="canvas2" width=512 height=512>
+  <canvas id="canvasView" width=512 height=512>
     Your browser doesn't support the canvas html element; sorry :(
   </canvas>
 
@@ -16,9 +16,8 @@
 
   <br>
 
-  <canvas id="canvas" width=32 height=32 style="display:none">
-    Your browser doesn't support the canvas html element; sorry :(
-  </canvas>
+  <canvas id="canvasMap" width=32 height=32 style="display:none"></canvas>
+  <canvas id="canvasMini" width=32 height=32 style="display:none"></canvas>
 
   <br>
 
@@ -49,10 +48,13 @@
 
   <div id="spritesList" style="display:none">
     <img src="./data/player.png" id="imgPlayer">
+    <img src="./data/player-mini.png" id="imgPlayerMini">
     <img src="./data/crate.png" id="imgCrate">
-    <img src="./data/crate-special.png" id="imgCrateSpecial">
-    <img src="./data/mini.png" id="imgMini">
+    <img src="./data/crate-mini.png" id="imgCrateMini">
+    <img src="./data/crate-special-mini.png" id="imgCrateSpecialMini">
+    <img src="./data/mini-placeholder.png" id="imgMiniPlaceholder">
     <img src="./data/flag.png" id="imgFlag">
+    <img src="./data/flag-mini.png" id="imgFlagMini">
   </div>
 
   <div id="tilesList" style="display:none">

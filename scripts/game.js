@@ -167,15 +167,14 @@ function destroyActor(a) { // hacky; don't use me
   actors.splice(ix, 1)
 }
 
-function DrawGame(ctx) {
-  DrawTiles(ctx)
-  drawActors(ctx)
+function DrawMinis(ctx) {
+  for (const m of allActors(Mini)) {
+    m.drawMini(ctx)
+  }
 }
 
-async function DrawView() {
-  const worldImg = await createImageBitmap(canvas)
-  const ctx = canvas2.getContext('2d')
-  ctx.imageSmoothingEnabled = false
+async function DrawView(ctx) {
+  const worldImg = await createImageBitmap(canvasMap)
   const innerFrame = player.frameStack
   const outerFrame = player.frameStack.parent
 
@@ -189,10 +188,10 @@ async function DrawView() {
     const dest = pcoord(4, 4).scale(tileSize)
     ctx.drawImage(worldImg,
       src.x, src.y, outerW, outerH,
-      0, 0, canvas2.width, canvas2.height
+      0, 0, canvasView.width, canvasView.height
     )
   } else {
-    const fillStyle = GetLevelColor(innerFrame.level())
+    const fillStyle = 'white' //innerFrame.level().name
     ctxWith(ctx, {fillStyle}, cls)
   }
 
@@ -213,7 +212,7 @@ async function DrawView() {
 
   // draw canvas border
   ctxWith(ctx, {strokeStyle: "black"}, () => {
-    ctx.strokeRect(0, 0, canvas2.width, canvas2.height)
+    ctx.strokeRect(0, 0, canvasView.width, canvasView.height)
   })
 
   if (checkWin()) {
@@ -223,19 +222,48 @@ async function DrawView() {
   }
 }
 
-function drawActors(ctx) {
+function DrawActors(ctx) {
   allActors().forEach(e=>e.draw(ctx))
+}
+
+function imgLookup(actor) {
+  const cst = actor.constructor
+  if (cst === Player) {
+    return imgPlayer
+  } else if (cst === Crate) {
+    return actor.special ? imgCrateSpecial : imgCrate
+  } else if (cst === Mini) {
+    return imgMiniPlaceholder
+  } else if (cst === Flag) {
+    return imgFlag
+  } else if (cst === FakeFlag) {
+    return imgFlag
+  } else {
+    assert(0, `Don't know img for ${cst.name}`)
+  }
+}
+function imgLookupMini(actor) {
+  const cst = actor.constructor
+  if (cst === Player) {
+    return imgPlayerMini
+  } else if (cst === Crate) {
+    return actor.special ? imgCrateSpecialMini : imgCrateMini
+  } else if (cst === Mini) {
+    return imgMiniPlaceholder
+  } else if (cst === Flag) {
+    return imgFlagMini
+  } else if (cst === FakeFlag) {
+    return imgFlagMini
+  } else {
+    assert(0, `Don't know img for ${cst.name}`)
+  }
 }
 
 class Actor {
   static id = 1 // a counter of ids to assign to actors as they're created
 
-  static img = null
-  // override `static img = ...` on subclasses
-
   constructor(pos) {
     this.pos = pos
-    this.img = this.constructor.img
 
     // get id
     this.id = Actor.id
@@ -244,13 +272,9 @@ class Actor {
     // note that actors might have a `tag` attribute, set by the level loader
   }
 
-  color(){
-    // used to show recursion
-    return this.constructor.color
-  }
-
   draw(ctx){
-    if (this.dead) { return }
+    if (this.dead) return
+    if (!this.img) this.img = imgLookup(this)
     drawImg(ctx, this.img, this.pos)
   }
 
@@ -317,9 +341,6 @@ class Actor {
 }
 
 class Player extends Actor {
-  static img = imgPlayer
-  static color = "#000000"
-
   setFrameStack(f) {
     const before = this.frameStack
     const after = f
@@ -355,16 +376,27 @@ class Player extends Actor {
 }
 
 class Mini extends Actor {
-  static img = imgMini
-
   constructor(p, levelId, col) {
     super(p)
     assertEqual(levelId.constructor, Number)
     this.levelId = levelId
     this.col = col
+    this.img = imgLookup(this) // todo kill
   }
 
-  draw(ctx) {
+  // draw(ctx) {} // todo recomment
+
+  drawMini(ctx) {
+    return
+    const roomSize = 8
+    const { begin, end } = this.level()
+    for (let y = begin; y < end; y += 1) {
+      for (let x = 0; x < roomSize; x += 1) {
+        assert(0, "unimpl")
+      }
+    }
+  }
+  drawMiniOld(ctx) {
     if (this.dead) { return }
     const roomSize = 8
     const numPx = roomSize*roomSize
@@ -375,17 +407,11 @@ class Mini extends Actor {
       const p = Pos.fromLevel(this.level(), pcoord(x, y))
       let colorCode
       const a = findActor(null, p)
-      if (a) {
-        colorCode = a.color()
-      } else {
-        colorCode = GetTileColor(p)
-      }
+      if (!a) continue
+      const img = imgLookupMini(a)
       const screenX = this.pos.x*tileSize + x*pxSize
       const screenY = this.pos.y*tileSize + y*pxSize
-
-      ctxWith(ctx, {fillStyle: colorCode}, () => {
-        ctx.fillRect(screenX, screenY, pxSize, pxSize)
-      })
+      ctx.drawImage(img, screenX, screenY)
     }
   }
 
@@ -415,45 +441,33 @@ class Mini extends Actor {
     const p = pcoord(int(x), int(y))
     const level = levelFromName(levelName)
     assert(level, `level "${levelName}" doesn't exist`)
-    return new (this)(p, level.id, GetLevelColor(level))
+    return new (this)(p, level.id, level.name)
   }
 }
 
-class FakeFlag extends Actor {
-  static img = imgFlag
-  static color = "#FFFFFF"
-}
+class FakeFlag extends Actor {}
 
-class Flag extends Actor {
-  static img = imgFlag
-  static color = "#FFFFFF"
-}
+class Flag extends Actor {}
 
 class Crate extends Actor {
-  static img = imgCrate
-  static color = "#AA6853"
-
-  isSpecial() {
-    return this.img === imgCrateSpecial
-  }
-
-  serialize() {
-    const extra = this.isSpecial() ? "1" : "0"
-    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${extra}`
+  constructor(p, special) {
+    super(p)
+    this.special = special
   }
 
   setPos(p) {
     Actor.prototype.setPos.call(this, p)
-    if (!this.isSpecial()) return
-    if (!findActor(Flag, this.pos)) return
-    this.collect()
+    this.maybeCollect()
   }
 
   playMoveSound() {
     PlayAndRecordSound(sndShove)
   }
 
-  collect() {
+  maybeCollect() {
+    if (!this.special) return
+    if (!findActor(Flag, this.pos)) return
+
     this.setDead(true)
     RecordChange({ // hack to talk to the sound system
       id: this.id,
@@ -464,15 +478,16 @@ class Crate extends Actor {
     gotBonus = true
   }
 
+  serialize() {
+    const extra = this.special ? "1" : "0"
+    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${extra}`
+  }
+
   static deserialize(line) {
     const [type, x, y, special] = line.split(' ')
     assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))
-    const that = new (this)(p)
-    if (!!int(special)) {
-      that.img = imgCrateSpecial
-    }
-    return that
+    return new (this)(p, !!int(special))
   }
 }
 

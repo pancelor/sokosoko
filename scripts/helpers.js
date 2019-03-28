@@ -8,8 +8,12 @@ function RegisterTest(name, test) {
 }
 function RunTests() {
   for (const {name, test} of allTests) {
-    console.log(`Testing '${name}'`);
-    test()
+    try {
+      test()
+    } catch (err) {
+      console.log(`Test failed: '${name}'`);
+      throw err
+    }
   }
 }
 
@@ -445,8 +449,8 @@ function devmodeOff() {
   mapOff()
 }
 
-function mapOn() { canvas.style.display = null }
-function mapOff() { canvas.style.display = "none" }
+function mapOn() { canvasMap.style.display = null }
+function mapOff() { canvasMap.style.display = "none" }
 
 let gameMuted = false
 function muteToggle() { setGameMuted(!gameMuted) }

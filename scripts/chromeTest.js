@@ -10,8 +10,8 @@ function chromeTest() {
   } catch (err) {
     const apology = document.createElement('p')
     apology.innerText = "\n\nThis game only works in chrome right now; I'm sorry :("
-    canvas.style.display = "none"
-    canvas2.style.display = "none"
+    canvasMap.style.display = "none"
+    canvasView.style.display = "none"
     explanation.appendChild(apology)
   }
 }

@@ -74,7 +74,7 @@ function registerKeyListeners() {
       startHoldInterval() // do next held button on stack immediately
     }
   }
-  canvas2.addEventListener("keydown", e => {
+  canvasView.addEventListener("keydown", e => {
     if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") {
       SaveLevel(currentLevelName)
       e.preventDefault()
@@ -96,7 +96,7 @@ function registerKeyListeners() {
     onKeyDown(e)
     return false
   })
-  canvas2.addEventListener("keyup", e => {
+  canvasView.addEventListener("keyup", e => {
     e.preventDefault()
     if (e.repeat) { return false }
 
@@ -130,26 +130,26 @@ function registerMouseListeners() {
     e.preventDefault()
     return false
   })
-  canvas.addEventListener("mousedown", (e) => {
+  canvasMap.addEventListener("mousedown", (e) => {
     const info = translateMouseFromMap(e)
     info && mouseClick(info)
     Raf()
 
-    lockScroll(()=>canvas2.focus())
+    lockScroll(()=>canvasView.focus())
 
     e.preventDefault()
     return false
   })
-  canvas2.addEventListener("mousedown", (e) => {
+  canvasView.addEventListener("mousedown", (e) => {
     const info = translateMouseFromView(e)
     info && mouseClick(info)
     Raf()
 
-    canvas2.focus()
+    canvasView.focus()
     e.preventDefault()
     return false
   })
-  canvas.addEventListener("mousemove", (e) => {
+  canvasMap.addEventListener("mousemove", (e) => {
     const info = translateMouseFromMap(e)
     info && mouseMove(info)
     if (devmode) {
@@ -159,7 +159,7 @@ function registerMouseListeners() {
     e.preventDefault()
     return false
   })
-  canvas2.addEventListener("mousemove", (e) => {
+  canvasView.addEventListener("mousemove", (e) => {
     const info = translateMouseFromView(e)
     info && mouseMove(info)
     if (devmode) {
@@ -283,11 +283,15 @@ function drawDevmode(ctx) {
 }
 
 async function redraw() {
-  const ctx = canvas.getContext('2d')
-  ctx.imageSmoothingEnabled = false
-  DrawGame(ctx)
-  drawDevmode(ctx)
-  await DrawView(ctx)
+  const ctxMap = canvasMap.getContext('2d')
+  ctxMap.imageSmoothingEnabled = false
+  DrawTiles(ctxMap)
+  DrawActors(ctxMap)
+  DrawMinis(ctxMap)
+  drawDevmode(ctxMap)
+  const ctxView = canvasView.getContext('2d')
+  ctxView.imageSmoothingEnabled = false
+  await DrawView(ctxView)
 }
 
 function Raf() {
@@ -303,7 +307,7 @@ function loadLevel(name) {
   if (!Import(name)) { return false }
   currentLevelName = name
   InitGame()
-  canvas2.focus()
+  canvasView.focus()
   // scrollTo(0, 0)
 
   Raf()
@@ -323,9 +327,9 @@ function init() {
   // enable key listeners / focus on the canvases
   // probably tabIndex = -1 makes more sense
   // but 0 works on my machine to tab and shift-tab
-  // between canvas2 and levelCodeInput
-  canvas.tabIndex = 0
-  canvas2.tabIndex = 0
+  // between canvasView and levelCodeInput
+  canvasMap.tabIndex = 0
+  canvasView.tabIndex = 0
 
   registerLevelCodeListener()
   registerKeyListeners()

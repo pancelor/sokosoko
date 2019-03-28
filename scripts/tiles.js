@@ -1,8 +1,8 @@
-function FitCanvasToTiles() {
+function FitMapCanvasToTiles() {
   assert(globalExists(() => tileSize))
   const { w, h } = tilesDim()
-  canvas.width = w*tileSize
-  canvas.height = h*tileSize
+  canvasMap.width = w*tileSize
+  canvasMap.height = h*tileSize
 }
 
 function solid(tileName) {
@@ -50,14 +50,10 @@ function DrawTiles(ctx) {
 }
 
 function GetTileColor(p) {
-  const name = getTile(p)
-  assert(name)
-  return document.getElementById(name).dataset.color
-}
-
-function GetLevelColor(level) {
-  const topleft = Pos.fromLevel(level, pcoord(0, 0))
-  return GetTileColor(topleft)
+  assert(0)
+  // const name = getTile(p)
+  // assert(name)
+  // return document.getElementById(name).dataset.color
 }
 
 function levelFromName(name) {

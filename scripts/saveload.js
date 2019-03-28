@@ -26,7 +26,7 @@ function Import(name) {
   }
   const { tileData, actorData, frameStackData } = preloadData(name)
   importTiles(tileData)
-  FitCanvasToTiles()
+  FitMapCanvasToTiles()
   importActors(actorData)
   player = allActors(Player)[0]
   importFrameStack(frameStackData)
