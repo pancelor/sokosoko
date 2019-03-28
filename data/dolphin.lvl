@@ -34,10 +34,10 @@ levelData.push({
     room @Green
     xxxxx.xx
     xxx.x.xx
-    xxx.x...
+    xxx.x.xx
     xxx.x..x
     x.x.x..x
-    x.xxx.xx
+    x.xxx...
     xxxxx.xx
     xxxxx.xx
 
@@ -47,7 +47,7 @@ levelData.push({
     xxxxxx.x
     x....x.x
     x..x.x.x
-    x..x.x..
+    x....x..
     xxxx.xxx
     xxxx.xxx
 
@@ -83,11 +83,11 @@ levelData.push({
   `,
   actorData: `
     Mini Purple 4 1 Blue @m2
-    Mini Green 6 3 Blue
+    Mini Green 6 5 Blue
     Mini Red 7 3 Red
     Mini Purple 1 4 Blue
     Crate Blue 4 3 0
-    Mini Green 6 2 Blue
+    Mini Green 6 4 Blue
     Crate Yellow 5 3 1
     Mini Yellow 6 5 Red
     Mini Yellow 5 5 Red
