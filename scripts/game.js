@@ -532,13 +532,13 @@ function maybeTeleIn(that, dir) {
   if (mini) {
     const op = LevelOpenings(mini.level())[oppDir(dir)]
     if (op) {
-      if (hack_seen_teles.has(mini.id)) {
-        console.warn('infinite mini recursion detected; killing', serialize(that))
-        PlayAndRecordSound(sndInfinite)
-        that.die()
-        return true
-      }
-      hack_seen_teles.add(mini.id)
+      // if (hack_seen_teles.has(mini.id)) {
+      //   console.warn('infinite mini recursion detected; killing', serialize(that))
+      //   PlayAndRecordSound(sndInfinite)
+      //   that.die()
+      //   return true
+      // }
+      // hack_seen_teles.add(mini.id)
 
       // prepare to teleport
       const oldPos = that.pos
