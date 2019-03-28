@@ -1,3 +1,57 @@
+class Tracer {
+  static indent_str = "  "
+  constructor(silent) {
+    this.indent = 0
+    this.silent = silent
+  }
+
+  tracify(fxn) {
+    return (...args) => {
+      this.enter(fxn.name, args)
+      const ret = fxn(...args)
+      this.exit(fxn.name, args, ret)
+    }
+  }
+
+  toggle() {
+    this.silent = !this.silent
+  }
+
+  // main fxnality
+  printSignature(name, args) {
+    const parts = []
+    parts.push(`${name}(`)
+    for (const a of args) {
+      parts.push(`${serialize(a)}, `)
+    }
+    parts.push(")")
+    this.print(parts.join(''))
+  }
+  enter(name, args) {
+    this.print(`-> ${this.printSignature(name, args)}`)
+    this.changeIndent(1)
+  }
+  exit(name, args, ret) {
+    this.print(`${ret} <- ${this.printSignature(name, args)}`)
+    this.changeIndent(-1)
+  }
+  changeIndent(di) {
+    this.indent += di
+    assert(this.indent >= 0)
+  }
+  print(msg) {
+    if (this.silent) return
+    const parts = []
+    for (let i = 0; i < this.indent; i++) {
+      parts.push(Tracer.indent_str)
+    }
+    parts.push(msg)
+    console.log(parts.join(''))
+  }
+}
+const tracer = new Tracer()
+// tracer.toggle()
+
 class Pos {
   constructor({x, y}) {
     this.x = x
@@ -584,8 +638,10 @@ function maybeTeleOut(that, dir) {
   }
   return false
 }
+maybeTeleOut = tracer.tracify(maybeTeleOut)
 
 // let hack_seen_teles
+
 function maybeTeleIn(that, dir) {
   // if that is standing next to a Mini and is moving into it (dir)
   //   move that into the mini. (one tile before the actual entrance)
@@ -635,6 +691,7 @@ function maybeTeleIn(that, dir) {
   }
   return false
 }
+maybeTeleIn = tracer.tracify(maybeTeleIn)
 
 function maybeConsume(that, food, dir) {
   // dir is the direction the _mini_ is moving
@@ -671,6 +728,7 @@ function maybeConsume(that, food, dir) {
   }
   return false
 }
+maybeConsume = tracer.tracify(maybeConsume)
 
 function pushableUpdate(that, dir) {
   // DRY without subclassing for pushable objects
@@ -697,6 +755,7 @@ function pushableUpdate(that, dir) {
   that.setPos(nextPos)
   return true
 }
+pushableUpdate = tracer.tracify(pushableUpdate)
 
 function lifted(lifter, target, cb) {
   // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it
