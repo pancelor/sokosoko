@@ -263,7 +263,7 @@ function DrawMisc(ctxView) {
   const dest = pcoord(8, 8).scale(tileSize)
 
   // draw frame border
-  ctxWith(ctxView, {strokeStyle: "gray", lineWidth: 10, globalAlpha: 0.5}, () => {
+  ctxWith(ctxView, {strokeStyle: "white", lineWidth: 4, globalAlpha: 0.4}, () => {
     ctxView.strokeRect(dest.x, dest.y, innerW, innerH)
   })
 
@@ -580,7 +580,12 @@ function maybeTeleIn(that, dir) {
   // else do nothing
   // returns whether the tele happened
   assert(that.frameStack)
-  assert(that.frameStack.length() < 1000, "HACK infinite mini recursion") // hacky check; check it better and delete `that`, i think
+  if (that.frameStack.length() >= 1000) {
+    console.warn("HACK infinite mini recursion")
+    PlayAndRecordSound(sndInfinite)
+    that.die()
+    return true
+  }
 
   const nextPos = posDir(that.pos, dir)
   const mini = findActor(Mini, nextPos)

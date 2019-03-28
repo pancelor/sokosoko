@@ -34,10 +34,10 @@ levelData.push({
     room @Green
     xxxxx.xx
     xxx.x.xx
-    xxx.x.xx
     xxx.x...
+    xxx.x..x
     x.x.x..x
-    x.xxx..x
+    x.xxx.xx
     xxxxx.xx
     xxxxx.xx
 
@@ -77,7 +77,7 @@ levelData.push({
     Mini 7 3 Red
     Mini 1 37 Blue
     Crate 4 20 0
-    Mini 6 28 Blue
+    Mini 6 26 Blue
     Crate 5 43 1
     Mini 6 45 Red
     Mini 5 45 Red

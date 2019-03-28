@@ -177,7 +177,7 @@ function translateMouseFromMap(e) {
 }
 
 function translateMouseFromView(e) {
-  const roomPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize)).add(pcoord(-4, -4))
+  const roomPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize)).add(pcoord(-8, -8))
   if (!inbounds(roomPos, {w: 8, h: 8})) { return }
 
   const room = player.frameStack.room()
