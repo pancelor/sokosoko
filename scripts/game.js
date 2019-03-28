@@ -186,6 +186,8 @@ async function DrawView(ctx) {
   const innerFrame = player.frameStack
   const outerFrame = player.frameStack.parent
 
+  ctxWith(ctx, {fillStyle: 'white'}, cls)
+
   // draw outer level border
   if (outerFrame) {
     const mini = innerFrame.mini()
@@ -198,11 +200,19 @@ async function DrawView(ctx) {
       src.x, src.y, outerW, outerH,
       0, 0, canvasView.width, canvasView.height
     )
-  } else {
-    const fillStyle = 'white' //innerFrame.level().name
-    ctxWith(ctx, {fillStyle}, cls)
+    for (const dy of [-1, 0, 1]) {
+      for (const dx of [-1, 0, 1]) {
+        if (dx === 0 && dy === 0) continue
+        const mini2 = findActor(Mini, mini.pos.add(pcoord(dx, dy)))
+        if (!mini2) continue
+        const src2 = getLevelTopLeft(mini2.level()).scale(tileSize)
+        ctx.drawImage(screenshotMap,
+          src2.x, src2.y, tileSize*8, tileSize*8,
+          (1+dx)*tileSize*8, (1+dy)*tileSize*8, tileSize*8, tileSize*8
+        )
+      }
+    }
   }
-
   // draw inner level
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
@@ -213,6 +223,39 @@ async function DrawView(ctx) {
     dest.x, dest.y, innerW, innerH
   )
 }
+
+// async function DrawView(ctx) {
+//   const screenshotMap = await createImageBitmap(canvasMap)
+//   const innerFrame = player.frameStack
+//   const outerFrame = player.frameStack.parent
+
+//   // draw outer level border
+//   if (outerFrame) {
+//     const mini = innerFrame.mini()
+//     assert(mini)
+//     const outerW = 3*tileSize
+//     const outerH = 3*tileSize
+//     const src = mini.pos.add(pcoord(-1, -1)).scale(tileSize)
+//     const dest = pcoord(8, 8).scale(tileSize)
+//     ctx.drawImage(screenshotMap,
+//       src.x, src.y, outerW, outerH,
+//       0, 0, canvasView.width, canvasView.height
+//     )
+//   } else {
+//     const fillStyle = 'white' //innerFrame.level().name
+//     ctxWith(ctx, {fillStyle}, cls)
+//   }
+
+//   // draw inner level
+//   const innerW = 8 * tileSize
+//   const innerH = 8 * tileSize
+//   const src = getLevelTopLeft(innerFrame.level()).scale(tileSize)
+//   const dest = pcoord(8, 8).scale(tileSize)
+//   ctx.drawImage(screenshotMap,
+//     src.x, src.y, innerW, innerH,
+//     dest.x, dest.y, innerW, innerH
+//   )
+// }
 
 function DrawMisc(ctxView) {
   const innerW = 8 * tileSize
