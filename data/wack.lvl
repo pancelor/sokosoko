@@ -11,7 +11,7 @@ levelData.push({
     x.xxx.xx
     xxxxx.xx
 
-    room @Green
+    room @Yellow
     xxxx.xxx
     x..x.xxx
     x......x
@@ -21,7 +21,7 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    room @Yellow
+    room @Green
     xxxx.xxx
     xxxx.xxx
     xx....xx
@@ -65,15 +65,15 @@ levelData.push({
 
   actorData: `
     Mini 3 35 Black @miniBlack
-    Mini 1 6 Green @miniGreen
+    Mini 1 6 Yellow @miniYellow
     Mini 6 14 Blue @miniBlue
     Mini 4 5 Black @miniBlack2
     Mini 4 43 Black @miniOuter
-    Mini 2 14 Yellow
-    Mini 3 21 Green
+    Mini 2 14 Green
+    Mini 3 21 Yellow
     Mini 4 9 Red
     Mini 5 5 Black
-    Mini 6 2 Yellow
+    Mini 6 2 Green
     Crate 4 4 0
     Crate 4 34 0
     Crate 1 36 1
@@ -88,19 +88,19 @@ levelData.push({
     White
     miniOuter
     miniBlack2
-    miniGreen
+    miniYellow
 
     # start repeats:
     miniBlue
     miniBlack
-    miniGreen
+    miniYellow
 
     miniBlue
     miniBlack
-    miniGreen
+    miniYellow
 
     miniBlue
     miniBlack
-    miniGreen
+    miniYellow
   `,
 })
