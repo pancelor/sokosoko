@@ -17,6 +17,14 @@ function levelDataFor(name) {
   return levelData.find(ld=>ld.name === name)
 }
 
+function checkActorsInWalls() {
+  for (const a of actors) {
+    if (!CanMoveToTile(a.pos)) {
+      console.warn(`An actor is in a wall: ${a.serialize()}`)
+    }
+  }
+}
+
 function Import(name) {
   assert(levelData)
   console.log("Loading level", name)
@@ -30,6 +38,7 @@ function Import(name) {
   importActors(actorData)
   player = allActors(Player)[0]
   importFrameStack(frameStackData)
+  checkActorsInWalls()
   return true
 }
 
