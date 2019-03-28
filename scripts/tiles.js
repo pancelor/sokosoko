@@ -87,6 +87,10 @@ function getLevelAt(pos) {
   return levels.find(l=>l.begin <= pos.y && pos.y < l.end)
 }
 
+function getLevelTopLeft(level) {
+  return Pos.fromLevel(level, pcoord(0, 0))
+}
+
 // function getLevelTileName(level, type) {
 //   assert(type === "Wall" || type === "Floor")
 //   return `img${level.name}${type}`

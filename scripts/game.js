@@ -172,7 +172,7 @@ async function DrawMinis(ctxMap) {
   const screenshotMini = await createImageBitmap(canvasMini)
   for (const m of allActors(Mini)) {
     const pixSize = roomSize*miniTileSize
-    const src = Pos.fromLevel(m.level(), pcoord(0, 0)).scale(miniTileSize)
+    const src = getLevelTopLeft(m.level()).scale(miniTileSize)
     const dest = m.pos.scale(tileSize)
     ctxMap.drawImage(screenshotMini,
       src.x, src.y, pixSize, pixSize,
@@ -181,123 +181,7 @@ async function DrawMinis(ctxMap) {
   }
 }
 
-// for frame in fs
-//   blit current Mini from ctxMap to ctxView, w/ stretching
-//     only take subportion: all (on later loops, only take view)
-//   does the view spill out of my local coordinates?
-//   if not stop
-//   does the outer view have any minis?
-//     blit them from ctxMap to ctxView
-
-// frame: mini is green; level is green
-// dp: west
-
-function mungeCoords(x, y, w, h) {
-  const p = pcoord(Math.floor(x), Math.floor(y))
-  console.log("p", p);
-  const mini = findActor(Mini, p)
-  if (!mini) { return [x, y, w, h] }
-  const newPos = Pos.fromLevel(mini.level(), pcoord(0, 0))
-  console.log("newPos", newPos);
-  return [newPos.x, newPos.y, w*8, h*8]
-}
-
-function drawSub(scrsht, ctxView, frame, dp, scaleFactor) {
-  const allowed = [pcoord(-1, 0), pcoord(-1, -1)]
-  const log = (allowed.some(a=>dp.equals(a))) ? console.log : ()=>{}
-
-  if (frame.constructor === FrameBase) return;
-  const mini = frame.mini()
-  const tilePosInParent = mini.pos.add(dp)
-  if (!inbounds(tilePosInParent.toLevelPos(frame.parent.level()), {w: 8, h: 8})) {
-    // frameParent: mini is blue, level is blue
-    const frameParent = frame.parent
-    log(frameParent)
-    log(frameParent.mini().col, "should be blue")
-    log(frameParent.level().name, "should be blue")
-    log(frameParent.parent.level().name, "should be white")
-    const tpp_pre = frameParent.mini().pos
-    log("tpp_pre", tpp_pre)
-    const internalOffset = mini.levelPos()
-    log("internalOffset", internalOffset)
-    const tpp = tpp_pre.add(internalOffset.add(dp).scale(1/8))
-
-    const src = tpp.scale(tileSize)
-    log("tpp", tpp, src)
-    const dest = dp.scale(8).add(pcoord(8, 8)).scale(tileSize)
-    log("dest", dest)
-    let [x, y, w, h] = mungeCoords(tpp.x, tpp.y, 1/8, 1/8)
-    ctxView.drawImage(scrsht,
-      x*tileSize, y*tileSize, w*tileSize, h*tileSize,
-      dest.x, dest.y, tileSize*8, tileSize*8,
-    )
-  }
-
-  const src = tilePosInParent.scale(tileSize)
-  log("tilePosInParent", tilePosInParent, src)
-  const dest = dp.scale(8).add(pcoord(8, 8)).scale(tileSize)
-  let [x, y, w, h] = mungeCoords(tilePosInParent.x, tilePosInParent.y, 1, 1)
-  console.log({x,y,w,h});
-  ctxView.drawImage(scrsht,
-    x*tileSize, y*tileSize, w*tileSize, h*tileSize,
-    dest.x, dest.y, tileSize*8, tileSize*8,
-  )
-}
-
-async function DrawView(ctxView) {
-  const screenshotMap = await createImageBitmap(canvasMap)
-  let frame = player.frameStack
-
-  ctxWith(ctxView, {fillStyle: "white"}, cls)
-
-  // draw outer border
-
-  for (const dx of [-1, 0, 1]) {
-    for (const dy of [-1, 0, 1]) {
-      if (dx === 0 && dy === 0) continue
-      drawSub(screenshotMap, ctxView, frame, pcoord(dx, dy), 8)
-    }
-  }
-
-  // let scaleFactor = 1
-  // while (frame.constructor !== FrameBase) {
-  //   scaleFactor *= 8
-  //   const mini = frame.mini()
-  //   const outerLevel = frame.parent.level()
-  //   for (const dir of [0, 1, 2, 3]) {
-  //     if (!need[dir]) continue
-  //     const [dp, w, h] = [
-  //       [pcoord(1, 0), 1, 2],
-  //       [pcoord(-1, 1), 2, 2],
-  //       [pcoord(-1, -1), 1, 2],
-  //       [pcoord(0, -1), 2, 1],
-  //     ][dir]
-  //     const tilePos = mini.pos.add(dp)
-  //     if (!inbounds(tilePos.toLevelPos(outerLevel), {w: 8, h: 8})) continue
-  //     need[dir] = false
-
-  //     const src = tilePos.scale(tileSize)
-  //     const dest = dp.scale(8).add(pcoord(4, 4)).scale(tileSize)
-  //     ctxView.drawImage(screenshotMap,
-  //       src.x, src.y, w*tileSize, h*tileSize,
-  //       dest.x, dest.y, w*tileSize*8, h*tileSize*8,
-  //     )
-  //   }
-  //   frame = frame.parent
-  // }
-
-  // draw inner level
-  const innerW = 8 * tileSize
-  const innerH = 8 * tileSize
-  const src = Pos.fromLevel(frame.level(), pcoord(0, 0)).scale(tileSize)
-  const dest = pcoord(8, 8).scale(tileSize)
-  ctxView.drawImage(screenshotMap,
-    src.x, src.y, innerW, innerH,
-    dest.x, dest.y, innerW, innerH
-  )
-}
-
-async function DrawViewOld(ctx) {
+async function DrawView(ctx) {
   const screenshotMap = await createImageBitmap(canvasMap)
   const innerFrame = player.frameStack
   const outerFrame = player.frameStack.parent
@@ -306,10 +190,10 @@ async function DrawViewOld(ctx) {
   if (outerFrame) {
     const mini = innerFrame.mini()
     assert(mini)
-    const outerW = 2*tileSize
-    const outerH = 2*tileSize
-    const src = mini.pos.add(pcoord(-0.5, -0.5)).scale(tileSize)
-    const dest = pcoord(4, 4).scale(tileSize)
+    const outerW = 3*tileSize
+    const outerH = 3*tileSize
+    const src = mini.pos.add(pcoord(-1, -1)).scale(tileSize)
+    const dest = pcoord(8, 8).scale(tileSize)
     ctx.drawImage(screenshotMap,
       src.x, src.y, outerW, outerH,
       0, 0, canvasView.width, canvasView.height
@@ -322,8 +206,8 @@ async function DrawViewOld(ctx) {
   // draw inner level
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
-  const src = Pos.fromLevel(innerFrame.level(), pcoord(0, 0)).scale(tileSize)
-  const dest = pcoord(4, 4).scale(tileSize)
+  const src = getLevelTopLeft(innerFrame.level()).scale(tileSize)
+  const dest = pcoord(8, 8).scale(tileSize)
   ctx.drawImage(screenshotMap,
     src.x, src.y, innerW, innerH,
     dest.x, dest.y, innerW, innerH
@@ -527,25 +411,6 @@ class Mini extends Actor {
     })
   }
 
-  drawMiniOld(ctx) { // todo kill me
-    if (this.dead) { return }
-    const roomSize = 8
-    const numPx = roomSize*roomSize
-    const pxSize = 4
-    assertEqual(roomSize * pxSize, 32)
-    for (let ix = 0; ix < numPx; ix += 1) {
-      const [y, x] = divmod(ix, roomSize)
-      const p = Pos.fromLevel(this.level(), pcoord(x, y))
-      let colorCode
-      const a = findActor(null, p)
-      if (!a) continue
-      const img = lookupActorImgMini(a)
-      const screenX = this.pos.x*tileSize + x*pxSize
-      const screenY = this.pos.y*tileSize + y*pxSize
-      ctx.drawImage(img, screenX, screenY)
-    }
-  }
-
   playMoveSound() {
     PlayAndRecordSound(sndShove)
   }
@@ -555,6 +420,7 @@ class Mini extends Actor {
   }
 
   levelPos() {
+    // the position of this mini within its containing level
     return this.pos.toLevelPos(getLevelAt(this.pos))
   }
 
