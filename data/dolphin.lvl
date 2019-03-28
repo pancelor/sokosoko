@@ -12,54 +12,54 @@ levelData.push({
     xxxxxxxx
 
     room @White
-    x.xxxxxx
-    x.xxxxxx
-    x.x....x
-    x.x..xxx
-    xxx..xxx
-    xxx..x.x
-    x.xxxx.x
     xxxxxxxx
+    xxxxxxxx
+    xx....xx
+    xx..xxxx
+    xx..x.xx
+    xx..x.xx
+    xxxxx.xx
+    xxxxx.xx
 
     room @Blue
-    xxxxxxxx
-    xx.....x
-    xx.x.x.x
-    xx.x.x.x
-    xxxx.x.x
-    .....x..
-    xx...x.x
     xxxxxx.x
+    xx...x.x
+    .....x..
+    xxxx.x.x
+    xx.x.x.x
+    xx.x.x.x
+    xx.....x
+    xxxxxxxx
 
     room @Green
     xxxxx.xx
     xxx.x.xx
-    xxx.x.xx
+    xxx.x...
     xxx.x..x
     x.x.x..x
-    x.xxx...
+    x.xxx.xx
     xxxxx.xx
     xxxxx.xx
 
     room @Purple
     xx.xxxxx
     .......x
-    xxxxxx.x
-    x....x.x
-    x..x.x.x
-    x....x..
-    xxxx.xxx
-    xxxx.xxx
+    xxxxxx..
+    xx...xxx
+    x..x.xxx
+    x..x.xxx
+    x....xxx
+    x.xxxxxx
 
     room @Yellow
-    xx.xxxxx
-    xx.x..xx
-    xx......
-    xx.x...x
+    xxxxxxxx
+    xxx...xx
+    x.......
+    x..x...x
     x......x
     x..x...x
-    xxxxxxxx
-    xxxxxxxx
+    xx.xxxxx
+    xx.xxxxx
 
     room @Black
     xxxxxxxx
@@ -83,29 +83,29 @@ levelData.push({
   `,
   actorData: `
     Mini Purple 4 1 Blue @m2
-    Mini Green 6 5 Blue
+    Mini Green 6 3 Blue
     Mini Red 7 3 Red
-    Mini Purple 1 4 Blue
-    Crate Blue 4 3 0
-    Mini Green 6 4 Blue
+    Mini Purple 1 5 Blue
+    Crate Blue 4 4 0
+    Mini Green 6 2 Blue
     Crate Yellow 5 3 1
     Mini Yellow 6 5 Red
     Mini Yellow 5 5 Red
     Mini Yellow 4 5 Red
-    Player Blue 1 5
-    Mini Blue 2 6 Yellow
-    Mini White 3 5 Purple @m1
-    Flag White 6 2
-    Mini Blue 6 5 Green
-    Mini White 3 4 Black
-    Crate Blue 3 5 0
+    Player Blue 1 2
+    Mini Blue 2 1 Yellow
+    Mini White 2 5 Purple @m1
+    Flag White 5 2
+    Mini Blue 6 2 Green
+    Mini White 2 4 Black
+    Crate Blue 3 2 0
     Mini Black 4 2 Purple
     Crate Purple 1 1 0
     Crate Black 2 2 0
-    Mini Blue 2 3 White
+    Mini Blue 2 4 White
     Crate Purple 2 1 0
     Mini Purple 6 1 Orange
-    Mini Purple 6 5 Orange
+    Mini Purple 6 2 Orange
   `,
   frameStackData: `
     White
