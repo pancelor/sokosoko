@@ -92,7 +92,7 @@ levelData.push({
     Mini 6 45 Red
     Mini 5 45 Red
     Mini 4 45 Red
-    Player 3 33
+    Player 1 18
     Mini 2 17 Yellow
     Mini 2 13 Purple @m1
     Flag 5 10
@@ -110,5 +110,6 @@ levelData.push({
   frameStackData: `
     White
     m1
+    m2
   `,
 })
