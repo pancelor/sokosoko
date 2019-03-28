@@ -316,6 +316,7 @@ function loadLevel(name) {
   if (!Import(name)) { return false }
   currentLevelName = name
   levelCodeInput.value = name
+  if (devmode) window.location.hash = `#dev#${name}`
   InitGame()
   canvasView.focus()
   // scrollTo(0, 0)
