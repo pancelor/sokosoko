@@ -1,8 +1,11 @@
-function FitMapCanvasToTiles() {
+function FitCanvasesToTiles() {
   assert(globalExists(() => tileSize))
+  assert(globalExists(() => miniTileSize))
   const { w, h } = tilesDim()
   canvasMap.width = w*tileSize
   canvasMap.height = h*tileSize
+  canvasMini.width = w*miniTileSize
+  canvasMini.height = h*miniTileSize
 }
 
 function solid(tileName) {
@@ -36,16 +39,32 @@ function tilesDim() {
   }
 }
 
-function DrawTiles(ctx) {
-  const {w: ncc, h: nrr} = tilesDim()
-  for (let rr = 0; rr < nrr; rr++) {
-    for (let cc = 0; cc < ncc; cc++) {
-      const name = tiles[rr][cc]
+function lookupTileImg(name) {
+  return document.getElementById(name)
+}
+function lookupTileImgMini(name) {
+  return document.getElementById(`${name}-mini`)
+}
+function DrawTiles(ctxMap, ctxMini) {
+  const {w, h} = tilesDim()
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+      const name = tiles[y][x]
       const img = document.getElementById(name)
-      assert(img)
-      const pos = new Pos({x: cc, y: rr})
-      drawImg(ctx, img, pos)
+      drawImgMap(ctxMap, img, pcoord(x, y))
+
+      const fillStyle = document.getElementById(name).dataset.color
+      ctxWith(ctxMini, {fillStyle}, () => {
+        ctxMini.fillRect(x*miniTileSize, y*miniTileSize, miniTileSize, miniTileSize)
+      })
     }
+  }
+}
+
+function GetLevelColors(level) {
+  return {
+    Wall: document.getElementById(`img${level.name}Wall`).dataset.color,
+    Floor: document.getElementById(`img${level.name}Floor`).dataset.color,
   }
 }
 
@@ -103,7 +122,7 @@ function setTileFloor(p) {
 
 function SaveLevel(name) {
   name = name.toLowerCase()
-  downloadFile(`level_${name}.dat`, Export(name))
+  downloadFile(`${name}.lvl`, Export(name))
 }
 
 function LevelOpenings(level) {

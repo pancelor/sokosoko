@@ -21,7 +21,7 @@ function ctxWith(ctx, map, cb) {
   Object.assign(ctx, old)
 }
 
-function drawImg(ctx, img, tilePos) {
+function drawImgMap(ctx, img, tilePos) {
   if (img == null) {
     assert(0, "null image")
     return
@@ -29,6 +29,17 @@ function drawImg(ctx, img, tilePos) {
   let { x, y } = tilePos
   x *= tileSize
   y *= tileSize
+  ctx.drawImage(img, x, y)
+}
+
+function drawImgMini(ctx, img, tilePos) {
+  if (img == null) {
+    assert(0, "null image")
+    return
+  }
+  let { x, y } = tilePos
+  x *= miniTileSize
+  y *= miniTileSize
   ctx.drawImage(img, x, y)
 }
 

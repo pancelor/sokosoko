@@ -76,7 +76,7 @@ function registerKeyListeners() {
   }
   canvasView.addEventListener("keydown", e => {
     if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") {
-      SaveLevel(currentLevelName)
+      SaveLevel(levelCodeInput.value)
       e.preventDefault()
       return false
     }
@@ -259,25 +259,25 @@ function _devmodeMouseClick(e, worldPos) {
   }
 }
 
-function drawDevmode(ctx) {
+function drawDevmode(ctxMap) {
   if (!devmode) { return }
   if (editingTiles) {
-    ctxWith(ctx, {globalAlpha: 0.10, fillStyle: "white"}, ()=>{
-      ctx.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
+    ctxWith(ctxMap, {globalAlpha: 0.10, fillStyle: "white"}, ()=>{
+      ctxMap.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
     })
   } else {
     if (!storedActor) { return }
 
     // mark storedActor
     const { x, y } = storedActor.pos
-    ctxWith(ctx, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
-      ctx.fillRect(x*tileSize, y*tileSize, tileSize, tileSize)
+    ctxWith(ctxMap, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
+      ctxMap.fillRect(x*tileSize, y*tileSize, tileSize, tileSize)
     })
 
     // mark mousepos
-    drawImg(ctx, storedActor.img, mousepos)
-    ctxWith(ctx, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
-      ctx.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
+    drawImgMap(ctxMap, lookupActorImg(storedActor), mousepos)
+    ctxWith(ctxMap, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
+      ctxMap.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
     })
   }
 }
@@ -285,13 +285,16 @@ function drawDevmode(ctx) {
 async function redraw() {
   const ctxMap = canvasMap.getContext('2d')
   ctxMap.imageSmoothingEnabled = false
-  DrawTiles(ctxMap)
-  DrawActors(ctxMap)
-  DrawMinis(ctxMap)
-  drawDevmode(ctxMap)
+  const ctxMini = canvasMini.getContext('2d')
+  ctxMini.imageSmoothingEnabled = false
   const ctxView = canvasView.getContext('2d')
   ctxView.imageSmoothingEnabled = false
+  DrawTiles(ctxMap, ctxMini)
+  DrawActors(ctxMap, ctxMini)
+  await DrawMinis(ctxMap)
+  drawDevmode(ctxMap)
   await DrawView(ctxView)
+  DrawMisc(ctxView)
 }
 
 function Raf() {
@@ -306,6 +309,7 @@ function reset(name=null) {
 function loadLevel(name) {
   if (!Import(name)) { return false }
   currentLevelName = name
+  levelCodeInput.value = name
   InitGame()
   canvasView.focus()
   // scrollTo(0, 0)

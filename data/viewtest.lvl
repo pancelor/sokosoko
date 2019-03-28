@@ -1,0 +1,102 @@
+levelData.push({
+  name: 'viewtest',
+  tileData: `
+    level @Red
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    level @White
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    level @Blue
+    x.xxxxxx
+    x......x
+    .......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    level @Green
+    xxxxxxxx
+    x.......
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    level @Purple
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    level @Yellow
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    level @Black
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+  `,
+  actorData: `
+    Player 1 18
+    Crate 2 9 0
+    Mini 3 13 Red
+    Mini 4 13 Blue @m1
+    Mini 0 18 Green @m2
+    Crate 1 10 0
+    Crate 5 10 0
+    Mini 1 41 Yellow
+    Mini 1 49 Black
+    Mini 1 33 Purple
+    Crate 2 10 0
+    Crate 3 10 0
+    Crate 4 9 0
+    Crate 6 4 0
+    Crate 5 9 0
+    Crate 6 9 0
+    Crate 6 10 0
+    Crate 6 9 0
+    Crate 3 9 0
+    Crate 1 9 0
+    Crate 1 9 0
+    Mini 2 28 White
+  `,
+  frameStackData: `
+    White
+    m1
+  `,
+})

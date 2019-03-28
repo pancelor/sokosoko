@@ -449,8 +449,14 @@ function devmodeOff() {
   mapOff()
 }
 
-function mapOn() { canvasMap.style.display = null }
-function mapOff() { canvasMap.style.display = "none" }
+function mapOn() {
+  canvasMap.style.display = null
+  canvasMini.style.display = null
+}
+function mapOff() {
+  canvasMap.style.display = "none"
+  canvasMini.style.display = "none"
+}
 
 let gameMuted = false
 function muteToggle() { setGameMuted(!gameMuted) }

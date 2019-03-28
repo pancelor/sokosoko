@@ -1,2 +1,3 @@
 const tileSize = 32
+const miniTileSize = 4
 const levelData = []

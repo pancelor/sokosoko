@@ -167,14 +167,138 @@ function destroyActor(a) { // hacky; don't use me
   actors.splice(ix, 1)
 }
 
-function DrawMinis(ctx) {
+async function DrawMinis(ctxMap) {
+  const roomSize = 8
+  const screenshotMini = await createImageBitmap(canvasMini)
   for (const m of allActors(Mini)) {
-    m.drawMini(ctx)
+    const pixSize = roomSize*miniTileSize
+    const src = Pos.fromLevel(m.level(), pcoord(0, 0)).scale(miniTileSize)
+    const dest = m.pos.scale(tileSize)
+    ctxMap.drawImage(screenshotMini,
+      src.x, src.y, pixSize, pixSize,
+      dest.x, dest.y, pixSize, pixSize,
+    )
   }
 }
 
-async function DrawView(ctx) {
-  const worldImg = await createImageBitmap(canvasMap)
+// for frame in fs
+//   blit current Mini from ctxMap to ctxView, w/ stretching
+//     only take subportion: all (on later loops, only take view)
+//   does the view spill out of my local coordinates?
+//   if not stop
+//   does the outer view have any minis?
+//     blit them from ctxMap to ctxView
+
+// frame: mini is green; level is green
+// dp: west
+
+function mungeCoords(x, y, w, h) {
+  const p = pcoord(Math.floor(x), Math.floor(y))
+  console.log("p", p);
+  const mini = findActor(Mini, p)
+  if (!mini) { return [x, y, w, h] }
+  const newPos = Pos.fromLevel(mini.level(), pcoord(0, 0))
+  console.log("newPos", newPos);
+  return [newPos.x, newPos.y, w*8, h*8]
+}
+
+function drawSub(scrsht, ctxView, frame, dp, scaleFactor) {
+  const allowed = [pcoord(-1, 0), pcoord(-1, -1)]
+  const log = (allowed.some(a=>dp.equals(a))) ? console.log : ()=>{}
+
+  if (frame.constructor === FrameBase) return;
+  const mini = frame.mini()
+  const tilePosInParent = mini.pos.add(dp)
+  if (!inbounds(tilePosInParent.toLevelPos(frame.parent.level()), {w: 8, h: 8})) {
+    // frameParent: mini is blue, level is blue
+    const frameParent = frame.parent
+    log(frameParent)
+    log(frameParent.mini().col, "should be blue")
+    log(frameParent.level().name, "should be blue")
+    log(frameParent.parent.level().name, "should be white")
+    const tpp_pre = frameParent.mini().pos
+    log("tpp_pre", tpp_pre)
+    const internalOffset = mini.levelPos()
+    log("internalOffset", internalOffset)
+    const tpp = tpp_pre.add(internalOffset.add(dp).scale(1/8))
+
+    const src = tpp.scale(tileSize)
+    log("tpp", tpp, src)
+    const dest = dp.scale(8).add(pcoord(8, 8)).scale(tileSize)
+    log("dest", dest)
+    let [x, y, w, h] = mungeCoords(tpp.x, tpp.y, 1/8, 1/8)
+    ctxView.drawImage(scrsht,
+      x*tileSize, y*tileSize, w*tileSize, h*tileSize,
+      dest.x, dest.y, tileSize*8, tileSize*8,
+    )
+  }
+
+  const src = tilePosInParent.scale(tileSize)
+  log("tilePosInParent", tilePosInParent, src)
+  const dest = dp.scale(8).add(pcoord(8, 8)).scale(tileSize)
+  let [x, y, w, h] = mungeCoords(tilePosInParent.x, tilePosInParent.y, 1, 1)
+  console.log({x,y,w,h});
+  ctxView.drawImage(scrsht,
+    x*tileSize, y*tileSize, w*tileSize, h*tileSize,
+    dest.x, dest.y, tileSize*8, tileSize*8,
+  )
+}
+
+async function DrawView(ctxView) {
+  const screenshotMap = await createImageBitmap(canvasMap)
+  let frame = player.frameStack
+
+  ctxWith(ctxView, {fillStyle: "white"}, cls)
+
+  // draw outer border
+
+  for (const dx of [-1, 0, 1]) {
+    for (const dy of [-1, 0, 1]) {
+      if (dx === 0 && dy === 0) continue
+      drawSub(screenshotMap, ctxView, frame, pcoord(dx, dy), 8)
+    }
+  }
+
+  // let scaleFactor = 1
+  // while (frame.constructor !== FrameBase) {
+  //   scaleFactor *= 8
+  //   const mini = frame.mini()
+  //   const outerLevel = frame.parent.level()
+  //   for (const dir of [0, 1, 2, 3]) {
+  //     if (!need[dir]) continue
+  //     const [dp, w, h] = [
+  //       [pcoord(1, 0), 1, 2],
+  //       [pcoord(-1, 1), 2, 2],
+  //       [pcoord(-1, -1), 1, 2],
+  //       [pcoord(0, -1), 2, 1],
+  //     ][dir]
+  //     const tilePos = mini.pos.add(dp)
+  //     if (!inbounds(tilePos.toLevelPos(outerLevel), {w: 8, h: 8})) continue
+  //     need[dir] = false
+
+  //     const src = tilePos.scale(tileSize)
+  //     const dest = dp.scale(8).add(pcoord(4, 4)).scale(tileSize)
+  //     ctxView.drawImage(screenshotMap,
+  //       src.x, src.y, w*tileSize, h*tileSize,
+  //       dest.x, dest.y, w*tileSize*8, h*tileSize*8,
+  //     )
+  //   }
+  //   frame = frame.parent
+  // }
+
+  // draw inner level
+  const innerW = 8 * tileSize
+  const innerH = 8 * tileSize
+  const src = Pos.fromLevel(frame.level(), pcoord(0, 0)).scale(tileSize)
+  const dest = pcoord(8, 8).scale(tileSize)
+  ctxView.drawImage(screenshotMap,
+    src.x, src.y, innerW, innerH,
+    dest.x, dest.y, innerW, innerH
+  )
+}
+
+async function DrawViewOld(ctx) {
+  const screenshotMap = await createImageBitmap(canvasMap)
   const innerFrame = player.frameStack
   const outerFrame = player.frameStack.parent
 
@@ -186,7 +310,7 @@ async function DrawView(ctx) {
     const outerH = 2*tileSize
     const src = mini.pos.add(pcoord(-0.5, -0.5)).scale(tileSize)
     const dest = pcoord(4, 4).scale(tileSize)
-    ctx.drawImage(worldImg,
+    ctx.drawImage(screenshotMap,
       src.x, src.y, outerW, outerH,
       0, 0, canvasView.width, canvasView.height
     )
@@ -200,33 +324,39 @@ async function DrawView(ctx) {
   const innerH = 8 * tileSize
   const src = Pos.fromLevel(innerFrame.level(), pcoord(0, 0)).scale(tileSize)
   const dest = pcoord(4, 4).scale(tileSize)
-  ctx.drawImage(worldImg,
+  ctx.drawImage(screenshotMap,
     src.x, src.y, innerW, innerH,
     dest.x, dest.y, innerW, innerH
   )
+}
+
+function DrawMisc(ctxView) {
+  const innerW = 8 * tileSize
+  const innerH = 8 * tileSize
+  const dest = pcoord(8, 8).scale(tileSize)
 
   // draw frame border
-  ctxWith(ctx, {strokeStyle: "gray", lineWidth: 10, globalAlpha: 0.5}, () => {
-    ctx.strokeRect(dest.x, dest.y, innerW, innerH)
+  ctxWith(ctxView, {strokeStyle: "gray", lineWidth: 10, globalAlpha: 0.5}, () => {
+    ctxView.strokeRect(dest.x, dest.y, innerW, innerH)
   })
 
   // draw canvas border
-  ctxWith(ctx, {strokeStyle: "black"}, () => {
-    ctx.strokeRect(0, 0, canvasView.width, canvasView.height)
+  ctxWith(ctxView, {strokeStyle: "black"}, () => {
+    ctxView.strokeRect(0, 0, canvasView.width, canvasView.height)
   })
 
   if (checkWin()) {
     const lines = ["You win!"]
     if (gotBonus) lines.push("excellent work")
-    drawMessage(ctx, lines)
+    drawMessage(ctxView, lines)
   }
 }
 
-function DrawActors(ctx) {
-  allActors().forEach(e=>e.draw(ctx))
+function DrawActors(ctxMap, ctxMini) {
+  allActors().forEach(e=>e.draw(ctxMap, ctxMini))
 }
 
-function imgLookup(actor) {
+function lookupActorImg(actor) {
   const cst = actor.constructor
   if (cst === Player) {
     return imgPlayer
@@ -242,7 +372,7 @@ function imgLookup(actor) {
     assert(0, `Don't know img for ${cst.name}`)
   }
 }
-function imgLookupMini(actor) {
+function lookupActorImgMini(actor) {
   const cst = actor.constructor
   if (cst === Player) {
     return imgPlayerMini
@@ -272,10 +402,10 @@ class Actor {
     // note that actors might have a `tag` attribute, set by the level loader
   }
 
-  draw(ctx){
+  draw(ctxMap, ctxMini){
     if (this.dead) return
-    if (!this.img) this.img = imgLookup(this)
-    drawImg(ctx, this.img, this.pos)
+    drawImgMap(ctxMap, lookupActorImg(this), this.pos)
+    drawImgMini(ctxMini, lookupActorImgMini(this), this.pos)
   }
 
   update(dir) {
@@ -381,22 +511,23 @@ class Mini extends Actor {
     assertEqual(levelId.constructor, Number)
     this.levelId = levelId
     this.col = col
-    this.img = imgLookup(this) // todo kill
   }
 
-  // draw(ctx) {} // todo recomment
+  draw(ctxMap, ctxMini) {
+    if (this.dead) return
+    drawImgMap(ctxMap, lookupActorImg(this), this.pos) // comment me out
 
-  drawMini(ctx) {
-    return
-    const roomSize = 8
-    const { begin, end } = this.level()
-    for (let y = begin; y < end; y += 1) {
-      for (let x = 0; x < roomSize; x += 1) {
-        assert(0, "unimpl")
-      }
-    }
+    assert(miniTileSize === 4)
+    const { Wall, Floor } = GetLevelColors(this.level())
+    ctxWith(ctxMini, {fillStyle: Wall}, () => {
+      ctxMini.fillRect(this.pos.x*4, this.pos.y*4, 4, 4);
+    })
+    ctxWith(ctxMini, {fillStyle: Floor}, () => {
+      ctxMini.fillRect(this.pos.x*4+1, this.pos.y*4+1, 2, 2);
+    })
   }
-  drawMiniOld(ctx) {
+
+  drawMiniOld(ctx) { // todo kill me
     if (this.dead) { return }
     const roomSize = 8
     const numPx = roomSize*roomSize
@@ -408,7 +539,7 @@ class Mini extends Actor {
       let colorCode
       const a = findActor(null, p)
       if (!a) continue
-      const img = imgLookupMini(a)
+      const img = lookupActorImgMini(a)
       const screenX = this.pos.x*tileSize + x*pxSize
       const screenY = this.pos.y*tileSize + y*pxSize
       ctx.drawImage(img, screenX, screenY)
@@ -419,12 +550,12 @@ class Mini extends Actor {
     PlayAndRecordSound(sndShove)
   }
 
-  color() {
-    return this.col
-  }
-
   level() {
     return getLevel(this.levelId)
+  }
+
+  levelPos() {
+    return this.pos.toLevelPos(getLevelAt(this.pos))
   }
 
   str() {
