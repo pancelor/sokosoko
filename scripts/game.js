@@ -171,6 +171,7 @@ async function DrawMinis(ctxMap) {
   const roomSize = 8
   const screenshotMini = await createImageBitmap(canvasMini)
   for (const m of allActors(Mini)) {
+    if (m.dead) continue
     const pixSize = roomSize*miniTileSize
     const src = getRoomTopLeft(m.room()).scale(miniTileSize)
     const dest = m.pos.scale(tileSize)
