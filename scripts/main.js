@@ -238,9 +238,15 @@ function _devmodeMouseClick(e, worldPos) {
     if (e.button === 0) {
       // left click: paste (or move old pasted thing)
       if (!storedActor) { return }
-      if (findActor(null, worldPos)) {
-        console.warn("overlap")
-        return
+      const collision = findActor(null, worldPos)
+      if (collision) {
+        if (collision.constructor === Mini && storedActor === player) {
+          player.frameStack = new Frame(collision.id, player.frameStack)
+          return
+        } else {
+          console.warn("overlap")
+          return
+        }
       }
       storedActor.setPos(worldPos)
       storedActor.setDead(false)
