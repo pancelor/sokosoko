@@ -88,7 +88,7 @@ levelData.push({
     Mini Purple 1 5 Blue
     Crate Blue 4 4 0
     Mini Green 6 2 Blue
-    Crate Blue 3 2 1
+    Crate Purple 2 1 1
     Mini Yellow 6 5 Red
     Mini Yellow 5 5 Red
     Mini Yellow 4 5 Red
@@ -103,7 +103,7 @@ levelData.push({
     Crate Purple 1 1 0
     Crate Black 2 2 0
     Mini Blue 2 4 White
-    Crate Purple 2 1 0
+    Crate Blue 3 2 0
     Mini Purple 6 1 Orange
     Mini Purple 6 2 Orange
   `,
