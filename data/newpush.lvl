@@ -1,5 +1,5 @@
 levelData.push({
-  name: 'newp',
+  name: 'newpush',
   tileData: `
     level @Red
     xxxxxxxx

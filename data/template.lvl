@@ -1,5 +1,5 @@
 levelData.push({
-  name: 'empt',
+  name: 'template',
   tileData: `
     level @Red
     xxxxxxxx

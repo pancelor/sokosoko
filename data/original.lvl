@@ -1,5 +1,5 @@
 levelData.push({
-  name: 'orig',
+  name: 'original',
   tileData: `
     level @Black
     xxxx.xxx

@@ -2,7 +2,7 @@ function registerLevelCodeListener() {
   levelCodeInput.addEventListener("keydown", (e) => {
     if (e.code === "Enter") {
       let name = levelCodeInput.value.toLowerCase()
-      if (!name) { name = "orig" }
+      if (!name) { name = "original" }
       if (!loadLevel(name)) { levelCodeInput.value = "" }
     }
   })
@@ -330,7 +330,7 @@ function init() {
   registerLevelCodeListener()
   registerKeyListeners()
   registerMouseListeners()
-  reset('orig')
+  reset('original')
 
   devmodeInit()
 }
