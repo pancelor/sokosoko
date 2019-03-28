@@ -475,6 +475,11 @@ function listLevels() {
   }
 }
 
+function viewOffset() {
+  // hacky
+  return pcoord(4, 4)
+}
+
 //
 // misc
 //

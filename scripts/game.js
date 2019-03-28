@@ -134,9 +134,10 @@ class Frame {
 
 
 let player
-
+let gotBonus
 function InitGame() {
   // note: tiles/actors have already been loaded
+  gotBonus = false
   InitHistory()
   actors.forEach(a=>a.onGameInit())
 }
@@ -149,8 +150,6 @@ function Update(dir) {
   events = EndEpoch()
   Raf()
 }
-
-let gotBonus = false
 
 function checkWin() {
   return findActor(Flag, player.pos)
@@ -193,10 +192,11 @@ async function DrawView(ctx) {
   if (outerFrame) {
     const mini = innerFrame.mini()
     assert(mini)
-    const outerW = 3*tileSize
-    const outerH = 3*tileSize
-    const src = mini.pos.add(pcoord(-1, -1)).scale(tileSize)
-    const dest = pcoord(8, 8).scale(tileSize)
+    assert(viewOffset().equals(pcoord(4, 4))) // for (8,8): 2->3, 0.5->1
+    const outerW = 2*tileSize
+    const outerH = 2*tileSize
+    const src = mini.pos.add(pcoord(-0.5, -0.5)).scale(tileSize)
+    const dest = viewOffset().scale(tileSize)
     ctx.drawImage(screenshotMap,
       src.x, src.y, outerW, outerH,
       0, 0, canvasView.width, canvasView.height
@@ -209,7 +209,7 @@ async function DrawView(ctx) {
         const src2 = getRoomTopLeft(mini2.room()).scale(tileSize)
         ctx.drawImage(screenshotMap,
           src2.x, src2.y, tileSize*8, tileSize*8,
-          (1+dx)*tileSize*8, (1+dy)*tileSize*8, tileSize*8, tileSize*8
+          (0.5+dx)*tileSize*8, (0.5+dy)*tileSize*8, tileSize*8, tileSize*8
         )
       }
     }
@@ -218,7 +218,7 @@ async function DrawView(ctx) {
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
   const src = getRoomTopLeft(innerFrame.room()).scale(tileSize)
-  const dest = pcoord(8, 8).scale(tileSize)
+  const dest = viewOffset().scale(tileSize)
   ctx.drawImage(screenshotMap,
     src.x, src.y, innerW, innerH,
     dest.x, dest.y, innerW, innerH
@@ -237,7 +237,7 @@ async function DrawView(ctx) {
 //     const outerW = 3*tileSize
 //     const outerH = 3*tileSize
 //     const src = mini.pos.add(pcoord(-1, -1)).scale(tileSize)
-//     const dest = pcoord(8, 8).scale(tileSize)
+//     const dest = viewOffset().scale(tileSize)
 //     ctx.drawImage(screenshotMap,
 //       src.x, src.y, outerW, outerH,
 //       0, 0, canvasView.width, canvasView.height
@@ -251,7 +251,7 @@ async function DrawView(ctx) {
 //   const innerW = 8 * tileSize
 //   const innerH = 8 * tileSize
 //   const src = getRoomTopLeft(innerFrame.room()).scale(tileSize)
-//   const dest = pcoord(8, 8).scale(tileSize)
+//   const dest = viewOffset().scale(tileSize)
 //   ctx.drawImage(screenshotMap,
 //     src.x, src.y, innerW, innerH,
 //     dest.x, dest.y, innerW, innerH
@@ -261,7 +261,7 @@ async function DrawView(ctx) {
 function DrawMisc(ctxView) {
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
-  const dest = pcoord(8, 8).scale(tileSize)
+  const dest = viewOffset().scale(tileSize)
 
   // draw frame border
   ctxWith(ctxView, {strokeStyle: "white", lineWidth: 4, globalAlpha: 0.4}, () => {
