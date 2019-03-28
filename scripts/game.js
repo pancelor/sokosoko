@@ -10,6 +10,7 @@ class Tracer {
       this.enter(fxn.name, args)
       const ret = fxn(...args)
       this.exit(fxn.name, args, ret)
+      return ret
     }
   }
 
@@ -22,18 +23,22 @@ class Tracer {
     const parts = []
     parts.push(`${name}(`)
     for (const a of args) {
-      parts.push(`${serialize(a)}, `)
+      if (a.str) {
+        parts.push(`${a.str()}, `)
+      } else {
+        parts.push(`${serialize(a)}, `)
+      }
     }
     parts.push(")")
-    this.print(parts.join(''))
+    return parts.join('')
   }
   enter(name, args) {
     this.print(`-> ${this.printSignature(name, args)}`)
     this.changeIndent(1)
   }
   exit(name, args, ret) {
-    this.print(`${ret} <- ${this.printSignature(name, args)}`)
     this.changeIndent(-1)
+    this.print(`${ret} <- ${this.printSignature(name, args)}`)
   }
   changeIndent(di) {
     this.indent += di
@@ -95,8 +100,13 @@ class Pos {
   }
 
   roomSerialize() {
-    const roomPos = this.toRoomPos()
-    return `${this.room().name} ${roomPos.x} ${roomPos.y}`
+    const room = this.room()
+    if (room) {
+      const roomPos = this.toRoomPos()
+      return `${this.room().name} ${roomPos.x} ${roomPos.y}`
+    } else {
+      return `<undefined>`
+    }
   }
 
   static roomDeserialize(name, x, y) {
@@ -599,7 +609,7 @@ class Crate extends Actor {
 
 const allActorTypes = [Player, FakeFlag, Flag, Mini, Crate]
 
-function maybeTeleOut(that, dir) {
+function maybeTeleOut_(that, dir) {
   // if that is standing in a room opening and moving out (dir)
   //   move that to the parent Frame (teleport out one room)
   // else do nothing
@@ -638,11 +648,11 @@ function maybeTeleOut(that, dir) {
   }
   return false
 }
-maybeTeleOut = tracer.tracify(maybeTeleOut)
+const maybeTeleOut = tracer.tracify(maybeTeleOut_)
 
 // let hack_seen_teles
 
-function maybeTeleIn(that, dir) {
+function maybeTeleIn_(that, dir) {
   // if that is standing next to a Mini and is moving into it (dir)
   //   move that into the mini. (one tile before the actual entrance)
   // else do nothing
@@ -691,9 +701,9 @@ function maybeTeleIn(that, dir) {
   }
   return false
 }
-maybeTeleIn = tracer.tracify(maybeTeleIn)
+const maybeTeleIn = tracer.tracify(maybeTeleIn_)
 
-function maybeConsume(that, food, dir) {
+function maybeConsume_(that, food, dir) {
   // dir is the direction the _mini_ is moving
   assert(food.frameStack)
   if (that.constructor !== Mini) return false
@@ -728,9 +738,9 @@ function maybeConsume(that, food, dir) {
   }
   return false
 }
-maybeConsume = tracer.tracify(maybeConsume)
+const maybeConsume = tracer.tracify(maybeConsume_)
 
-function pushableUpdate(that, dir) {
+function pushableUpdate_(that, dir) {
   // DRY without subclassing for pushable objects
   assert(that.frameStack)
 
@@ -755,7 +765,7 @@ function pushableUpdate(that, dir) {
   that.setPos(nextPos)
   return true
 }
-pushableUpdate = tracer.tracify(pushableUpdate)
+const pushableUpdate = tracer.tracify(pushableUpdate_)
 
 function lifted(lifter, target, cb) {
   // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it
