@@ -381,11 +381,14 @@ function recordingToggle() {
 }
 function recordingStart() {
   console.log("Recording moves...")
+  recordingOutput.innerText = ""
   keyHist = []
 }
 function recordingStop() {
   console.log("Recorded moves:");
-  console.log(keyHist.join(''))
+  const str = keyHist.join('')
+  console.log(str)
+  recordingOutput.innerText = `Recorded Moves: ${str}`
   keyHist = null
 }
 function RecordKeyHist(dir) {

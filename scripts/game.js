@@ -275,7 +275,7 @@ function DrawMisc(ctxView) {
 
   if (checkWin()) {
     const lines = ["You win!"]
-    if (gotBonus) lines.push("excellent work")
+    if (gotBonus) lines.push("very good")
     drawMessage(ctxView, lines)
   }
 }
@@ -423,7 +423,7 @@ class Player extends Actor {
   }
 
   update(dir) {
-    hack_seen_teles = new Set()
+    // hack_seen_teles = new Set()
     const success = pushableUpdate(this, dir)
     maybeFakeWin()
     if (checkWin()) {
@@ -510,11 +510,6 @@ class Crate extends Actor {
     if (!findActor(Flag, this.pos)) return
 
     this.setDead(true)
-    RecordChange({ // hack to talk to the sound system
-      id: this.id,
-      before: {},
-      after: { collected: true },
-    })
     PlayAndRecordSound(sndBonus)
     gotBonus = true
   }
@@ -574,14 +569,15 @@ function maybeTeleOut(that, dir) {
   return false
 }
 
-let hack_seen_teles
+// let hack_seen_teles
 function maybeTeleIn(that, dir) {
   // if that is standing next to a Mini and is moving into it (dir)
   //   move that into the mini. (one tile before the actual entrance)
   // else do nothing
   // returns whether the tele happened
   assert(that.frameStack)
-  if (that.frameStack.length() >= 1000) {
+  if (that.frameStack.length() >= 200) {
+    // this is really really hacky
     console.warn("HACK infinite mini recursion")
     PlayAndRecordSound(sndInfinite)
     that.die()
