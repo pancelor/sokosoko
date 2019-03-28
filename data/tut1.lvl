@@ -1,0 +1,47 @@
+levelData.push({
+  name: 'tut1',
+  tileData: `
+    room @White
+    xxxxxxxx
+    xxx.xxxx
+    xxx.xxxx
+    x.....xx
+    x.x.x.xx
+    x.....xx
+    xxx....x
+    xxxxxxxx
+
+    room @Red
+    xx.xxxxx
+    xx....xx
+    xxxxx.xx
+    xxx...xx
+    x.....xx
+    x.x...xx
+    x.xxxxxx
+    x.xxxxxx
+
+    room @Blue
+    xxxxx.xx
+    xxx...xx
+    xxx.xxxx
+    xx...xxx
+    xx.....x
+    xx...x.x
+    xxxxxx.x
+    xxxxxx.x
+  `,
+  actorData: `
+    Player 6 6
+    Flag 3 1
+    Mini 3 3 Red
+    Mini 2 3 Blue
+    Crate 4 3 0
+    Crate 5 6 0
+    Crate 3 19 0
+    Crate 5 11 0
+  `,
+  frameStackData: `
+    White
+  `,
+})

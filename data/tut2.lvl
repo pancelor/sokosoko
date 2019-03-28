@@ -1,0 +1,70 @@
+levelData.push({
+  name: 'tut2',
+  tileData: `
+    room @White
+    xxxxxxxx
+    x.....xx
+    x....xxx
+    xxx.xx.x
+    x...xx.x
+    x......x
+    x...xxxx
+    xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    xxxxxx..
+    xxxx...x
+    xxx....x
+    xxxx.xxx
+    .......x
+    xx....xx
+    xxxxxxxx
+
+    room @Blue
+    xxxxx.xx
+    xxx...xx
+    xxx.xxxx
+    xx......
+    xx..xxxx
+    xx...xxx
+    xxxx.xxx
+    xxxx.xxx
+
+    room @Green
+    xxxxxxxx
+    x......x
+    xxxxxxxx
+    x.x.....
+    xxx..xxx
+    .....x.x
+    xxxxxx.x
+    xxxxxxxx
+
+    room @Yellow
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+  `,
+  actorData: `
+    Player 2 5
+    Flag 6 3
+    Mini 5 5 Red
+    Mini 2 2 Blue
+    Crate 4 13 0
+    Crate 4 12 0
+    Crate 4 10 0
+    Mini 3 18 Red
+    Mini 3 19 Green
+    Mini 1 33 Yellow
+    Crate 3 20 0
+  `,
+  frameStackData: `
+    White
+  `,
+})
