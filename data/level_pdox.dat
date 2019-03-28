@@ -1,4 +1,5 @@
-levelData['pdox'] = {
+levelData.push({
+  name: 'pdox',
   tileData: `
     level @Red
     xxxxxxxx
@@ -40,4 +41,4 @@ levelData['pdox'] = {
   frameStackData: `
     White
   `,
-}
+})

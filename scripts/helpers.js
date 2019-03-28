@@ -260,6 +260,19 @@ RegisterTest("invertObject", () => {
   )
 })
 
+function sum(arr) {
+  let res = 0
+  for (const x of arr) {
+    res += x
+  }
+  return res
+}
+RegisterTest("sum", ()=> {
+  assertEqual(sum([5,2,3]), 10)
+  assertEqual(sum([]), 0)
+  assertEqual(sum([-9]), -9)
+})
+
 function argmin(arr) {
   assert(arr.length > 0, "argmin([]) is not defined")
   let arg = 0
@@ -446,15 +459,8 @@ function singleButtons() {
   enableHeldButtons = false
 }
 
-// TODO: instead of
-//    levelData['fooName'] = {...}
-// use
-//    levelData.push({ name: "fooName", ...})
-// to avoid bugs where i forget to change the name (add asserts)
-// then change this function to work again
-// Also, "level" is already taken; maybe rename the old word "level" to "layer"?
 function listLevels() {
-  for (const name of Object.keys(levelData)) {
+  for (const { name } of levelData) {
     console.log('  ', name)
   }
 }

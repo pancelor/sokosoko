@@ -1,4 +1,5 @@
-levelData['orig'] = {
+levelData.push({
+  name: 'orig',
   tileData: `
     level @Black
     xxxx.xxx
@@ -78,4 +79,4 @@ levelData['orig'] = {
     White
     miniYellow
   `,
-}
+})

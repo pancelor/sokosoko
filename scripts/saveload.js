@@ -8,9 +8,19 @@ let actors
 
 let taggedActors // make this local?
 
-function ImportLevel(name) {
+function levelDeclaredCount(name) {
+  return sum(levelData.map(ld=>ld.name === name ? 1 : 0))
+}
+
+function levelDataFor(name) {
+  assertEqual(levelDeclaredCount(name), 1, `Level ${name} was overdeclared`)
+  return levelData.find(ld=>ld.name === name)
+}
+
+function Import(name) {
+  assert(levelData)
   console.log("Loading level", name)
-  if (!levelData[name]) {
+  if (levelDeclaredCount(name) === 0) {
     console.warn("level not found:", name)
     return false
   }
@@ -24,7 +34,7 @@ function ImportLevel(name) {
 }
 
 function preloadData(name) {
-  const { tileData, actorData, frameStackData } = levelData[name]
+  const { tileData, actorData, frameStackData } = levelDataFor(name)
   assert(tileData)
   assert(actorData)
   assert(frameStackData)
@@ -243,11 +253,12 @@ function exportFrameStackString() {
 
 function Export(name) {
   const lines = []
-  lines.push(`levelData['${name}'] = {`)
+  lines.push("levelData.push({")
+  lines.push(`  name: '${name}',`)
   lines.push(exportTilesString())
   lines.push(exportActorsString())
   lines.push(exportFrameStackString())
-  lines.push("}")
+  lines.push("})")
   lines.push("")
   return lines.join("\n")
 }

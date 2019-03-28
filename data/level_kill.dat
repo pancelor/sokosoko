@@ -1,4 +1,5 @@
-levelData['kill'] = {
+levelData.push({
+  name: 'dolphin',
   tileData: `
     level @Red
     xxx.xxxx
@@ -100,4 +101,4 @@ levelData['kill'] = {
     m1
     m2
   `,
-}
+})

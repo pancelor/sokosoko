@@ -1,4 +1,5 @@
-levelData['empt'] = {
+levelData.push({
+  name: 'empt',
   tileData: `
     level @Red
     xxxxxxxx
@@ -96,4 +97,4 @@ levelData['empt'] = {
   frameStackData: `
     White
   `,
-}
+})

@@ -299,9 +299,9 @@ function reset(name=null) {
   const success = loadLevel(name || currentLevelName)
   recordingStart()
 }
-function loadLevel(levelName) {
-  if (!ImportLevel(levelName)) { return false }
-  currentLevelName = levelName
+function loadLevel(name) {
+  if (!Import(name)) { return false }
+  currentLevelName = name
   InitGame()
   canvas2.focus()
   // scrollTo(0, 0)
