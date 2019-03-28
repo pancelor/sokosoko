@@ -32,11 +32,11 @@ levelData.push({
     xxxxxxxx
   `,
   actorData: `
-   Mini 2 20 Red
-   Mini 3 21 Red
-   Mini 7 4 Blue
-   Mini 7 12 Red
-   Player 4 20
+    Mini White 2 4 Red
+    Mini White 3 5 Red
+    Mini Red 7 4 Blue
+    Mini Blue 7 4 Red
+    Player White 4 4
   `,
   frameStackData: `
     White

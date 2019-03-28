@@ -62,34 +62,26 @@ levelData.push({
     xxxxxxxx
   `,
   actorData: `
-    Mini 4 11 Red
-    Mini 5 10 Red
-    Player 2 13
-    Crate 3 12 0
-    Crate 6 9 0
-    Crate 5 12 0
-
-    # holy shit check this situation out: play('0130012221003003333303222222', 200)
-    # the blue guy eats the box that's inside the red guy omg
-    Mini 2 20 Red
-    Mini 3 20 Blue
-    Mini 6 14 Blue
-    Crate 4 20 0
-
-    # pdox2; try to push the mini out of itself
-    # not sure if the current (hacky) check will catch this
-    Mini 1 9 Green
-    Mini 5 28 Green
-    Crate 6 28 0
-
-    # pdox3; infinite consume loop (but indirect)
-    Mini 3 9 Purple
-    Mini 6 36 Yellow
-    Crate 7 36 0
-    Crate 7 44 0
-    Mini 6 44 White
-    Crate 5 44 0
-    Mini 4 44 Purple
+    Mini White 4 3 Red
+    Mini White 5 2 Red
+    Player White 2 5
+    Crate White 3 4 0
+    Crate White 6 1 0
+    Crate White 5 4 0
+    Mini Blue 2 4 Red
+    Mini Blue 3 4 Blue
+    Mini White 6 6 Blue
+    Crate Blue 4 4 0
+    Mini White 1 1 Green
+    Mini Green 5 4 Green
+    Crate Green 6 4 0
+    Mini White 3 1 Purple
+    Mini Purple 6 4 Yellow
+    Crate Purple 7 4 0
+    Crate Yellow 7 4 0
+    Mini Yellow 6 4 White
+    Crate Yellow 5 4 0
+    Mini Yellow 4 4 Purple
   `,
   frameStackData: `
     White

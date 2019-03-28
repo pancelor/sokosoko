@@ -82,30 +82,30 @@ levelData.push({
     xxxx.xxx
   `,
   actorData: `
-    Mini 4 33 Blue @m2
-    Mini 6 27 Blue
-    Mini 7 3 Red
-    Mini 1 37 Blue
-    Crate 4 20 0
-    Mini 6 26 Blue
-    Crate 5 43 1
-    Mini 6 45 Red
-    Mini 5 45 Red
-    Mini 4 45 Red
-    Player 1 18
-    Mini 2 17 Yellow
-    Mini 2 13 Purple @m1
-    Flag 5 10
-    Mini 6 18 Green
-    Mini 2 12 Black
-    Crate 3 18 0
-    Mini 4 50 Purple
-    Crate 1 33 0
-    Crate 2 50 0
-    Mini 2 20 White
-    Crate 2 33 0
-    Mini 6 33 Orange
-    Mini 6 34 Orange
+    Mini Purple 4 1 Blue @m2
+    Mini Green 6 3 Blue
+    Mini Red 7 3 Red
+    Mini Purple 1 5 Blue
+    Crate Blue 4 4 0
+    Mini Green 6 2 Blue
+    Crate Yellow 5 3 1
+    Mini Yellow 6 5 Red
+    Mini Yellow 5 5 Red
+    Mini Yellow 4 5 Red
+    Player Blue 1 2
+    Mini Blue 2 1 Yellow
+    Mini White 2 5 Purple @m1
+    Flag White 5 2
+    Mini Blue 6 2 Green
+    Mini White 2 4 Black
+    Crate Blue 3 2 0
+    Mini Black 4 2 Purple
+    Crate Purple 1 1 0
+    Crate Black 2 2 0
+    Mini Blue 2 4 White
+    Crate Purple 2 1 0
+    Mini Purple 6 1 Orange
+    Mini Purple 6 2 Orange
   `,
   frameStackData: `
     White

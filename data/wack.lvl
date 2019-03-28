@@ -60,45 +60,38 @@ levelData.push({
     x......x
     x......x
     xxxxxxxx
-
   `,
-
   actorData: `
-    Mini 3 35 Black @miniBlack
-    Mini 1 6 Yellow @miniYellow
-    Mini 6 14 Blue @miniBlue
-    Mini 4 5 Black @miniBlack2
-    Mini 4 43 Black @miniOuter
-    Mini 2 14 Green
-    Mini 3 21 Yellow
-    Mini 4 9 Red
-    Mini 5 5 Black
-    Mini 6 2 Green
-    Crate 4 4 0
-    Crate 4 34 0
-    Crate 1 36 1
-    Crate 1 34 0
-    Crate 2 35 0
-    FakeFlag 1 4
-    Flag 3 43
-    Player 1 14
+    Mini Blue 3 3 Black @miniBlack
+    Mini Black 1 6 Yellow @miniYellow
+    Mini Yellow 6 6 Blue @miniBlue
+    Mini Black 4 5 Black @miniBlack2
+    Mini White 4 3 Black @miniOuter
+    Mini Yellow 2 6 Green
+    Mini Green 3 5 Yellow
+    Mini Yellow 4 1 Red
+    Mini Black 5 5 Black
+    Mini Black 6 2 Green
+    Crate Black 4 4 0
+    Crate Blue 4 2 0
+    Crate Blue 1 4 1
+    Crate Blue 1 2 0
+    Crate Blue 2 3 0
+    FakeFlag Black 1 4
+    Flag White 3 3
+    Player Yellow 1 6
   `,
-
   frameStackData: `
     White
     miniOuter
     miniBlack2
     miniYellow
-
-    # start repeats:
     miniBlue
     miniBlack
     miniYellow
-
     miniBlue
     miniBlack
     miniYellow
-
     miniBlue
     miniBlack
     miniYellow
