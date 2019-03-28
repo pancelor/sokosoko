@@ -1,7 +1,7 @@
 levelData.push({
   name: 'wack',
   tileData: `
-    level @Black
+    room @Black
     xxxxxx.x
     x.xxxx.x
     ..xxxx..
@@ -11,7 +11,7 @@ levelData.push({
     x.xxx.xx
     xxxxx.xx
 
-    level @Green
+    room @Green
     xxxx.xxx
     x..x.xxx
     x......x
@@ -21,7 +21,7 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    level @Yellow
+    room @Yellow
     xxxx.xxx
     xxxx.xxx
     xx....xx
@@ -31,7 +31,7 @@ levelData.push({
     xxxxxxxx
     xxxxxxxx
 
-    level @Red
+    room @Red
     xxxxxxxx
     x......x
     x.xxxx.x
@@ -41,7 +41,7 @@ levelData.push({
     x.......
     xx.xxxxx
 
-    level @Blue
+    room @Blue
     xxxxxxxx
     x..x...x
     ...x...x
@@ -51,7 +51,7 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    level @White
+    room @White
     xxxxxxxx
     x......x
     x......x

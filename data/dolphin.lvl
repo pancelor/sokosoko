@@ -1,7 +1,7 @@
 levelData.push({
   name: 'dolphin',
   tileData: `
-    level @Red
+    room @Red
     xxx.xxxx
     x.....xx
     x.x....x
@@ -11,7 +11,7 @@ levelData.push({
     xxx.xx.x
     xxxxxxxx
 
-    level @White
+    room @White
     xxxxxxxx
     xxxxxxxx
     xx....xx
@@ -21,7 +21,7 @@ levelData.push({
     xxxxx.xx
     xxxxx.xx
 
-    level @Blue
+    room @Blue
     xxxxxx.x
     xx...x.x
     .....x..
@@ -31,7 +31,7 @@ levelData.push({
     xx.....x
     xxxxxxxx
 
-    level @Green
+    room @Green
     xxxxx.xx
     xxx.x.xx
     xxx.x.xx
@@ -41,7 +41,7 @@ levelData.push({
     xxxxx.xx
     xxxxx.xx
 
-    level @Purple
+    room @Purple
     xx.xxxxx
     ........
     xxxxxxxx
@@ -51,7 +51,7 @@ levelData.push({
     x....xxx
     x.xxxxxx
 
-    level @Yellow
+    room @Yellow
     xxxxxxxx
     xxx...xx
     x.......
@@ -61,7 +61,7 @@ levelData.push({
     xx.xxxxx
     xx.xxxxx
 
-    level @Black
+    room @Black
     xxxxxxxx
     x....x.x
     x....xxx

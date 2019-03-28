@@ -22,14 +22,14 @@ class Pos {
     })
   }
 
-  static fromLevel(level, localPos) {
-    // takes a level pos and returns a world pos
-    return new Pos({x: localPos.x, y: localPos.y + level.begin})
+  static fromRoom(room, localPos) {
+    // takes a room pos and returns a world pos
+    return new Pos({x: localPos.x, y: localPos.y + room.begin})
   }
 
-  toLevelPos(level) {
-    // takes a world pos and returns a level pos
-    return new Pos({x: this.x, y: this.y - level.begin})
+  toRoomPos(room) {
+    // takes a world pos and returns a room pos
+    return new Pos({x: this.x, y: this.y - room.begin})
   }
 
   str() {
@@ -42,8 +42,8 @@ class Pos {
 }
 
 class FrameBase {
-  constructor(levelId) {
-    this.levelId = levelId
+  constructor(roomId) {
+    this.roomId = roomId
     this.parent = null
   }
 
@@ -51,8 +51,8 @@ class FrameBase {
     assert(0, "FrameBase has no mini")
   }
 
-  level() {
-    return getLevel(this.levelId)
+  room() {
+    return getRoom(this.roomId)
   }
 
   mapMini(f) {
@@ -65,17 +65,17 @@ class FrameBase {
 
   equals(other) {
     if (other.constructor !== FrameBase) { return false }
-    return (this.levelId === other.levelId)
+    return (this.roomId === other.roomId)
   }
 
   str() {
-    const level = getLevel(this.levelId)
-    return `<base; ${level.name}>`
+    const room = getRoom(this.roomId)
+    return `<base; ${room.name}>`
   }
 
   serialize() {
-    const level = getLevel(this.levelId)
-    return `${this.constructor.name} ${level.name}`
+    const room = getRoom(this.roomId)
+    return `${this.constructor.name} ${room.name}`
   }
 }
 
@@ -94,10 +94,10 @@ class Frame {
     return a
   }
 
-  level() {
+  room() {
     const mini = this.mini()
     assert(mini)
-    return getLevel(mini.levelId)
+    return getRoom(mini.roomId)
   }
 
   mapMini(f) {
@@ -123,7 +123,7 @@ class Frame {
 
   str() {
     const mini = this.mini()
-    return `${this.parent.str()} | ${this.level().name}`
+    return `${this.parent.str()} | ${this.room().name}`
   }
 
   serialize() {
@@ -172,7 +172,7 @@ async function DrawMinis(ctxMap) {
   const screenshotMini = await createImageBitmap(canvasMini)
   for (const m of allActors(Mini)) {
     const pixSize = roomSize*miniTileSize
-    const src = getLevelTopLeft(m.level()).scale(miniTileSize)
+    const src = getRoomTopLeft(m.room()).scale(miniTileSize)
     const dest = m.pos.scale(tileSize)
     ctxMap.drawImage(screenshotMini,
       src.x, src.y, pixSize, pixSize,
@@ -188,7 +188,7 @@ async function DrawView(ctx) {
 
   ctxWith(ctx, {fillStyle: 'white'}, cls)
 
-  // draw outer level border
+  // draw outer border
   if (outerFrame) {
     const mini = innerFrame.mini()
     assert(mini)
@@ -205,7 +205,7 @@ async function DrawView(ctx) {
         if (dx === 0 && dy === 0) continue
         const mini2 = findActor(Mini, mini.pos.add(pcoord(dx, dy)))
         if (!mini2) continue
-        const src2 = getLevelTopLeft(mini2.level()).scale(tileSize)
+        const src2 = getRoomTopLeft(mini2.room()).scale(tileSize)
         ctx.drawImage(screenshotMap,
           src2.x, src2.y, tileSize*8, tileSize*8,
           (1+dx)*tileSize*8, (1+dy)*tileSize*8, tileSize*8, tileSize*8
@@ -213,10 +213,10 @@ async function DrawView(ctx) {
       }
     }
   }
-  // draw inner level
+  // draw inner room
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
-  const src = getLevelTopLeft(innerFrame.level()).scale(tileSize)
+  const src = getRoomTopLeft(innerFrame.room()).scale(tileSize)
   const dest = pcoord(8, 8).scale(tileSize)
   ctx.drawImage(screenshotMap,
     src.x, src.y, innerW, innerH,
@@ -229,7 +229,7 @@ async function DrawView(ctx) {
 //   const innerFrame = player.frameStack
 //   const outerFrame = player.frameStack.parent
 
-//   // draw outer level border
+//   // draw outer border
 //   if (outerFrame) {
 //     const mini = innerFrame.mini()
 //     assert(mini)
@@ -242,14 +242,14 @@ async function DrawView(ctx) {
 //       0, 0, canvasView.width, canvasView.height
 //     )
 //   } else {
-//     const fillStyle = 'white' //innerFrame.level().name
+//     const fillStyle = 'white' //innerFrame.room().name
 //     ctxWith(ctx, {fillStyle}, cls)
 //   }
 
-//   // draw inner level
+//   // draw inner room
 //   const innerW = 8 * tileSize
 //   const innerH = 8 * tileSize
-//   const src = getLevelTopLeft(innerFrame.level()).scale(tileSize)
+//   const src = getRoomTopLeft(innerFrame.room()).scale(tileSize)
 //   const dest = pcoord(8, 8).scale(tileSize)
 //   ctx.drawImage(screenshotMap,
 //     src.x, src.y, innerW, innerH,
@@ -433,10 +433,10 @@ class Player extends Actor {
 }
 
 class Mini extends Actor {
-  constructor(p, levelId, col) {
+  constructor(p, roomId, col) {
     super(p)
-    assertEqual(levelId.constructor, Number)
-    this.levelId = levelId
+    assertEqual(roomId.constructor, Number)
+    this.roomId = roomId
     this.col = col
   }
 
@@ -445,7 +445,7 @@ class Mini extends Actor {
     drawImgMap(ctxMap, lookupActorImg(this), this.pos) // comment me out
 
     assert(miniTileSize === 4)
-    const { Wall, Floor } = GetLevelColors(this.level())
+    const { Wall, Floor } = GetRoomColors(this.room())
     ctxWith(ctxMini, {fillStyle: Wall}, () => {
       ctxMini.fillRect(this.pos.x*4, this.pos.y*4, 4, 4);
     })
@@ -458,30 +458,30 @@ class Mini extends Actor {
     PlayAndRecordSound(sndShove)
   }
 
-  level() {
-    return getLevel(this.levelId)
+  room() {
+    return getRoom(this.roomId)
   }
 
-  levelPos() {
-    // the position of this mini within its containing level
-    return this.pos.toLevelPos(getLevelAt(this.pos))
+  roomPos() {
+    // the position of this mini within its containing room
+    return this.pos.toRoomPos(getRoomAt(this.pos))
   }
 
   str() {
-    return `${this.level().name}${this.pos.str()}`
+    return `${this.room().name}${this.pos.str()}`
   }
 
   serialize() {
-    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${this.level().name}`
+    return `${this.constructor.name} ${this.pos.x} ${this.pos.y} ${this.room().name}`
   }
 
   static deserialize(line) {
-    const [type, x, y, levelName] = line.split(' ')
+    const [type, x, y, roomName] = line.split(' ')
     assertEqual(type, this.name)
     const p = pcoord(int(x), int(y))
-    const level = levelFromName(levelName)
-    assert(level, `level "${levelName}" doesn't exist`)
-    return new (this)(p, level.id, level.name)
+    const room = roomFromName(roomName)
+    assert(room, `room "${roomName}" doesn't exist`)
+    return new (this)(p, room.id, room.name)
   }
 }
 
@@ -534,14 +534,14 @@ class Crate extends Actor {
 const allActorTypes = [Player, FakeFlag, Flag, Mini, Crate]
 
 function maybeTeleOut(that, dir) {
-  // if that is standing in a level opening and moving out (dir)
-  //   move that to the parent Frame (teleport out one level)
+  // if that is standing in a room opening and moving out (dir)
+  //   move that to the parent Frame (teleport out one room)
   // else do nothing
   // returns whether the tele happened
   assert(that.frameStack)
 
-  const innerLevel = that.frameStack.level()
-  const outPos = LevelOpenings(innerLevel)[dir]
+  const innerLevel = that.frameStack.room()
+  const outPos = RoomOpenings(innerLevel)[dir]
   if (outPos && outPos.equals(that.pos)) {
     // prepare to teleport
     const oldPos = that.pos
@@ -585,7 +585,7 @@ function maybeTeleIn(that, dir) {
   const nextPos = posDir(that.pos, dir)
   const mini = findActor(Mini, nextPos)
   if (mini) {
-    const op = LevelOpenings(mini.level())[oppDir(dir)]
+    const op = RoomOpenings(mini.room())[oppDir(dir)]
     if (op) {
       // if (hack_seen_teles.has(mini.id)) {
       //   console.warn('infinite mini recursion detected; killing', serialize(that))
@@ -630,11 +630,11 @@ function maybeConsume(that, food, dir) {
     if (wtf) {
       // this is _very_ weird; eating the food has pushed some stuff around
       // in a way such that the food's old position is occupied again.
-      // (e.g. green or purple/yellow room of level_newp.dat)
+      // (e.g. green or purple/yellow room of newpush.lvl)
 
       // Im so so conflicted about what to do here;
       // I think we should succeed and evaporate the food out of existence
-      // That seems to be the case in the green room of level_newp.dat
+      // That seems to be the case in the green room of newpush.lvl
       // But what about the purple/yellow combo? which block gets eaten?
       // Wouldn't it be all of them but none of them at once? so now the three
       // remaining objects are weird half-and-half glitchy abominations?

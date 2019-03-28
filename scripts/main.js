@@ -177,22 +177,22 @@ function translateMouseFromMap(e) {
 }
 
 function translateMouseFromView(e) {
-  const levelPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize)).add(pcoord(-4, -4))
-  if (!inbounds(levelPos, {w: 8, h: 8})) { return }
+  const roomPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize)).add(pcoord(-4, -4))
+  if (!inbounds(roomPos, {w: 8, h: 8})) { return }
 
-  const level = player.frameStack.level()
-  const worldPos = Pos.fromLevel(level, levelPos)
+  const room = player.frameStack.room()
+  const worldPos = Pos.fromRoom(room, roomPos)
   return {e, worldPos}
 }
 
 let storedActor = null
 function mouseClick({e, worldPos}) {
-  const level = getLevelAt(worldPos)
-  const levelPos = worldPos.toLevelPos(level)
+  const room = getRoomAt(worldPos)
+  const roomPos = worldPos.toRoomPos(room)
   const a = findActor(null, worldPos)
   const parts = []
-  parts.push(`${level.name}(${level.id}): ${worldPos.str()}`)
-  parts.push(`(local: ${levelPos.str()})`)
+  parts.push(`${room.name}(${room.id}): ${worldPos.str()}`)
+  parts.push(`(local: ${roomPos.str()})`)
   if (a) {
     parts.push(`${a.constructor.name}#${a.id}`)
     if (a.tag) {

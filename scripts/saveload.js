@@ -2,7 +2,7 @@
 // globals
 //
 
-let levels
+let rooms
 let tiles
 let actors
 
@@ -58,7 +58,7 @@ function importTiles(tileData) {
   // imports `tileData` into the global var `tiles`
 
   tiles = []
-  levels = []
+  rooms = []
 
   let lines = sanitizeLines(tileData)
   let line
@@ -74,32 +74,32 @@ function importTiles(tileData) {
     return true
   }
 
-  const levelHeader = (line) => line.match(/^level\s+@(?<name>[\w\d_]+)$/)
+  const roomHeader = (line) => line.match(/^room\s+@(?<name>[\w\d_]+)$/)
 
   nextLine()
   while (!eof) {
-    const match = levelHeader(line)
-    assert(match, "bad level header")
-    const level = {}
-    level.id = levels.length
-    level.name = match.groups.name
-    level.begin = tiles.length
+    const match = roomHeader(line)
+    assert(match, "bad room header")
+    const room = {}
+    room.id = rooms.length
+    room.name = match.groups.name
+    room.begin = tiles.length
 
     nextLine()
-    while (!eof && !levelHeader(line)) {
+    while (!eof && !roomHeader(line)) {
       assertEqual(line.length, 8)
       const row = []
       for (let code of line) {
-        const name = deserTile(code, level.name)
+        const name = deserTile(code, room.name)
         assert(name)
         row.push(name)
       }
       tiles.push(row)
       nextLine()
     }
-    level.end = tiles.length // level lives in `tiles` from level.begin to level.end (not inclusive on `end`)
-    assert(level.begin < level.end)
-    levels.push(level)
+    room.end = tiles.length // room lives in `tiles` from room.begin to room.end (not inclusive on `end`)
+    assert(room.begin < room.end)
+    rooms.push(room)
   }
 }
 
@@ -115,7 +115,7 @@ function buildDeserActorClass() {
 }
 
 function importActors(actorData) {
-  // imports `actorData` from level.dat into the global var `actors`
+  // imports `actorData` into the global var `actors`
   const deserActorClass = buildDeserActorClass()
 
   let lines = sanitizeLines(actorData)
@@ -148,9 +148,9 @@ function importFrameStack(frameStackData) {
   for (const l of lines) {
     if (!stack) {
       // first time through the loop
-      const level = levelFromName(l)
-      assert(level)
-      stack = new FrameBase(level.id)
+      const room = roomFromName(l)
+      assert(room)
+      stack = new FrameBase(room.id)
     } else {
       const match = l.match(/^(?<tag>[\w\d_]+)$/)
       assert(match, `bad tag syntax: ${l}`)
@@ -187,10 +187,10 @@ RegisterTest("sanitizeLines", () => {
   }
 })
 
-function exportLevelString(level) {
+function exportRoomString(room) {
   const lines = []
-  lines.push(`    level @${level.name}`)
-  for (let rr = level.begin; rr < level.end; rr += 1) {
+  lines.push(`    room @${room.name}`)
+  for (let rr = room.begin; rr < room.end; rr += 1) {
     const chars = ["    "]
     for (let imgName of tiles[rr]) {
       chars.push(serTile(imgName))
@@ -203,8 +203,8 @@ function exportLevelString(level) {
 function exportTilesString() {
   const lines = []
   lines.push("  tileData: `")
-  for (let level of levels) {
-    lines.push(exportLevelString(level))
+  for (let room of rooms) {
+    lines.push(exportRoomString(room))
     lines.push("")
   }
   lines.length -= 1 // drop the last newline
@@ -235,7 +235,7 @@ function exportFrameStackString() {
   let frame = player.frameStack
   while (true) {
     if (frame.constructor === FrameBase) {
-      lines.splice(1, 0, `    ${frame.level().name}`)
+      lines.splice(1, 0, `    ${frame.room().name}`)
       break
     } else {
       let tag = frame.mini().tag

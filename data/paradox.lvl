@@ -1,7 +1,7 @@
 levelData.push({
   name: 'paradox',
   tileData: `
-    level @Red
+    room @Red
     xxxxxxxx
     x.xxxx.x
     x......x
@@ -11,7 +11,7 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    level @Blue
+    room @Blue
     xxxxxxxx
     x......x
     x......x
@@ -21,7 +21,7 @@ levelData.push({
     x.xxxx.x
     xxxxxxxx
 
-    level @White
+    room @White
     xxxxxxxx
     x......x
     x......x

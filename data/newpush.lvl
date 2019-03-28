@@ -1,7 +1,7 @@
 levelData.push({
   name: 'newpush',
   tileData: `
-    level @Red
+    room @Red
     xxxxxxxx
     x.xxxx.x
     x......x
@@ -11,7 +11,7 @@ levelData.push({
     x.xxxx.x
     xxxxxxxx
 
-    level @White
+    room @White
     xxxxxxxx
     x......x
     x......x
@@ -21,7 +21,7 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    level @Blue
+    room @Blue
     xxxx.xxx
     x......x
     x......x
@@ -31,7 +31,7 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    level @Green
+    room @Green
     xxxxxxxx
     x......x
     x......x
@@ -41,7 +41,7 @@ levelData.push({
     x......x
     xxxx.xxx
 
-    level @Purple
+    room @Purple
     xxxxxxxx
     x......x
     x......x
@@ -51,7 +51,7 @@ levelData.push({
     x......x
     xxxx.xxx
 
-    level @Yellow
+    room @Yellow
     xxxxxxxx
     x......x
     x......x
