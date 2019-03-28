@@ -101,10 +101,11 @@ function importTiles(tileData) {
     assert(room.begin < room.end)
     rooms.push(room)
 
-    // TODO use this once saved coords arent global
-    // const row = []
-    // for (let i = 0; i < 8; i += 1) row.push("imgInternalXall")
-    // tiles.push(row)
+    // hack: add a row of solid tiles in between each level
+    // to keep the pushableUpdate code simple
+    const row = []
+    for (let i = 0; i < 8; i += 1) row.push("imgInternalWall")
+    tiles.push(row)
   }
 }
 
