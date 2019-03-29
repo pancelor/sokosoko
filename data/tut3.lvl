@@ -12,14 +12,14 @@ levelData.push({
     xxxx.xxx
 
     room @Orange
+    x.xxxxxx
+    x.xxxxxx
+    x.xxxxxx
+    x.x....x
+    .....x..
     xxxxxxxx
     xxxxxxxx
-    xxxxx...
-    xx....xx
-    ....x..x
-    xxxxxx.x
-    xxxxxx.x
-    xxxxxx.x
+    xxxxxxxx
 
     room @White
     xx.xxxxx
@@ -35,10 +35,10 @@ levelData.push({
     xxxxxxxx
     xx.....x
     xxx..x..
-    x......x
-    x...xxxx
-    x......x
-    x......x
+    xxx..x.x
+    xx.....x
+    xx..xxxx
+    xxxxxxxx
     xxxxxxxx
 
     room @Green
@@ -100,22 +100,23 @@ levelData.push({
     Mini White 5 4 Purple @m2
     Mini Blue 4 1 Pink
     Mini Yellow 5 3 Black
-    Mini Orange 3 4 Orange
-    Crate Purple 3 1 1
-    Mini Blue 3 3 White @m1
+    Mini Orange 4 4 Orange
+    Crate Purple 2 1 1
+    Mini Blue 3 4 White @m1
     Crate Blue 3 2 0
     Crate Red 2 3 0
     Mini Red 2 2 Red
-    Mini Blue 5 3 Orange
-    Crate Orange 2 4 0
+    Mini Blue 5 4 Orange
+    Crate Orange 3 4 0
     Crate Blue 3 1 0
     Mini Purple 2 5 White
     Crate Blue 5 1 0
     Mini Red 5 3 Blue @m0
     Mini Yellow 3 5 Black
     Crate Yellow 5 4 0
-    Mini Purple 6 1 Orange
+    Mini Purple 5 1 Orange
     Mini Purple 1 4 Red
+    Crate Blue 3 3 0
   `,
   frameStackData: `
     Red
