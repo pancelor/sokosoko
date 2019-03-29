@@ -666,6 +666,12 @@ function maybeTeleIn_(that, dir) {
     return true
   }
 
+
+  if (that.constructor===Mini && that.room().name === "Orange" && that.pos.equals(pcoord(8, 2))) {
+    let x=0
+  }
+
+
   const nextPos = posDir(that.pos, dir)
   const mini = findActor(Mini, nextPos)
   if (mini) {

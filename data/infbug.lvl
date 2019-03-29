@@ -5,7 +5,7 @@ levelData.push({
     xxxxxx.x
     xxxxxx.x
     .....x..
-    xxxx...x
+    xx.....x
     xxxxxxxx
     xxxxxxxx
     xxxxxxxx
@@ -30,15 +30,25 @@ levelData.push({
     x..x.xxx
     x....xxx
     x.xxxxxx
+
+    room @Orange
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+    x....xxx
+    x....xxx
+    x....xxx
+    x....xxx
+    xxxxxxxx
   `,
   actorData: `
     Mini Green 7 2 Blue
     Mini Purple 1 5 Blue
     Mini Purple 2 5 Blue @m44
-    Player Blue 3 2
+    Player Blue 3 3
     Mini Blue 6 2 Green
-    Crate Blue 2 2 0
-    Crate Blue 7 2 0
+    Crate Blue 3 2 0
+    Mini Blue 7 2 Orange
     Crate Blue 1 2 0
     Mini Blue 0 2 Purple
   `,
