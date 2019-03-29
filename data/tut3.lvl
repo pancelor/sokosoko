@@ -8,7 +8,7 @@ levelData.push({
     xxxx.xxx
     x..x.xxx
     ...x...x
-    x..x..xx
+    xx.x..xx
     xxxxxxxx
 
     room @Blue
@@ -42,7 +42,7 @@ levelData.push({
     x.xxxxxx
   `,
   actorData: `
-    Player White 1 5
+    Player White 1 4
     Flag White 2 2
     Mini White 2 6 Blue @temp1
     Mini Blue 2 5 Black @m1
