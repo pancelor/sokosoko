@@ -54,6 +54,11 @@ function registerKeyListeners() {
         if (editingTiles) storedActor = null
         Raf()
       }
+    } else if (e.code === "Escape") {
+      if (devmode && editingTiles) {
+        editingTiles = false
+        Raf()
+      }
     } else {
       const dir = keyDirMap[e.code]
       if (dir === undefined) { return }
@@ -224,8 +229,9 @@ function mouseMove({e, worldPos}) {
 
 let editingTiles = false
 function _devmodeMouseClick(e, worldPos) {
+  // zoom out on border-click
   if (!worldPos) {
-    if (storedActor === player && e.button === 0) {
+    if (e.button === 0) {
       if (player.frameStack.parent) {
         player.frameStack = player.frameStack.parent
       }
@@ -241,11 +247,10 @@ function _devmodeMouseClick(e, worldPos) {
   } else {
     // assert we're editing actors
     if (e.button === 0) {
-      // left click: paste (or move old pasted thing)
-      if (!storedActor) { return }
+      // zoom in on mini-click
       const collision = findActor(null, worldPos)
       if (collision) {
-        if (collision.constructor === Mini && storedActor === player) {
+        if (collision.constructor === Mini) {
           player.frameStack = new Frame(collision.id, player.frameStack)
           return
         } else {
@@ -253,6 +258,9 @@ function _devmodeMouseClick(e, worldPos) {
           return
         }
       }
+
+      // left click: paste (or move old pasted thing)
+      if (!storedActor) { return }
       storedActor.setPos(worldPos)
       storedActor.setDead(false)
       storedActor = null
