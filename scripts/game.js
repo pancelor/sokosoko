@@ -341,7 +341,7 @@ function DrawMisc(ctxView) {
   const dest = viewOffset().scale(tileSize)
 
   // draw frame border
-  ctxWith(ctxView, {strokeStyle: "white", lineWidth: 4, globalAlpha: 0.4}, () => {
+  ctxWith(ctxView, {strokeStyle: "white", lineWidth: 7, globalAlpha: 0.4}, () => {
     ctxView.strokeRect(dest.x, dest.y, innerW, innerH)
   })
 
