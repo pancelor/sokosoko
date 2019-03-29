@@ -131,8 +131,7 @@ function registerMouseListeners() {
     return false
   })
   canvasMap.addEventListener("mousedown", (e) => {
-    const info = translateMouseFromMap(e)
-    info && mouseClick(info)
+    mouseClick(translateMouseFromMap(e))
     Raf()
 
     lockScroll(()=>canvasView.focus())
@@ -141,8 +140,7 @@ function registerMouseListeners() {
     return false
   })
   canvasView.addEventListener("mousedown", (e) => {
-    const info = translateMouseFromView(e)
-    info && mouseClick(info)
+    mouseClick(translateMouseFromView(e))
     Raf()
 
     canvasView.focus()
@@ -150,8 +148,7 @@ function registerMouseListeners() {
     return false
   })
   canvasMap.addEventListener("mousemove", (e) => {
-    const info = translateMouseFromMap(e)
-    info && mouseMove(info)
+    mouseMove(translateMouseFromMap(e))
     if (devmode) {
       Raf()
     }
@@ -160,8 +157,7 @@ function registerMouseListeners() {
     return false
   })
   canvasView.addEventListener("mousemove", (e) => {
-    const info = translateMouseFromView(e)
-    info && mouseMove(info)
+    mouseMove(translateMouseFromView(e))
     if (devmode) {
       Raf()
     }
@@ -179,7 +175,7 @@ function translateMouseFromMap(e) {
 function translateMouseFromView(e) {
   let roomPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize))
   roomPos = roomPos.add(viewOffset().scale(-1))
-  if (!inbounds(roomPos, {w: 8, h: 8})) { return }
+  if (!inbounds(roomPos, {w: 8, h: 8})) { return { e, worldPos: null } }
 
   const room = player.frameStack.room()
   const worldPos = Pos.fromRoom(room, roomPos)
@@ -210,6 +206,8 @@ function mouseClick({e, worldPos}) {
 
 let mousepos
 function mouseMove({e, worldPos}) {
+  if (!worldPos) return
+
   mousepos = worldPos
   if (devmode) {
     const LMB = e.buttons & (1<<0)
@@ -226,6 +224,14 @@ function mouseMove({e, worldPos}) {
 
 let editingTiles = false
 function _devmodeMouseClick(e, worldPos) {
+  if (!worldPos) {
+    if (storedActor === player && e.button === 0) {
+      if (player.frameStack.parent) {
+        player.frameStack = player.frameStack.parent
+      }
+    }
+    return
+  }
   if (editingTiles) {
     if (e.button === 0) {
       setTileWall(worldPos)
