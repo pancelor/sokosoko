@@ -1,90 +1,61 @@
 levelData.push({
   name: 'tut3',
   tileData: `
-    room @Red
-    xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    xxxxxxxx
-
     room @White
     xxxxxxxx
-    x.....xx
+    x...xxxx
     x.......
-    xxxxxxxx
-    x...xxxx
-    ....xxxx
-    x...xxxx
+    xxxx.xxx
+    x..x.xxx
+    ...x...x
+    x..x..xx
     xxxxxxxx
 
     room @Blue
     xxxx.xxx
-    xx.x.xxx
-    xx.....x
+    x....xxx
+    x......x
     xxxxxxxx
     x..x..xx
     ......xx
     xxxx.xxx
     xxxx.xxx
 
-    room @Green
-    xx.xxxxx
-    x......x
-    .......x
-    x......x
-    x......x
-    x......x
-    x......x
-    xxxxxxxx
-
-    room @Purple
-    xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    xxxxxxxx
-
     room @Yellow
     xxxxxxxx
-    x.xxxx.x
+    x..xx..x
     x.xxxxxx
+    x.x...xx
     xxx...xx
-    ..x...xx
-    x.xx.xxx
-    x....xxx
+    ..xx.xxx
+    x....x.x
     xxxxxxxx
 
     room @Black
-    xxx.xxxx
-    x...xxxx
+    x.xxxxxx
     x..xxxxx
-    xx.xx...
+    x..xxxxx
+    x..xx...
+    xx.xx.xx
     xx....xx
-    xx.xxxxx
-    xx..xxxx
-    xxx.xxxx
+    x..xxxxx
+    x.xxxxxx
   `,
   actorData: `
     Player White 1 5
-    Flag White 3 2
-    Mini Blue 2 1 Black
+    Flag White 2 2
     Mini White 2 6 Blue @temp1
-    Mini Green 1 1 Green
-    Mini Purple 1 1 Purple
     Mini Blue 2 5 Black @m1
-    Mini Black 2 3 White @m2
+    Mini Black 2 4 White @m2
     Mini Yellow 4 4 Blue @new1
     Mini Blue 6 2 Yellow @new2
+    Mini White 6 5 Yellow @base
+    Crate Blue 2 2 1
+    Crate White 4 3 0
   `,
   frameStackData: `
-    Yellow
+    White
+    base
     new1
     m1
     m2
