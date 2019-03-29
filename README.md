@@ -1,10 +1,8 @@
-# Sokosoko
+# Tursokoduckenban (name subject to change)
 
 A game that started as a clone of https://juner.itch.io/sokosoko
 
 Still very much in-development
-
-The name (sokosoko) will probably change later
 
 **Don't look through the code if you don't want spoilers!**
 

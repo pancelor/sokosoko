@@ -1,0 +1,64 @@
+levelData.push({
+  name: 'float',
+  tileData: `
+    room @Green
+    xxxxxxxx
+    x...xxxx
+    x.......
+    xxxx.xxx
+    x..x.xxx
+    ...x...x
+    xx....xx
+    xxxxxxxx
+
+    room @Blue
+    xx.xxxxx
+    x....xxx
+    x......x
+    xxxxxxxx
+    x..x..xx
+    ......xx
+    xxxx.xxx
+    xxxx.xxx
+
+    room @Yellow
+    xxxxxxxx
+    x..xx..x
+    x.xxxxxx
+    x.x...xx
+    xxx...xx
+    ..xx.xxx
+    x....x.x
+    xxxxxxxx
+
+    room @Black
+    x.xxxxxx
+    x..xxxxx
+    x..xxxxx
+    x..xx...
+    xx.xx.xx
+    xx....xx
+    x..xxxxx
+    x.xxxxxx
+  `,
+  actorData: `
+    Player Green 1 5
+    Flag Green 2 2
+    Mini Green 2 6 Blue @temp1
+    Mini Blue 2 5 Black @m1
+    Mini Black 2 4 Green @m2
+    Mini Yellow 4 4 Blue @new1
+    Mini Blue 6 2 Yellow @new2
+    Mini Green 6 5 Yellow @base
+    Crate Green 2 5 1
+    Crate Green 4 3 0
+    Crate Green 4 6 0
+  `,
+  frameStackData: `
+    Green
+    base
+    new1
+    m1
+    m2
+  `,
+})
