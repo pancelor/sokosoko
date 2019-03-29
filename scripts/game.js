@@ -711,10 +711,10 @@ function maybeConsume_(that, food, dir) {
   if (maybeTeleIn(food, oppDir(dir))) {
     that.playMoveSound()
     const newMiniPos = posDir(that.pos, dir)
-    const wtf = findActor([Crate, Mini], newMiniPos)
-    if (wtf) {
-      // this is _very_ weird; eating the food has pushed some stuff around
-      // in a way such that the food's old position is occupied again.
+    const surprise = findActor([Crate, Mini], newMiniPos)
+    if (surprise) {
+      // this is very weird; eating the food has pushed/recursed some stuff
+      // around in a way such that the food's old position is occupied again.
       // (e.g. green or purple/yellow room of newpush.lvl)
 
       // Im so so conflicted about what to do here;
@@ -726,12 +726,12 @@ function maybeConsume_(that, food, dir) {
       // (could randomize which one is murdered, but that seems like
       // a cop out and a bad experience as a player imo)
 
-      console.warn("infinite nastiness occurs") // this doesn't even catch everything ....
+      console.warn("infinite nastiness occurs")
       PlayAndRecordSound(sndInfinite)
       // edit: god im playing with it more and everything is so fucky;
       // return false here is no good... but return true isn't great either
 
-      wtf.die()
+      surprise.die()
     }
     that.setPos(newMiniPos)
     return true
@@ -740,6 +740,7 @@ function maybeConsume_(that, food, dir) {
 }
 const maybeConsume = tracer.tracify(maybeConsume_)
 
+tracer.toggle()
 function pushableUpdate_(that, dir) {
   // DRY without subclassing for pushable objects
   assert(that.frameStack)
@@ -749,17 +750,31 @@ function pushableUpdate_(that, dir) {
   if (maybeTeleOut(that, dir)) { return true }
   if (!CanMoveToTile(nextPos)) { return false }
 
-  const crate = findActor(Crate, nextPos)
-  if (crate && lifted(that, crate, ()=>maybeConsume(that, crate, dir))) { return true }
-  if (crate && !lifted(that, crate, ()=>pushableUpdate(crate, dir))) { return false }
-
   if (maybeTeleIn(that, dir)) { return true }
 
-  const mini = findActor(Mini, nextPos)
-  // how can mini exist if we already called maybeTeleIn?
-  // well, if there was either no opening, or we failed to get into the opening
-  if (mini && lifted(that, mini, ()=>maybeConsume(that, mini, dir))) { return true }
-  if (mini && !lifted(that, mini, ()=>pushableUpdate(mini, dir))) { return false }
+  for (const cst of [Crate, Mini]) {
+    const toPush = findActor(cst, nextPos)
+    if (!toPush) continue
+
+    // how can toPush be a mini if we already called maybeTeleIn?
+    // well, if there was either no opening, or we failed to get into the opening
+    if (lifted(that, toPush, ()=>maybeConsume(that, toPush, dir))) { return true }
+    if (!lifted(that, toPush, ()=>pushableUpdate(toPush, dir))) { return false }
+    const surprise = findActor([Crate, Mini], nextPos)
+    if (surprise) {
+      // weird recursion happened and we can't go where we wanted to go,
+      // even though we just pushed toPush off of that position
+
+      // For consistency with the other inf cases,
+      // we should maybe surprise.die here... that feels bad imo
+      // The other inf cases are like hilbert's hotel; this case
+      // compresses the crates infinitely, which is no good
+      // (any maybe good justification for why they expand back out?
+      // so that it looks like nothing happened?)
+      console.warn("surprise!", surprise.serialize())
+      return false
+    }
+  }
 
   that.playMoveSound()
   that.setPos(nextPos)

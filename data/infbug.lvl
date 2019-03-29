@@ -1,0 +1,49 @@
+levelData.push({
+  name: 'infbug',
+  tileData: `
+    room @Blue
+    xxxxxx.x
+    xxxxxx.x
+    .....x..
+    xxxx...x
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+
+    room @Green
+    xxxx.xxx
+    x.xx..xx
+    xxxxx...
+    xxxxx..x
+    x.xxx..x
+    x.x.x.xx
+    xxx.x.xx
+    xxxxx.xx
+
+    room @Purple
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+    xx...xxx
+    x..x.xxx
+    x..x.xxx
+    x....xxx
+    x.xxxxxx
+  `,
+  actorData: `
+    Mini Green 7 2 Blue
+    Mini Purple 1 5 Blue
+    Mini Purple 2 5 Blue @m44
+    Player Blue 3 2
+    Mini Blue 6 2 Green
+    Crate Blue 2 2 0
+    Crate Blue 7 2 0
+    Crate Blue 1 2 0
+    Mini Blue 0 2 Purple
+  `,
+  frameStackData: `
+    Purple
+    m44
+  `,
+})

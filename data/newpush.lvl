@@ -58,8 +58,8 @@ levelData.push({
     x......x
     x.......
     x......x
-    x......x
-    xxxxxxxx
+    x.xxx..x
+    xxx.xxxx
   `,
   actorData: `
     Mini White 4 3 Red
@@ -73,8 +73,8 @@ levelData.push({
     Mini White 6 6 Blue
     Crate Blue 4 4 0
     Mini White 1 1 Green
-    Mini Green 5 4 Green
-    Crate Green 6 4 0
+    Mini Green 3 4 Green
+    Crate Green 4 4 0
     Mini White 3 1 Purple
     Mini Purple 6 4 Yellow
     Crate Purple 7 4 0
