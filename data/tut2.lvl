@@ -3,33 +3,43 @@ levelData.push({
   tileData: `
     room @White
     xxxxxxxx
-    x....xxx
-    x....xxx
-    xxx.xx.x
-    x...xx.x
     x......x
-    x...xxxx
+    x....x.x
+    x..xxxxx
+    x..xx..x
+    x...xx.x
+    xx.....x
     xxxxxxxx
 
     room @Red
-    xxxxx.xx
-    xxxxx.xx
-    xxxx...x
+    x.xxxxxx
+    x.xxxxxx
+    xxxxxxxx
     xxx....x
     xxxx.x.x
     .....x..
-    xx...xxx
+    xxx..xxx
     xxxxxxxx
 
     room @Blue
-    xxxxx.xx
-    xxx...xx
+    xxxx.xxx
+    xxx..xxx
     xxx.xxxx
-    xx......
-    xx..xxxx
-    xx...xxx
-    xxxx.xxx
-    xxxx.xxx
+    x.....xx
+    x.x...xx
+    x.x....x
+    ..xxxx.x
+    xxxxxx.x
+
+    room @Yellow
+    xxxxx.xx
+    xxxxx.xx
+    xxxxx.xx
+    xxxxx.xx
+    xxxxx...
+    ......xx
+    xxxxxxxx
+    xxxxxxxx
 
     room @Green
     xxxxxxxx
@@ -40,75 +50,22 @@ levelData.push({
     .....x.x
     xxxxxx.x
     xxxxxxxx
-
-    room @Yellow
-    xxxxxxxx
-    ...x.xxx
-    xx.....x
-    xxxx.x.x
-    x......x
-    x......x
-    x.....xx
-    xxxx.xxx
-
-    room @Purple
-    xxxxxxxx
-    xxxxx...
-    xxxxx.xx
-    ..xx..xx
-    x....xxx
-    xxxx.xxx
-    xx...xxx
-    xx.xxxxx
-
-    room @Orange
-    xxxxx.xx
-    xxxxx.xx
-    xxxxx.xx
-    xxxxx.xx
-    xxxxx...
-    ......xx
-    xxxxxxxx
-    xxxxxxxx
-
-    room @Pink
-    xxxxxxxx
-    xxxxxxxx
-    xxxxxxxx
-    x....x..
-    ...x...x
-    xxxxxxxx
-    xxxxxxxx
-    xxxxxxxx
   `,
   actorData: `
-    Player Yellow 6 5
-    Flag White 6 3
-    Mini White 5 5 Red
-    Mini White 2 2 Blue
-    Crate White 4 5 0
-    Crate Red 4 4 0
-    Crate Red 4 2 0
+    Player White 1 4
+    Flag White 5 4
+    Mini White 4 6 Red
+    Mini White 3 2 Blue
+    Crate White 3 6 0
     Mini Blue 3 2 Red
     Mini Blue 3 3 Green
-    Mini White 3 1 Yellow @m1
     Crate Blue 3 4 0
-    Mini White 6 5 Red
-    Crate Purple 4 3 0
-    Crate Yellow 4 2 0
-    Mini Yellow 4 3 Green
-    Mini Yellow 3 4 Purple
-    Mini Yellow 3 5 Purple
-    Crate Yellow 2 4 0
-    Mini Yellow 5 5 Pink
-    Mini Pink 6 4 Orange
-    Mini Pink 1 3 Orange
-    Crate Pink 2 3 0
-    Crate Orange 7 4 0
-    Crate Orange 6 4 0
+    Mini White 5 6 Red
+    Crate Yellow 7 4 0
+    Crate Yellow 6 4 0
+    Mini White 6 2 Red
   `,
   frameStackData: `
     White
-    m1
   `,
 })
