@@ -127,11 +127,11 @@ function cullInfinite(...args) {
   return true // `that` was able to move,, into the infinite abyss
 }
 
-function buildRet(that, oldPos, oldFrameStack) {
+function buildRet(that, successCb, oldPos, oldFrameStack) {
   return (b) => {
     if (b) {
       if (!findActorUnderMe([Crate, Mini, Player], that)) {
-        that.playMoveSound()
+        successCb()
         return true
       } else {
         console.warn("advanced NEW surprise")
@@ -160,7 +160,7 @@ function maybePushableUpdate_(that, dir) {
   assert(that.frameStack)
 
   const oldPos = that.pos
-  const r = buildRet(that, oldPos)
+  const r = buildRet(that, ()=>that.playMoveSound(), oldPos)
   that.setPos(that.pos.addDir(dir)) // do this early; we'll undo it later if we need to
 
   if (maybeTeleOut(that, dir)) return r(true)
@@ -213,7 +213,7 @@ function maybeTeleOut_(that, dir) {
 
   const oldPos = that.pos
   const oldFrameStack = that.frameStack
-  const r = buildRet(that, oldPos, oldFrameStack)
+  const r = buildRet(that, ()=>that.playTeleOutSound(), oldPos, oldFrameStack)
 
   const outPos = that.frameStack.innerRoom().openings()[dir] // the logic near here can be simplified/sped up; prolly doesn't matter tho
   if (!outPos || !outPos.addDir(dir).equals(that.pos)) return r(false)
@@ -229,8 +229,8 @@ function maybeTeleOut_(that, dir) {
 
   return r(false)
 }
-// const maybeTeleOut = tracer.tracify(maybeTeleOut_)
-const maybeTeleOut = tracer.tracify(pushableCached(maybeTeleOut_, cullInfinite))
+const maybeTeleOut = tracer.tracify(maybeTeleOut_)
+// const maybeTeleOut = tracer.tracify(pushableCached(maybeTeleOut_, cullInfinite))
 
 // * if we're standing on a mini,
 //   * (remember, we've already optimistically moved)
@@ -253,7 +253,7 @@ function maybeTeleIn_(that, dir) {
 
   const oldPos = that.pos
   const oldFrameStack = that.frameStack
-  const r = buildRet(that, oldPos, oldFrameStack)
+  const r = buildRet(that, ()=>that.playTeleInSound(), oldPos, oldFrameStack)
 
   const mini = findActorUnderMe(Mini, that)
   if (!mini) return r(false)
@@ -268,8 +268,8 @@ function maybeTeleIn_(that, dir) {
   if (maybePushableUpdate(that, dir)) return r(true)
   return r(false)
 }
-// const maybeTeleIn = tracer.tracify(maybeTeleIn_)
-const maybeTeleIn = tracer.tracify(pushableCached(maybeTeleIn_, cullInfinite))
+const maybeTeleIn = tracer.tracify(maybeTeleIn_)
+// const maybeTeleIn = tracer.tracify(pushableCached(maybeTeleIn_, cullInfinite))
 
 // * try to tele the food into me
 function maybeConsume_(that, food, dir) {
@@ -278,7 +278,7 @@ function maybeConsume_(that, food, dir) {
   if (that.constructor !== Mini) return false
 
   const oldPos = that.pos // might change during e.g. maybetelein
-  const r = buildRet(that, oldPos)
+  const r = buildRet(that, ()=>that.playMoveSound(), oldPos)
 
   if (!maybeTeleIn(food, oppDir(dir))) return r(false)
   const surprise = findActorUnderMe([Crate, Mini], that)
@@ -306,8 +306,8 @@ function maybeConsume_(that, food, dir) {
   }
   return r(true)
 }
-// const maybeConsume = tracer.tracify(maybeConsume_)
-const maybeConsume = tracer.tracify(pushableCached(maybeConsume_, cullInfinite))
+const maybeConsume = tracer.tracify(maybeConsume_)
+// const maybeConsume = tracer.tracify(pushableCached(maybeConsume_, cullInfinite))
 
 function lifted(lifter, target, cb) {
   // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it
