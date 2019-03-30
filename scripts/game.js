@@ -66,7 +66,7 @@ class BasePos {
   addDir(dir, len=1) {
     const x = [1,0,-1,0][dir]
     const y = [0,-1,0,1][dir]
-    return this.add({x, y})
+    return this.add(x, y)
   }
 }
 
@@ -110,6 +110,7 @@ class MapPos extends BasePos {
 
   roomPos() {
     const room = this.room()
+    if (!room) return RoomPos.OOB(this.x, this.y)
     return new RoomPos(room, this.x, this.y - room.begin)
   }
 
@@ -118,28 +119,40 @@ class MapPos extends BasePos {
   }
 
   room() {
-    return rooms.find(l=>l.begin <= pos.y && pos.y < l.end)
+    return rooms.find(r=>r.begin <= this.y && this.y < r.end)
   }
 }
 
 class RoomPos extends BasePos {
-  constructor(room, x, y) {
+  static OOB(x, y) {
+    // a hack to keep tracer from getting mad mid-teleport
+    return {
+      serialize: ()=>`OOB@(${x}, ${y})`
+    }
+  }
+
+  constructor(room_, x, y) {
     super(x, y)
-    assertEqual(room.constructor, String)
-    this.room = room
+    assertEqual(room_.constructor.name, "Room")
+    this.room_ = room_
   }
   serialize() {
-    return `${this.constructor.name} ${this.room.name} ${this.x} ${this.y}`
+    return `${this.constructor.name} ${this.room_.name} ${this.x} ${this.y}`
   }
   str() {
-    return `RoomPos(${this.room.name}, ${this.x}, ${this.y})`
+    return `RoomPos(${this.room_.name}, ${this.x}, ${this.y})`
   }
   static deserialize(name, x, y) {
-    return new RoomPos(name, int(x), int(y))
+    assertEqual(name.constructor.name, "String")
+    assertEqual(x.constructor.name, "String")
+    assertEqual(y.constructor.name, "String")
+    const room = Room.findName(name)
+    assert(room)
+    return new RoomPos(room, int(x), int(y))
   }
 
   equals(other) {
-    return this.room === other.room && this.x === other.x && this.y === other.y
+    return this.room_ === other.room_ && this.x === other.x && this.y === other.y
   }
 
   add(x, y) {
@@ -147,14 +160,14 @@ class RoomPos extends BasePos {
       ;({x, y} = x.roomPos())
     }
     return new RoomPos(
-      this.room,
+      this.room_,
       this.x + x,
       this.y + y,
     )
   }
   scale(m) {
     return new (this.constructor)(
-      this.room,
+      this.room_,
       this.x*m,
       this.y*m,
     )
@@ -170,29 +183,30 @@ class RoomPos extends BasePos {
   }
 
   mapPos() {
-    return new MapPos(this.x, this.y + this.room.begin)
+    return new MapPos(this.x, this.y + this.room_.begin)
   }
 
   room() {
-    return this.room
+    return this.room_
   }
 }
 
 class FrameBase {
-  constructor(room) {
-    assert(room)
-    this.room = room
+  constructor(innerRoom_) {
+    assert(innerRoom_)
+    this.innerRoom_ = innerRoom_
+    this.mini = null
     this.parent = null
   }
   serialize() {
-    return `${this.constructor.name} ${this.room.name}`
+    return `${this.constructor.name} ${this.innerRoom_.name}`
   }
   str() {
-    return `<base; ${this.room.name}>`
+    return `<base; ${this.innerRoom_.name}>`
   }
 
-  mini() {
-    assert(0, "FrameBase has no mini")
+  innerRoom() {
+    return this.innerRoom_
   }
 
   mapMini(f) {
@@ -205,7 +219,7 @@ class FrameBase {
 
   equals(other) {
     if (other.constructor !== this.constructor) { return false }
-    return (this.room === other.room)
+    return (this.innerRoom_ === other.innerRoom_)
   }
 }
 
@@ -220,11 +234,11 @@ class Frame {
     return `${this.constructor.name} ${this.mini.id} ${this.parent.serialize()}`
   }
   str() {
-    return `${this.parent.str()} | ${this.room.name}`
+    return `${this.parent.str()} | ${this.innerRoom().name}`
   }
 
-  room() { // todo delete?
-    return this.mini.room
+  innerRoom() {
+    return this.mini.innerRoom
   }
 
   mapMini(f) {
@@ -269,11 +283,7 @@ class Room {
   }
 
   static findName(name) {
-    return rooms.find(l=>l.name===name)
-  }
-
-  static findId(id) {
-    return rooms.find(l=>l.id===id)
+    return rooms.find(b=>b.name===name)
   }
 
   openings(room) {
@@ -352,7 +362,7 @@ async function DrawMinis(ctxMap) {
   for (const m of allActors(Mini)) {
     if (m.dead) continue
     const pixSize = roomSize*miniTileSize
-    const src = m.room().mapCorner().scale(miniTileSize)
+    const src = m.innerRoom.mapCorner().scale(miniTileSize)
     const dest = m.pos.scale(tileSize)
     ctxMap.drawImage(screenshotMini,
       src.x, src.y, pixSize, pixSize,
@@ -370,7 +380,7 @@ async function DrawView(ctx) {
 
   // draw outer border
   if (outerFrame) {
-    const mini = innerFrame.mini()
+    const mini = innerFrame.mini
     assert(mini)
     assert(viewOffset().equals(4, 4)) // for (8,8): 2->3, 0.5->1
     const outerW = 2*tileSize
@@ -386,7 +396,7 @@ async function DrawView(ctx) {
         if (dx === 0 && dy === 0) continue
         const mini2 = findActor(Mini, mini.pos.add(dx, dy))
         if (!mini2) continue
-        const src2 = mini2.room().mapCorner().scale(tileSize)
+        const src2 = mini2.innerRoom.mapCorner().scale(tileSize)
         ctx.drawImage(screenshotMap,
           src2.x, src2.y, tileSize*8, tileSize*8,
           (0.5+dx)*tileSize*8, (0.5+dy)*tileSize*8, tileSize*8, tileSize*8
@@ -397,7 +407,7 @@ async function DrawView(ctx) {
   // draw inner room
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
-  const src = innerFrame.room().mapCorner().scale(tileSize)
+  const src = innerFrame.innerRoom().mapCorner().scale(tileSize)
   const dest = viewOffset().scale(tileSize)
   ctx.drawImage(screenshotMap,
     src.x, src.y, innerW, innerH,
@@ -493,14 +503,14 @@ class Actor {
   playMoveSound() {}
 
   setPos(p) {
-    const before = this.pos
+    const before = this.pos.mapPos()
     const after = p
     RecordChange({
       id: this.id,
       before: { pos: before },
       after: { pos: after },
     })
-    this.pos = after
+    this.pos = after.mapPos()
   }
 
   die() {
@@ -535,13 +545,13 @@ class Actor {
 
   serialize() {
     const tag = this.tag ? ` @${this.tag}` : ""
-    return `${this.constructor.name} ${this.pos.roomSerialize()}${tag}`
+    return `${this.constructor.name} ${this.pos.roomPos().serialize()}${tag}`
   }
 
   static deserialize(line) {
     const [type, rName, rx, ry] = line.split(' ')
     assertEqual(type, this.name)
-    const p = new RoomPos(rName, int(rx), int(ry))
+    const p = RoomPos.deserialize(rName, rx, ry)
     return new (this)(p)
   }
 }
@@ -584,7 +594,7 @@ class Player extends Actor {
 class Mini extends Actor {
   constructor(p, innerRoom) {
     super(p)
-    assertEqual(innerRoom.constructor, Room)
+    assertEqual(innerRoom.constructor.name, "Room")
     this.innerRoom = innerRoom
   }
   str() {
@@ -598,9 +608,9 @@ class Mini extends Actor {
     const [type, rName, rx, ry, innerRoomName] = line.split(' ')
     assertEqual(type, this.name)
     const p = RoomPos.deserialize(rName, rx, ry)
-    const innerRoom = roomFromName(innerRoomName)
+    const innerRoom = Room.findName(innerRoomName)
     assert(innerRoom, `room "${innerRoomName}" doesn't exist`)
-    return new (this)(p, innerRoom, innerRoom.name)
+    return new (this)(p, innerRoom)
   }
 
   draw(ctxMap, ctxMini) {
@@ -631,6 +641,17 @@ class Crate extends Actor {
     super(p)
     this.special = special
   }
+  serialize() {
+    const spStr = this.special ? "1" : "0"
+    const tag = this.tag ? ` @${this.tag}` : ""
+    return `${this.constructor.name} ${this.pos.roomPos().serialize()} ${spStr}${tag}`
+  }
+  static deserialize(line) {
+    const [type, rName, rx, ry, special] = line.split(' ')
+    assertEqual(type, this.name)
+    const p = RoomPos.deserialize(rName, rx, ry)
+    return new (this)(p, !!int(special))
+  }
 
   setPos(p) {
     Actor.prototype.setPos.call(this, p)
@@ -648,19 +669,6 @@ class Crate extends Actor {
     this.setDead(true)
     PlayAndRecordSound(sndBonus)
     gotBonus = true
-  }
-
-  serialize() {
-    const spStr = this.special ? "1" : "0"
-    const tag = this.tag ? ` @${this.tag}` : ""
-    return `${this.constructor.name} ${this.pos.roomPos().serialize()} ${spStr}${tag}`
-  }
-
-  static deserialize(line) {
-    const [type, rName, rx, ry, special] = line.split(' ')
-    assertEqual(type, this.name)
-    const p = new RoomPos(rName, int(rx), int(ry))
-    return new (this)(p, !!int(special))
   }
 }
 

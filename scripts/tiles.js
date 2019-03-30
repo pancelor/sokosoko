@@ -14,7 +14,9 @@ function solid(tileName) {
 }
 
 function CanMoveToTile(p) {
-  if (!inbounds(p)) { return false }
+  const rp = p.roomPos()
+  if (!rp) { return false }
+  if (!rp.inbounds()) { return false }
   if (solid(getTile(p))) { return false }
   return true
 }
@@ -74,30 +76,19 @@ function GetRoomColors(room) { // todo room.tileColors()
   }
 }
 
-function roomFromName(name) { // todo Room.findName
-  return rooms.find(l=>l.name===name)
-}
-
-function getRoom(id) { // todo Room.findId
-  return rooms.find(l=>l.id===id)
-}
-
-function getRoomAt(pos) { //todo kill; use pos.room() instead
-  assert(pos.constructor === MapPos)
-  return pos.room()
-}
-
-function getTile(p) {
-  if (inbounds(p)) {
-    return tiles[p.y][p.x]
+function getTile(pos) {
+  const mp = pos.mapPos()
+  if (mp.inbounds()) {
+    return tiles[mp.y][mp.x]
   } else {
     return null
   }
 }
 
-function setTile(p, name) {
-  if (inbounds(p)) {
-    tiles[p.y][p.x] = name
+function setTile(pos, name) {
+  const mp = pos.mapPos()
+  if (mp.inbounds()) {
+    tiles[mp.y][mp.x] = name
   }
 }
 

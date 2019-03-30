@@ -6,7 +6,7 @@ function maybeTeleOut_(that, dir) {
   // returns whether the tele happened
   assert(that.frameStack)
 
-  const innerLevel = that.frameStack.room()
+  const innerLevel = that.frameStack.innerRoom()
   const outPos = innerLevel.openings()[dir]
   if (outPos && outPos.equals(that.pos)) {
     // prepare to teleport
@@ -14,7 +14,7 @@ function maybeTeleOut_(that, dir) {
     const oldFrameStack = that.frameStack
 
     const parent = that.frameStack.parent
-    const mini = that.frameStack.mini()
+    const mini = that.frameStack.mini
     that.setPos(mini.pos)
     that.setFrameStack(parent)
 
@@ -59,7 +59,7 @@ function maybeTeleIn_(that, dir) {
   const nextPos = that.pos.addDir(dir)
   const mini = findActor(Mini, nextPos)
   if (mini) {
-    const op = mini.room().openings()[oppDir(dir)]
+    const op = mini.innerRoom.openings()[oppDir(dir)]
     if (op) {
       // if (hack_seen_teles.has(mini.id)) {
       //   console.warn('infinite mini recursion detected; killing', serialize(that))
@@ -74,7 +74,7 @@ function maybeTeleIn_(that, dir) {
       const oldFrameStack = that.frameStack
 
       const newPos = op.addDir(oppDir(dir)) // right before entering the room; to try to push anything in the entryway thats in the way
-      const newStack = new Frame(mini.id, that.frameStack)
+      const newStack = new Frame(mini, that.frameStack)
       that.setPos(newPos)
       that.setFrameStack(newStack)
 

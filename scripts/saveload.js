@@ -89,10 +89,10 @@ function importTiles(tileData) {
   while (!eof) {
     const match = roomHeader(line)
     assert(match, "bad room header")
-    const room = {}
-    room.id = rooms.length
-    room.name = match.groups.name
-    room.begin = tiles.length
+    const name = match.groups.name
+    const begin = tiles.length
+    const end = 0 // will be overwritten once the parse is done
+    const room = new Room(name, begin, 0)
 
     nextLine()
     while (!eof && !roomHeader(line)) {
@@ -163,9 +163,9 @@ function importFrameStack(frameStackData) {
   for (const l of lines) {
     if (!stack) {
       // first time through the loop
-      const room = roomFromName(l)
+      const room = Room.findName(l)
       assert(room)
-      stack = new FrameBase(room.id)
+      stack = new FrameBase(room)
     } else {
       const match = l.match(/^(?<tag>[\w\d_]+)$/)
       assert(match, `bad tag syntax: ${l}`)
@@ -174,7 +174,7 @@ function importFrameStack(frameStackData) {
       assert(a, `tag "${tag}" not found while importing frameStackData`)
       const mini = getActorId(a)
       assert(mini)
-      stack = new Frame(mini.id, stack)
+      stack = new Frame(mini, stack)
     }
   }
   player = allActors(Player)[0] // hacky; dup
@@ -249,12 +249,12 @@ function exportFrameStackString() {
   let frame = player.frameStack
   while (true) {
     if (frame.constructor === FrameBase) {
-      lines.splice(1, 0, `    ${frame.room().name}`)
+      lines.splice(1, 0, `    ${frame.innerRoom().name}`)
       break
     } else {
-      let tag = frame.mini().tag
+      let tag = frame.mini.tag
       if (tag === undefined) {
-        tag = frame.mini().serialize()
+        tag = frame.mini.serialize()
         console.warn("mini in frameStack doesn't have a tag:", tag)
       }
       lines.splice(1, 0, `    ${tag}`)

@@ -291,7 +291,7 @@ RegisterTest("argmin 2", () => {
 })
 
 function serialize(x) {
-  if (x.serialize && x.serialize.constructor === Function) {
+  if (x && x.serialize && x.serialize.constructor === Function) {
     return x.serialize()
   } else {
     return `${x}`

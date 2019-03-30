@@ -175,65 +175,50 @@ function registerMouseListeners() {
 function translateMouseFromMap(e) {
   let x = Math.floor(e.offsetX / tileSize)
   let y = Math.floor(e.offsetY / tileSize)
-  return {e, new MapPos(x, y)}
+  return {e, pos: new MapPos(x, y)}
 }
 
 function translateMouseFromView(e) {
   let x = Math.floor(e.offsetX / tileSize)
   let y = Math.floor(e.offsetY / tileSize)
   let {x: dx, y: dy} = viewOffset().scale(-1)
-  const room = player.frameStack.room
-  const roomPos = new roomPos(room, x+dx, y+dy)
-  if (!roomPos.inbounds()) { return { e, worldPos: null } }
+  const room = player.frameStack.innerRoom()
+  const roomPos = new RoomPos(room, x+dx, y+dy)
+  if (!roomPos.inbounds()) { return { e, pos: null } }
 
-  const worldPos = room.mapPos()
-  return {e, worldPos}
+  return {e, pos: roomPos.mapPos()}
 }
 
 let storedActor = null
-function mouseClick({e, worldPos}) {
-  // const roomPos = worldPos.toRoomPos()
-  // const a = findActor(null, worldPos)
-  // const parts = []
-  // parts.push(`${room.name}(${room.id}): ${worldPos.str()}`)
-  // parts.push(`(local: ${roomPos.str()})`)
-  // if (a) {
-  //   parts.push(`${a.constructor.name}#${a.id}`)
-  //   if (a.tag) {
-  //     parts.push(`@${a.tag}`)
-  //   }
-  // }
-  // console.log(parts.join(' '))
-
-  if (devmode) {
-    StartEpoch()
-    _devmodeMouseClick(e, worldPos)
-    EndEpoch()
-  }
+function mouseClick({e, pos}) {
+  if (!devmode) return
+  StartEpoch()
+  _devmodeMouseClick(e, pos)
+  EndEpoch()
 }
 
 let mousepos
-function mouseMove({e, worldPos}) {
-  if (!worldPos) return
+function mouseMove({e, pos}) {
+  if (!pos) return
 
-  mousepos = worldPos
+  mousepos = pos
   if (devmode) {
     const LMB = e.buttons & (1<<0)
     const RMB = e.buttons & (1<<1)
     if (editingTiles) {
       if (LMB && !RMB) {
-        setTileWall(worldPos)
+        setTileWall(pos)
       } else if (RMB && !LMB) {
-        setTileFloor(worldPos)
+        setTileFloor(pos)
       }
     }
   }
 }
 
 let editingTiles = false
-function _devmodeMouseClick(e, worldPos) {
+function _devmodeMouseClick(e, pos) {
   // zoom out on border-click
-  if (!worldPos) {
+  if (!pos) {
     if (e.button === 0) {
       if (player.frameStack.parent) {
         player.frameStack = player.frameStack.parent
@@ -243,15 +228,15 @@ function _devmodeMouseClick(e, worldPos) {
   }
   if (editingTiles) {
     if (e.button === 0) {
-      setTileWall(worldPos)
+      setTileWall(pos)
     } else if (e.button === 2) {
-      setTileFloor(worldPos)
+      setTileFloor(pos)
     }
   } else {
     // assert we're editing actors
     if (e.button === 0) {
       // zoom in on mini-click
-      const collision = findActor(null, worldPos)
+      const collision = findActor(null, pos)
       if (collision) {
         if (collision.constructor === Mini) {
           player.frameStack = new Frame(collision.id, player.frameStack)
@@ -264,18 +249,18 @@ function _devmodeMouseClick(e, worldPos) {
 
       // left click: paste (or move old pasted thing)
       if (!storedActor) { return }
-      storedActor.setPos(worldPos)
+      storedActor.setPos(pos)
       storedActor.setDead(false)
       storedActor = null
     } else if (e.button === 1) {
       // middle click: copy
-      storedActor = findActor(null, worldPos)
+      storedActor = findActor(null, pos)
       if (!storedActor) { return }
       storedActor = Actor.clone(storedActor)
       storedActor.die()
     } else if (e.button === 2) {
       // right click: cut
-      storedActor = findActor(null, worldPos)
+      storedActor = findActor(null, pos)
       if (!storedActor) { return }
       storedActor.die()
     } else { assert(0, "unknown mouse button") }
