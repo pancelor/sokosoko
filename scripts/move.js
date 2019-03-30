@@ -229,8 +229,8 @@ function maybeTeleOut_(that, dir) {
 
   return r(false)
 }
-const maybeTeleOut = tracer.tracify(maybeTeleOut_)
-// const maybeTeleOut = tracer.tracify(pushableCached(maybeTeleOut_, cullInfinite))
+const maybeTeleOut = tracer.tracify(pushableCached(maybeTeleOut_, cullInfinite))
+// const maybeTeleOut = tracer.tracify(maybeTeleOut_)
 
 // * if we're standing on a mini,
 //   * (remember, we've already optimistically moved)
@@ -268,8 +268,8 @@ function maybeTeleIn_(that, dir) {
   if (maybePushableUpdate(that, dir)) return r(true)
   return r(false)
 }
-const maybeTeleIn = tracer.tracify(maybeTeleIn_)
-// const maybeTeleIn = tracer.tracify(pushableCached(maybeTeleIn_, cullInfinite))
+const maybeTeleIn = tracer.tracify(pushableCached(maybeTeleIn_, cullInfinite))
+// const maybeTeleIn = tracer.tracify(maybeTeleIn_)
 
 // * try to tele the food into me
 function maybeConsume_(that, food, dir) {
@@ -306,8 +306,8 @@ function maybeConsume_(that, food, dir) {
   }
   return r(true)
 }
-const maybeConsume = tracer.tracify(maybeConsume_)
-// const maybeConsume = tracer.tracify(pushableCached(maybeConsume_, cullInfinite))
+const maybeConsume = tracer.tracify(pushableCached(maybeConsume_, cullInfinite))
+// const maybeConsume = tracer.tracify(maybeConsume_)
 
 function lifted(lifter, target, cb) {
   // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it
