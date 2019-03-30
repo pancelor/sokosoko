@@ -11,11 +11,17 @@ function maybePushableUpdate_(that, dir) {
 
   const r = (b) => {
     if (b) {
-      that.playMoveSound()
-    } else {
-      that.setPos(oldPos)
+      if (!findActorUnderMe([Crate, Mini, Player], that)) {
+        that.playMoveSound()
+        return true
+      } else {
+        console.warn("advanced NEW surprise")
+        that.die()
+        return true // we moved off into infinity, "succesfully"
+      }
     }
-    return b
+    that.setPos(oldPos)
+    return false
   }
   that.setPos(nextPos) // do this early; we'll undo it later if we need to
 
@@ -64,12 +70,18 @@ function maybeTeleOut_(that, dir) {
 
   const r = (b) => {
     if (b) {
-      that.playTeleOutSound()
-    } else {
-      that.setPos(oldPos)
-      that.setFrameStack(oldFrameStack)
+      if (!findActorUnderMe([Crate, Mini, Player], that)) {
+        that.playTeleOutSound()
+        return true
+      } else {
+        console.warn("advanced NEW surprise")
+        that.die()
+        return true // we moved off into infinity, "succesfully"
+      }
     }
-    return b
+    that.setPos(oldPos)
+    that.setFrameStack(oldFrameStack)
+    return false
   }
 
   const innerLevel = that.frameStack.innerRoom()
@@ -118,12 +130,18 @@ function maybeTeleIn_(that, dir) {
 
   const r = (b) => {
     if (b) {
-      that.playTeleInSound()
-    } else {
-      that.setPos(oldPos)
-      that.setFrameStack(oldFrameStack)
+      if (!findActorUnderMe([Crate, Mini, Player], that)) {
+        that.playTeleInSound()
+        return true
+      } else {
+        console.warn("advanced NEW surprise")
+        that.die()
+        return true // we moved off into infinity, "succesfully"
+      }
     }
-    return b
+    that.setPos(oldPos)
+    that.setFrameStack(oldFrameStack)
+    return false
   }
 
   const mini = findActorUnderMe(Mini, that)
@@ -160,11 +178,17 @@ function maybeConsume_(that, food, dir) {
 
   const r = (b) => {
     if (b) {
-      that.playMoveSound()
-    } else {
-      that.setPos(oldPos)
+      if (!findActorUnderMe([Crate, Mini, Player], that)) {
+        that.playMoveSound()
+        return true
+      } else {
+        console.warn("advanced NEW surprise")
+        that.die()
+        return true // we moved off into infinity, "succesfully"
+      }
     }
-    return b
+    that.setPos(oldPos)
+    return false
   }
 
   if (!maybeTeleIn(food, oppDir(dir))) return r(false)
