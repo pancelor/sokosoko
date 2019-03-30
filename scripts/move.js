@@ -6,12 +6,14 @@ class Tracer {
   }
 
   tracify(fxn) {
-    return (...args) => {
+    const wrapped = (...args) => {
       this.enter(fxn.name, args)
       const ret = fxn(...args)
       this.exit(fxn.name, args, ret)
       return ret
     }
+    Object.defineProperty(wrapped, "name", { value: fxn.name })
+    return wrapped
   }
 
   toggle() {
@@ -70,7 +72,7 @@ function resetPushableCache() {
   pushCache = new Map()
 }
 function pushableCached(fxn, altFxn) {
-  return (that, ...args) => {
+  const wrapped = (that, ...args) => {
     let hashArgs = [that, that.pos.x, that.pos.y, ...args]
     let entries = pushCache.get(fxn.name)
     if (!entries) {
@@ -87,6 +89,8 @@ function pushableCached(fxn, altFxn) {
     entries.push([...hashArgs])
     return ret
   }
+  Object.defineProperty(wrapped, "name", { value: fxn.name })
+  return wrapped
 }
 RegisterTest("pushCache", () => {
   const divertedResults = []
@@ -268,8 +272,7 @@ function maybeTeleIn_(that, dir) {
   if (maybePushableUpdate(that, dir)) return r(true)
   return r(false)
 }
-// there's some bug: swapping the order of the wrappers here makes movement always kill you??
-const maybeTeleIn = tracer.tracify(pushableCached(maybeTeleIn_, cullInfinite))
+const maybeTeleIn = pushableCached(tracer.tracify(maybeTeleIn_), cullInfinite)
 // const maybeTeleIn = tracer.tracify(maybeTeleIn_)
 
 // * try to tele the food into me
