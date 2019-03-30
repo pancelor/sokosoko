@@ -130,7 +130,7 @@ function lockScroll(cb) {
 }
 
 function registerMouseListeners() {
-  mousepos = pcoord(0, 0)
+  mousepos = new MapPos(0, 0)
   window.addEventListener("contextmenu", (e) => {
     e.preventDefault()
     return false
@@ -173,17 +173,20 @@ function registerMouseListeners() {
 }
 
 function translateMouseFromMap(e) {
-  const worldPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize))
-  return {e, worldPos}
+  let x = Math.floor(e.offsetX / tileSize)
+  let y = Math.floor(e.offsetY / tileSize)
+  return {e, new MapPos(x, y)}
 }
 
 function translateMouseFromView(e) {
-  let roomPos = pcoord(Math.floor(e.offsetX / tileSize), Math.floor(e.offsetY / tileSize))
-  roomPos = roomPos.add(viewOffset().scale(-1))
-  if (!inbounds(roomPos, {w: 8, h: 8})) { return { e, worldPos: null } }
+  let x = Math.floor(e.offsetX / tileSize)
+  let y = Math.floor(e.offsetY / tileSize)
+  let {x: dx, y: dy} = viewOffset().scale(-1)
+  const room = player.frameStack.room
+  const roomPos = new roomPos(room, x+dx, y+dy)
+  if (!roomPos.inbounds()) { return { e, worldPos: null } }
 
-  const room = player.frameStack.room()
-  const worldPos = Pos.fromRoom(room, roomPos)
+  const worldPos = room.mapPos()
   return {e, worldPos}
 }
 

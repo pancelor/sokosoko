@@ -4,7 +4,7 @@ function cls(ctx) {
 
 function drawBkg(ctx) {
   assert(0, 'imgBackground doesnt exist')
-  drawImg(ctx, imgBackground, pcoord(0, 0))
+  ctx.drawImage(imgBackground, 0, 0)
 }
 
 function ctxWith(ctx, map, cb) {

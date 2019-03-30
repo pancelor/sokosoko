@@ -7,7 +7,7 @@ function maybeTeleOut_(that, dir) {
   assert(that.frameStack)
 
   const innerLevel = that.frameStack.room()
-  const outPos = RoomOpenings(innerLevel)[dir]
+  const outPos = innerLevel.openings()[dir]
   if (outPos && outPos.equals(that.pos)) {
     // prepare to teleport
     const oldPos = that.pos
@@ -56,16 +56,10 @@ function maybeTeleIn_(that, dir) {
     return true
   }
 
-
-  if (that.constructor===Mini && that.room().name === "Orange" && that.pos.equals(pcoord(8, 2))) {
-    let x=0
-  }
-
-
-  const nextPos = posDir(that.pos, dir)
+  const nextPos = that.pos.addDir(dir)
   const mini = findActor(Mini, nextPos)
   if (mini) {
-    const op = RoomOpenings(mini.room())[oppDir(dir)]
+    const op = mini.room().openings()[oppDir(dir)]
     if (op) {
       // if (hack_seen_teles.has(mini.id)) {
       //   console.warn('infinite mini recursion detected; killing', serialize(that))
@@ -79,7 +73,7 @@ function maybeTeleIn_(that, dir) {
       const oldPos = that.pos
       const oldFrameStack = that.frameStack
 
-      const newPos = posDir(op, oppDir(dir)) // right before entering the room; to try to push anything in the entryway thats in the way
+      const newPos = op.addDir(oppDir(dir)) // right before entering the room; to try to push anything in the entryway thats in the way
       const newStack = new Frame(mini.id, that.frameStack)
       that.setPos(newPos)
       that.setFrameStack(newStack)
@@ -106,7 +100,7 @@ function maybeConsume_(that, food, dir) {
 
   if (maybeTeleIn(food, oppDir(dir))) {
     that.playMoveSound()
-    const newMiniPos = posDir(that.pos, dir)
+    const newMiniPos = that.pos.addDir(dir)
     const surprise = findActor([Crate, Mini], newMiniPos)
     if (surprise) {
       // this is very weird; eating the food has pushed/recursed some stuff
@@ -136,12 +130,11 @@ function maybeConsume_(that, food, dir) {
 }
 const maybeConsume = tracer.tracify(maybeConsume_)
 
-tracer.toggle()
 function pushableUpdate_(that, dir) {
   // DRY without subclassing for pushable objects
   assert(that.frameStack)
 
-  const nextPos = posDir(that.pos, dir)
+  const nextPos = that.pos.addDir(dir)
 
   if (maybeTeleOut(that, dir)) { return true }
   if (!CanMoveToTile(nextPos)) { return false }

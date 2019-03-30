@@ -198,17 +198,6 @@ function back(arr, i=1) {
   return arr[arr.length-i]
 }
 
-function pcoord(x, y) {
-  return new Pos({x, y})
-}
-
-function posDir(p, dir, len=1) {
-  const dx = [1,0,-1,0][dir]
-  const dy = [0,-1,0,1][dir]
-  const delta = pcoord(len*dx, len*dy)
-  return p.add(delta)
-}
-
 function oppDir(dir) {
   // returns the opposite direction
   return saneMod(dir + 2, 4)
@@ -490,7 +479,7 @@ function listLevels() {
 
 function viewOffset() {
   // hacky
-  return pcoord(4, 4)
+  return new MapPos(4, 4)
 }
 
 function reserializeAllLevels() {

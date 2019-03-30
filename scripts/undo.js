@@ -49,7 +49,7 @@ function EndEpoch() {
 
 function propEqual(p1, p2) {
   // TODO: hacky
-  if (p1 && [Pos, Frame].includes(p1.constructor)) {
+  if (p1 && [MapPos, RoomPos, Frame].includes(p1.constructor)) {
     return p1.equals(p2)
   } else {
     return p1 === p2

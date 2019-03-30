@@ -55,83 +55,144 @@ class Tracer {
   }
 }
 const tracer = new Tracer()
-// tracer.toggle()
+tracer.toggle()
 
-class Pos {
-  constructor({x, y}) {
+class BasePos {
+  constructor(x, y) {
     this.x = x
     this.y = y
   }
 
-  equals(other) {
-    return this.x === other.x && this.y === other.y
+  addDir(dir, len=1) {
+    const x = [1,0,-1,0][dir]
+    const y = [0,-1,0,1][dir]
+    return this.add({x, y})
+  }
+}
+
+class MapPos extends BasePos {
+  serialize() {
+    return `${this.constructor.name} ${this.x} ${this.y}`
+  }
+  str() {
+    return `MapPos(${this.x}, ${this.y})`
   }
 
-  add({x, y}) {
-    return new Pos({
-      x: this.x + x,
-      y: this.y + y,
-    })
+  add(x, y) {
+    if (y === undefined && (x.constructor === RoomPos || x.constructor === MapPos)) {
+      ;({x, y} = x.mapPos())
+    }
+    return new (this.constructor)(
+      this.x + x,
+      this.y + y,
+    )
   }
 
   scale(m) {
-    return new Pos({
-      x: this.x*m,
-      y: this.y*m,
-    })
+    return new (this.constructor)(
+      this.x*m,
+      this.y*m,
+    )
   }
 
-  static fromRoom(room, localPos) {
-    // takes a room pos and returns a world pos
-    return new Pos({x: localPos.x, y: localPos.y + room.begin})
-  }
-
-  room() { // todo: import logic to here
-    return getRoomAt(this)
-  }
-
-  toRoomPos() {
-    // takes a world pos and returns a room pos
-    return new Pos({x: this.x, y: this.y - this.room().begin})
-  }
-
-  str() {
-    return `(${this.x}, ${this.y})`
-  }
-
-  roomSerialize() {
-    const room = this.room()
-    if (room) {
-      const roomPos = this.toRoomPos()
-      return `${this.room().name} ${roomPos.x} ${roomPos.y}`
-    } else {
-      return `<undefined>`
+  equals(x, y) {
+    if (y === undefined && (x.constructor === RoomPos || x.constructor === MapPos)) {
+      ;({x, y} = x.mapPos())
     }
+
+    return this.x === x && this.y === y
   }
 
-  static roomDeserialize(name, x, y) {
-    const room = roomFromName(name)
-    assert(room, `Room "${name}" doesn't exist`)
-    return Pos.fromRoom(room, pcoord(int(x), int(y)))
+  inbounds() {
+    const {w, h} = tilesDim()
+    return inbounds_(this.x, this.y, w, h)
   }
 
+  roomPos() {
+    const room = this.room()
+    return new RoomPos(room, this.x, this.y - room.begin)
+  }
+
+  mapPos() {
+    return this
+  }
+
+  room() {
+    return rooms.find(l=>l.begin <= pos.y && pos.y < l.end)
+  }
+}
+
+class RoomPos extends BasePos {
+  constructor(room, x, y) {
+    super(x, y)
+    assertEqual(room.constructor, String)
+    this.room = room
+  }
   serialize() {
-    return `${this.constructor.name} ${this.x} ${this.y}`
+    return `${this.constructor.name} ${this.room.name} ${this.x} ${this.y}`
+  }
+  str() {
+    return `RoomPos(${this.room.name}, ${this.x}, ${this.y})`
+  }
+  static deserialize(name, x, y) {
+    return new RoomPos(name, int(x), int(y))
+  }
+
+  equals(other) {
+    return this.room === other.room && this.x === other.x && this.y === other.y
+  }
+
+  add(x, y) {
+    if (y === undefined && (x.constructor === RoomPos || x.constructor === MapPos)) {
+      ;({x, y} = x.roomPos())
+    }
+    return new RoomPos(
+      this.room,
+      this.x + x,
+      this.y + y,
+    )
+  }
+  scale(m) {
+    return new (this.constructor)(
+      this.room,
+      this.x*m,
+      this.y*m,
+    )
+  }
+
+
+  inbounds() {
+    return inbounds_(this.x, this.y, 8, 8)
+  }
+
+  roomPos() {
+    return this
+  }
+
+  mapPos() {
+    return new MapPos(this.x, this.y + this.room.begin)
+  }
+
+  room() {
+    return this.room
   }
 }
 
 class FrameBase {
-  constructor(roomId) {
-    this.roomId = roomId
+  constructor(room) {
+    assert(room)
+    this.room = room
     this.parent = null
+  }
+  serialize() {
+    return `${this.constructor.name} ${this.room.name}`
+  }
+  str() {
+    return `<base; ${this.room.name}>`
   }
 
   mini() {
     assert(0, "FrameBase has no mini")
-  }
-
-  room() {
-    return getRoom(this.roomId)
   }
 
   mapMini(f) {
@@ -143,42 +204,31 @@ class FrameBase {
   }
 
   equals(other) {
-    if (other.constructor !== FrameBase) { return false }
-    return (this.roomId === other.roomId)
-  }
-
-  str() {
-    return `<base; ${this.room().name}>`
-  }
-
-  serialize() {
-    return `${this.constructor.name} ${this.room().name}`
+    if (other.constructor !== this.constructor) { return false }
+    return (this.room === other.room)
   }
 }
 
 class Frame {
-  constructor(miniId, parent) {
-    assert(miniId)
+  constructor(mini, parent) {
+    assert(mini)
     assert(parent)
-    this.miniId = miniId
+    this.mini = mini
     this.parent = parent
   }
-
-  mini() {
-    const a = getActorId(this.miniId)
-    assert(a)
-    assertEqual(a.constructor, Mini)
-    return a
+  serialize() {
+    return `${this.constructor.name} ${this.mini.id} ${this.parent.serialize()}`
+  }
+  str() {
+    return `${this.parent.str()} | ${this.room.name}`
   }
 
-  room() {
-    const mini = this.mini()
-    assert(mini)
-    return getRoom(mini.roomId)
+  room() { // todo delete?
+    return this.mini.room
   }
 
   mapMini(f) {
-    return [f(this.mini()), ...this.parent.mapMini(f)]
+    return [f(this.mini), ...this.parent.mapMini(f)]
   }
 
   length() {
@@ -187,7 +237,7 @@ class Frame {
 
   equals(other) {
     if (other.constructor !== Frame) { return false }
-    if (this.miniId !== other.miniId) { return false }
+    if (this.mini !== other.mini) { return false }
 
     const p1 = this.parent
     const p2 = other.parent
@@ -197,14 +247,67 @@ class Frame {
       return p1.equals(p2)
     }
   }
+}
 
-  str() {
-    const mini = this.mini()
-    return `${this.parent.str()} | ${this.room().name}`
+class Room {
+  constructor(name, begin, end) {
+    this.name = name
+    this.begin = begin
+    this.end = end
   }
 
-  serialize() {
-    return `${this.constructor.name} ${this.miniId} ${this.parent.serialize()}`
+  mapCorner() {
+    // returns the top left corner of this room, as a MapPos
+    return new MapPos(0, this.begin)
+  }
+
+  tileColors() {
+    return {
+      Wall: document.getElementById(`img${this.name}Wall`).dataset.color,
+      Floor: document.getElementById(`img${this.name}Floor`).dataset.color,
+    }
+  }
+
+  static findName(name) {
+    return rooms.find(l=>l.name===name)
+  }
+
+  static findId(id) {
+    return rooms.find(l=>l.id===id)
+  }
+
+  openings(room) {
+    // room.openings()[dir] -> pos of an entrance to room on the `dir` side
+    // room.openings()[dir] -> null if no entrances on that side
+
+    const openings = [null, null, null, null] // a dir-indexed dictionary
+    const lastColumn = tiles[this.begin].length - 1
+    for (let rr = this.begin; rr < this.end; rr += 1) {
+      const y = rr - this.begin
+      if (rr === this.begin) {
+        const ix = tiles[rr].findIndex(name=>!solid(name))
+        if (ix !== -1) {
+          // assertEqual(openings[1], null) // doesn't really work...
+          openings[1] = new RoomPos(this, ix, y)
+        }
+      }
+      if (rr + 1 === this.end) {
+        const ix = tiles[rr].findIndex(name=>!solid(name))
+        if (ix !== -1) {
+          // assertEqual(openings[3], null) // doesn't really work...
+          openings[3] = new RoomPos(this, ix, y)
+        }
+      }
+      if (!solid(tiles[rr][0])) {
+        // assertEqual(openings[2], null) // doesn't really work...
+        openings[2] = new RoomPos(this, 0, y)
+      }
+      if (!solid(tiles[rr][lastColumn])) {
+        // assertEqual(openings[0], null) // doesn't really work...
+        openings[0] = new RoomPos(this, lastColumn, y)
+      }
+    }
+    return openings
   }
 }
 
@@ -249,7 +352,7 @@ async function DrawMinis(ctxMap) {
   for (const m of allActors(Mini)) {
     if (m.dead) continue
     const pixSize = roomSize*miniTileSize
-    const src = getRoomTopLeft(m.room()).scale(miniTileSize)
+    const src = m.room().mapCorner().scale(miniTileSize)
     const dest = m.pos.scale(tileSize)
     ctxMap.drawImage(screenshotMini,
       src.x, src.y, pixSize, pixSize,
@@ -269,10 +372,10 @@ async function DrawView(ctx) {
   if (outerFrame) {
     const mini = innerFrame.mini()
     assert(mini)
-    assert(viewOffset().equals(pcoord(4, 4))) // for (8,8): 2->3, 0.5->1
+    assert(viewOffset().equals(4, 4)) // for (8,8): 2->3, 0.5->1
     const outerW = 2*tileSize
     const outerH = 2*tileSize
-    const src = mini.pos.add(pcoord(-0.5, -0.5)).scale(tileSize)
+    const src = mini.pos.add(-0.5, -0.5).scale(tileSize)
     const dest = viewOffset().scale(tileSize)
     ctx.drawImage(screenshotMap,
       src.x, src.y, outerW, outerH,
@@ -281,9 +384,9 @@ async function DrawView(ctx) {
     for (const dy of [-1, 0, 1]) {
       for (const dx of [-1, 0, 1]) {
         if (dx === 0 && dy === 0) continue
-        const mini2 = findActor(Mini, mini.pos.add(pcoord(dx, dy)))
+        const mini2 = findActor(Mini, mini.pos.add(dx, dy))
         if (!mini2) continue
-        const src2 = getRoomTopLeft(mini2.room()).scale(tileSize)
+        const src2 = mini2.room().mapCorner().scale(tileSize)
         ctx.drawImage(screenshotMap,
           src2.x, src2.y, tileSize*8, tileSize*8,
           (0.5+dx)*tileSize*8, (0.5+dy)*tileSize*8, tileSize*8, tileSize*8
@@ -294,46 +397,13 @@ async function DrawView(ctx) {
   // draw inner room
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
-  const src = getRoomTopLeft(innerFrame.room()).scale(tileSize)
+  const src = innerFrame.room().mapCorner().scale(tileSize)
   const dest = viewOffset().scale(tileSize)
   ctx.drawImage(screenshotMap,
     src.x, src.y, innerW, innerH,
     dest.x, dest.y, innerW, innerH
   )
 }
-
-// async function DrawView(ctx) {
-//   const screenshotMap = await createImageBitmap(canvasMap)
-//   const innerFrame = player.frameStack
-//   const outerFrame = player.frameStack.parent
-
-//   // draw outer border
-//   if (outerFrame) {
-//     const mini = innerFrame.mini()
-//     assert(mini)
-//     const outerW = 3*tileSize
-//     const outerH = 3*tileSize
-//     const src = mini.pos.add(pcoord(-1, -1)).scale(tileSize)
-//     const dest = viewOffset().scale(tileSize)
-//     ctx.drawImage(screenshotMap,
-//       src.x, src.y, outerW, outerH,
-//       0, 0, canvasView.width, canvasView.height
-//     )
-//   } else {
-//     const fillStyle = 'white' //innerFrame.room().name
-//     ctxWith(ctx, {fillStyle}, cls)
-//   }
-
-//   // draw inner room
-//   const innerW = 8 * tileSize
-//   const innerH = 8 * tileSize
-//   const src = getRoomTopLeft(innerFrame.room()).scale(tileSize)
-//   const dest = viewOffset().scale(tileSize)
-//   ctx.drawImage(screenshotMap,
-//     src.x, src.y, innerW, innerH,
-//     dest.x, dest.y, innerW, innerH
-//   )
-// }
 
 function DrawMisc(ctxView) {
   const innerW = 8 * tileSize
@@ -398,7 +468,7 @@ class Actor {
   static id = 1 // a counter of ids to assign to actors as they're created
 
   constructor(pos) {
-    this.pos = pos
+    this.pos = pos.mapPos()
 
     // get id
     this.id = Actor.id
@@ -433,13 +503,13 @@ class Actor {
     this.pos = after
   }
 
+  die() {
+    this.setDead(true)
+  }
+
   setFrameStack(f) {
     // by default, don't record
     this.frameStack = f
-  }
-
-  die() {
-    this.setDead(true)
   }
 
   setDead(b) {
@@ -471,7 +541,7 @@ class Actor {
   static deserialize(line) {
     const [type, rName, rx, ry] = line.split(' ')
     assertEqual(type, this.name)
-    const p = Pos.roomDeserialize(rName, rx, ry)
+    const p = new RoomPos(rName, int(rx), int(ry))
     return new (this)(p)
   }
 }
@@ -512,11 +582,25 @@ class Player extends Actor {
 }
 
 class Mini extends Actor {
-  constructor(p, roomId, col) {
+  constructor(p, innerRoom) {
     super(p)
-    assertEqual(roomId.constructor, Number)
-    this.roomId = roomId
-    this.col = col
+    assertEqual(innerRoom.constructor, Room)
+    this.innerRoom = innerRoom
+  }
+  str() {
+    return `${this.innerRoom.name}${this.pos.str()}`
+  }
+  serialize() {
+    const tag = this.tag ? ` @${this.tag}` : ""
+    return `${this.constructor.name} ${this.pos.roomPos().serialize()} ${this.innerRoom.name}${tag}`
+  }
+  static deserialize(line) {
+    const [type, rName, rx, ry, innerRoomName] = line.split(' ')
+    assertEqual(type, this.name)
+    const p = RoomPos.deserialize(rName, rx, ry)
+    const innerRoom = roomFromName(innerRoomName)
+    assert(innerRoom, `room "${innerRoomName}" doesn't exist`)
+    return new (this)(p, innerRoom, innerRoom.name)
   }
 
   draw(ctxMap, ctxMini) {
@@ -524,7 +608,7 @@ class Mini extends Actor {
     drawImgMap(ctxMap, lookupActorImg(this), this.pos) // comment me out
 
     assert(miniTileSize === 4)
-    const { Wall, Floor } = GetRoomColors(this.room())
+    const { Wall, Floor } = this.innerRoom.tileColors()
     ctxWith(ctxMini, {fillStyle: Wall}, () => {
       ctxMini.fillRect(this.pos.x*4, this.pos.y*4, 4, 4);
     })
@@ -535,33 +619,6 @@ class Mini extends Actor {
 
   playMoveSound() {
     PlayAndRecordSound(sndShove)
-  }
-
-  room() {
-    return getRoom(this.roomId)
-  }
-
-  roomPos() {
-    // the position of this mini within its containing room
-    return this.pos.toRoomPos()
-  }
-
-  str() {
-    return `${this.room().name}${this.pos.str()}`
-  }
-
-  serialize() {
-    const tag = this.tag ? ` @${this.tag}` : ""
-    return `${this.constructor.name} ${this.pos.roomSerialize()} ${this.room().name}${tag}`
-  }
-
-  static deserialize(line) {
-    const [type, rName, rx, ry, innerRoomName] = line.split(' ')
-    assertEqual(type, this.name)
-    const p = Pos.roomDeserialize(rName, rx, ry)
-    const room = roomFromName(innerRoomName)
-    assert(room, `room "${innerRoomName}" doesn't exist`)
-    return new (this)(p, room.id, room.name)
   }
 }
 
@@ -596,13 +653,13 @@ class Crate extends Actor {
   serialize() {
     const spStr = this.special ? "1" : "0"
     const tag = this.tag ? ` @${this.tag}` : ""
-    return `${this.constructor.name} ${this.pos.roomSerialize()} ${spStr}${tag}`
+    return `${this.constructor.name} ${this.pos.roomPos().serialize()} ${spStr}${tag}`
   }
 
   static deserialize(line) {
     const [type, rName, rx, ry, special] = line.split(' ')
     assertEqual(type, this.name)
-    const p = Pos.roomDeserialize(rName, rx, ry)
+    const p = new RoomPos(rName, int(rx), int(ry))
     return new (this)(p, !!int(special))
   }
 }
@@ -627,7 +684,8 @@ function findActor(cst, p) {
   // (or anywhere, if no pos is given)
   const as = allActors(cst)
   if (p) {
-    return as.find(a=>!a.dead && p.equals(a.pos))
+    const mpos = p.mapPos()
+    return as.find(a=>!a.dead && mpos.equals(a.pos))
   } else {
     return as[0]
   }
