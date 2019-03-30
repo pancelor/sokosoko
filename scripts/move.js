@@ -85,9 +85,8 @@ function pushableCached(fxn, altFxn) {
       if (arrEqual(hashArgs, pastArgs)) foundMatch = true
     }
     if (foundMatch) return altFxn(that, ...args)
-    const ret = fxn(that, ...args)
-    entries.push([...hashArgs])
-    return ret
+    entries.push([...hashArgs]) // need to do this _before_ calling fxn, b/c its recursive
+    return fxn(that, ...args)
   }
   Object.defineProperty(wrapped, "name", { value: fxn.name })
   return wrapped
@@ -124,7 +123,7 @@ RegisterTest("pushCache", () => {
 })
 
 function cullInfinite(...args) {
-  console.log("culling", args);
+  // console.log("culling", args);
   const that = args[0]
   PlayAndRecordSound(sndInfinite)
   that.die()
@@ -233,8 +232,8 @@ function maybeTeleOut_(that, dir) {
 
   return r(false)
 }
-const maybeTeleOut = pushableCached(tracer.tracify(maybeTeleOut_), cullInfinite)
-// const maybeTeleOut = tracer.tracify(maybeTeleOut_)
+// const maybeTeleOut = pushableCached(tracer.tracify(maybeTeleOut_), cullInfinite)
+const maybeTeleOut = tracer.tracify(maybeTeleOut_)
 
 // * if we're standing on a mini,
 //   * (remember, we've already optimistically moved)
@@ -272,8 +271,8 @@ function maybeTeleIn_(that, dir) {
   if (maybePushableUpdate(that, dir)) return r(true)
   return r(false)
 }
-const maybeTeleIn = pushableCached(tracer.tracify(maybeTeleIn_), cullInfinite)
-// const maybeTeleIn = tracer.tracify(maybeTeleIn_)
+// const maybeTeleIn = pushableCached(tracer.tracify(maybeTeleIn_), cullInfinite)
+const maybeTeleIn = tracer.tracify(maybeTeleIn_)
 
 // * try to tele the food into me
 function maybeConsume_(that, food, dir) {
@@ -310,8 +309,8 @@ function maybeConsume_(that, food, dir) {
   }
   return r(true)
 }
-const maybeConsume = tracer.tracify(pushableCached(maybeConsume_, cullInfinite))
-// const maybeConsume = tracer.tracify(maybeConsume_)
+// const maybeConsume = tracer.tracify(pushableCached(maybeConsume_, cullInfinite))
+const maybeConsume = tracer.tracify(maybeConsume_)
 
 function lifted(lifter, target, cb) {
   // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it
