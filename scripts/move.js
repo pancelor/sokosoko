@@ -1,15 +1,5 @@
-function maybePushableUpdate_(that, dir) {
-  // DRY without subclassing for pushable objects
-  assert(that.frameStack)
-
-  const nextPos = that.pos.addDir(dir)
-  const oldPos = that.pos
-
-  // hack: we'd like to do these next two lines with r(true) and r(false),
-  // but it's too hard to know whether we should be teleporting out _after_
-  // leaving the opening, if there is one
-
-  const r = (b) => {
+function buildRet(that, oldPos, oldFrameStack) {
+  return (b) => {
     if (b) {
       if (!findActorUnderMe([Crate, Mini, Player], that)) {
         that.playMoveSound()
@@ -20,13 +10,22 @@ function maybePushableUpdate_(that, dir) {
         return true // we moved off into infinity, "succesfully"
       }
     }
-    that.setPos(oldPos)
+    if (oldPos) that.setPos(oldPos)
+    if (oldFrameStack) that.setFrameStack(oldFrameStack)
     return false
   }
-  that.setPos(nextPos) // do this early; we'll undo it later if we need to
+}
+
+function maybePushableUpdate_(that, dir) {
+  // DRY without subclassing for pushable objects
+  assert(that.frameStack)
+
+  const oldPos = that.pos
+  const r = buildRet(that, oldPos)
+  that.setPos(that.pos.addDir(dir)) // do this early; we'll undo it later if we need to
 
   if (maybeTeleOut(that, dir)) return r(true)
-  if (!CanMoveToTile(nextPos)) return r(false)
+  if (!CanMoveToTile(that.pos)) return r(false)
   if (maybeTeleIn(that, dir)) return r(true)
 
   let numIters = 0
@@ -67,22 +66,7 @@ function maybeTeleOut_(that, dir) {
 
   const oldPos = that.pos
   const oldFrameStack = that.frameStack
-
-  const r = (b) => {
-    if (b) {
-      if (!findActorUnderMe([Crate, Mini, Player], that)) {
-        that.playTeleOutSound()
-        return true
-      } else {
-        console.warn("advanced NEW surprise")
-        that.die()
-        return true // we moved off into infinity, "succesfully"
-      }
-    }
-    that.setPos(oldPos)
-    that.setFrameStack(oldFrameStack)
-    return false
-  }
+  const r = buildRet(that, oldPos, oldFrameStack)
 
   const innerLevel = that.frameStack.innerRoom()
   const outPos = innerLevel.openings()[dir]
@@ -117,7 +101,7 @@ function maybeTeleIn_(that, dir) {
   // else do nothing
   // returns whether the tele happened
   assert(that.frameStack)
-  if (that.frameStack.length() >= 200) {
+  if (that.frameStack.length() >= 20) {
     // this is really really hacky
     console.warn("HACK infinite mini recursion")
     PlayAndRecordSound(sndInfinite)
@@ -127,22 +111,7 @@ function maybeTeleIn_(that, dir) {
 
   const oldPos = that.pos
   const oldFrameStack = that.frameStack
-
-  const r = (b) => {
-    if (b) {
-      if (!findActorUnderMe([Crate, Mini, Player], that)) {
-        that.playTeleInSound()
-        return true
-      } else {
-        console.warn("advanced NEW surprise")
-        that.die()
-        return true // we moved off into infinity, "succesfully"
-      }
-    }
-    that.setPos(oldPos)
-    that.setFrameStack(oldFrameStack)
-    return false
-  }
+  const r = buildRet(that, oldPos, oldFrameStack)
 
   const mini = findActorUnderMe(Mini, that)
   if (!mini) return r(false)
@@ -171,25 +140,8 @@ function maybeConsume_(that, food, dir) {
   assert(food.frameStack)
   if (that.constructor !== Mini) return false
 
-    // todo r
-
-  const oldPos = that.pos
-  const nextPos = that.pos.addDir(dir)
-
-  const r = (b) => {
-    if (b) {
-      if (!findActorUnderMe([Crate, Mini, Player], that)) {
-        that.playMoveSound()
-        return true
-      } else {
-        console.warn("advanced NEW surprise")
-        that.die()
-        return true // we moved off into infinity, "succesfully"
-      }
-    }
-    that.setPos(oldPos)
-    return false
-  }
+  const oldPos = that.pos // might change during e.g. maybetelein
+  const r = buildRet(that, oldPos)
 
   if (!maybeTeleIn(food, oppDir(dir))) return r(false)
   const surprise = findActorUnderMe([Crate, Mini], that)
