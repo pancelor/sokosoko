@@ -19,7 +19,7 @@ function maybeTeleOut_(that, dir) {
     that.setFrameStack(parent)
 
     // that has now teleported; try to move
-    if (pushableUpdate(that, dir)) {
+    if (maybePushableUpdate(that, dir)) {
       that.playTeleOutSound()
       return true
     } else {
@@ -27,7 +27,7 @@ function maybeTeleOut_(that, dir) {
       // (e.g. if `that` is pushing against a wall, the normal force gets
       // transmitted to the player inside the mini, not the mini itself)
       // // try to counter-push the mini we're teleporting out of
-      // if (lifted(that, mini, ()=>pushableUpdate(mini, oppDir(dir)))) {
+      // if (lifted(that, mini, ()=>maybePushableUpdate(mini, oppDir(dir)))) {
       //   return true
       // }
 
@@ -43,8 +43,8 @@ const maybeTeleOut = tracer.tracify(maybeTeleOut_)
 // let hack_seen_teles
 
 function maybeTeleIn_(that, dir) {
-  // if that is standing next to a Mini and is moving into it (dir)
-  //   move that into the mini. (one tile before the actual entrance)
+  // if `that` is standing _on_ a Mini,
+  //   move `that` into the mini
   // else do nothing
   // returns whether the tele happened
   assert(that.frameStack)
@@ -56,40 +56,38 @@ function maybeTeleIn_(that, dir) {
     return true
   }
 
-  const nextPos = that.pos.addDir(dir)
-  const mini = findActor(Mini, nextPos)
-  if (mini) {
-    const op = mini.innerRoom.openings()[oppDir(dir)]
-    if (op) {
-      // if (hack_seen_teles.has(mini.id)) {
-      //   console.warn('infinite mini recursion detected; killing', serialize(that))
-      //   PlayAndRecordSound(sndInfinite)
-      //   that.die()
-      //   return true
-      // }
-      // hack_seen_teles.add(mini.id)
+  const oldPos = that.pos
+  const oldFrameStack = that.frameStack
 
-      // prepare to teleport
-      const oldPos = that.pos
-      const oldFrameStack = that.frameStack
-
-      const newPos = op.addDir(oppDir(dir)) // right before entering the room; to try to push anything in the entryway thats in the way
-      const newStack = new Frame(mini, that.frameStack)
-      that.setPos(newPos)
-      that.setFrameStack(newStack)
-
-      // that has now teleported; try to move
-      if (pushableUpdate(that, dir)) {
-        that.playTeleInSound()
-        return true
-      } else {
-        // undo
-        that.setPos(oldPos)
-        that.setFrameStack(oldFrameStack)
-      }
+  const r = (b) => {
+    if (b) {
+      that.playTeleInSound()
+    } else {
+      that.setPos(oldPos)
+      that.setFrameStack(oldFrameStack)
     }
+    return b
   }
-  return false
+
+  const mini = findActorUnderMe(Mini, that)
+  if (!mini) return r(false)
+  const op = mini.innerRoom.openings()[oppDir(dir)]
+  if (!op) return r(false)
+  // if (hack_seen_teles.has(mini.id)) {
+  //   console.warn('infinite mini recursion detected; killing', serialize(that))
+  //   PlayAndRecordSound(sndInfinite)
+  //   that.die()
+  //   return true
+  // }
+  // hack_seen_teles.add(mini.id)
+
+  that.setPos(op.addDir(oppDir(dir)))
+  that.setFrameStack(new Frame(mini, that.frameStack))
+
+  // `that` has now teleported to an oob-location
+  // next to the mini; try to move into the mini
+  if (maybePushableUpdate(that, dir)) return r(true)
+  return r(false)
 }
 const maybeTeleIn = tracer.tracify(maybeTeleIn_)
 
@@ -98,65 +96,81 @@ function maybeConsume_(that, food, dir) {
   assert(food.frameStack)
   if (that.constructor !== Mini) return false
 
-  if (maybeTeleIn(food, oppDir(dir))) {
-    that.playMoveSound()
-    const newMiniPos = that.pos.addDir(dir)
-    const surprise = findActor([Crate, Mini], newMiniPos)
-    if (surprise) {
-      // this is very weird; eating the food has pushed/recursed some stuff
-      // around in a way such that the food's old position is occupied again.
-      // (e.g. green or purple/yellow room of newpush.lvl)
+    // todo r
 
-      // Im so so conflicted about what to do here;
-      // I think we should succeed and evaporate the food out of existence
-      // That seems to be the case in the green room of newpush.lvl
-      // But what about the purple/yellow combo? which block gets eaten?
-      // Wouldn't it be all of them but none of them at once? so now the three
-      // remaining objects are weird half-and-half glitchy abominations?
-      // (could randomize which one is murdered, but that seems like
-      // a cop out and a bad experience as a player imo)
+  const oldPos = that.pos
+  const nextPos = that.pos.addDir(dir)
 
-      console.warn("infinite nastiness occurs")
-      PlayAndRecordSound(sndInfinite)
-      // edit: god im playing with it more and everything is so fucky;
-      // return false here is no good... but return true isn't great either
-
-      surprise.die()
+  const r = (b) => {
+    if (b) {
+      that.playMoveSound()
+    } else {
+      that.setPos(oldPos)
     }
-    that.setPos(newMiniPos)
-    return true
+    return b
   }
-  return false
+
+  if (!maybeTeleIn(food, oppDir(dir))) return r(false)
+  const surprise = findActorUnderMe([Crate, Mini], that)
+  if (surprise) {
+    // this is very weird; eating the food has pushed/recursed some stuff
+    // around in a way such that the food's old position is occupied again.
+    // (e.g. green or purple/yellow room of newpush.lvl)
+
+    // Im so so conflicted about what to do here;
+    // I think we should succeed and evaporate the food out of existence
+    // That seems to be the case in the green room of newpush.lvl
+    // But what about the purple/yellow combo? which block gets eaten?
+    // Wouldn't it be all of them but none of them at once? so now the three
+    // remaining objects are weird half-and-half glitchy abominations?
+    // (could randomize which one is murdered, but that seems like
+    // a cop out and a bad experience as a player imo)
+
+    console.warn("infinite nastiness occurs")
+    PlayAndRecordSound(sndInfinite)
+    // edit: god im playing with it more and everything is so fucky;
+    // return false here is no good... but return true isn't great either
+
+    surprise.die()
+  }
+  return r(true)
 }
 const maybeConsume = tracer.tracify(maybeConsume_)
 
-function pushableUpdate_(that, dir) {
+function maybePushableUpdate_(that, dir) {
   // DRY without subclassing for pushable objects
   assert(that.frameStack)
 
   const nextPos = that.pos.addDir(dir)
+  const oldPos = that.pos
 
-  if (maybeTeleOut(that, dir)) { return true }
-  if (!CanMoveToTile(nextPos)) { return false }
+  // hack: we'd like to do these next two lines with r(true) and r(false),
+  // but it's too hard to know whether we should be teleporting out _after_
+  // leaving the opening, if there is one
+  if (maybeTeleOut(that, dir)) return true
+  if (!CanMoveToTile(nextPos)) return false
 
-  if (maybeTeleIn(that, dir)) { return true }
+  const r = (b) => {
+    if (b) {
+      that.playMoveSound()
+    } else {
+      that.setPos(oldPos)
+    }
+    return b
+  }
+  that.setPos(nextPos) // do this early; we'll undo it later if we need to
+
+  if (maybeTeleIn(that, dir)) return r(true)
 
   for (const cst of [Crate, Mini]) {
-    const toPush = findActor(cst, nextPos)
+    const toPush = findActorUnderMe(cst, that)
     if (!toPush) continue
-
-    const oldPos = that.pos
-    that.playMoveSound() // ?
-    that.setPos(nextPos)
 
     // how can toPush be a mini if we already called maybeTeleIn?
     // well, if there was either no opening, or we failed to get into the opening
-    if (lifted(that, toPush, ()=>maybeConsume(that, toPush, dir))) { return true }
-    if (!lifted(that, toPush, ()=>pushableUpdate(toPush, dir))) {
-      that.setPos(oldPos)
-      return false
-    }
-    const surprise = findActor([Crate, Mini], nextPos)
+    if (lifted(that, toPush, ()=>maybeConsume(that, toPush, dir))) return r(true)
+    if (!lifted(that, toPush, ()=>maybePushableUpdate(toPush, dir))) return r(false)
+    const surprise = findActorUnderMe([Crate, Mini], that)
     if (surprise) {
       // weird recursion happened and we can't go where we wanted to go,
       // even though we just pushed toPush off of that position
@@ -168,16 +182,12 @@ function pushableUpdate_(that, dir) {
       // (any maybe good justification for why they expand back out?
       // so that it looks like nothing happened?)
       console.warn("surprise!", that.serialize(), "->", surprise.serialize())
-      that.setPos(oldPos)
-      return false
+      return r(false)
     }
   }
-
-  that.playMoveSound()
-  that.setPos(nextPos)
-  return true
+  return r(true)
 }
-const pushableUpdate = tracer.tracify(pushableUpdate_)
+const maybePushableUpdate = tracer.tracify(maybePushableUpdate_)
 
 function lifted(lifter, target, cb) {
   // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it

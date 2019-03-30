@@ -242,7 +242,7 @@ function _devmodeMouseClick(e, pos) {
           player.frameStack = new Frame(collision, player.frameStack)
           return
         } else {
-          console.warn("overlap")
+          if (storedActor) console.warn("overlap")
           return
         }
       }

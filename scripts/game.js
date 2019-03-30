@@ -582,7 +582,7 @@ class Player extends Actor {
 
   update(dir) {
     // hack_seen_teles = new Set()
-    const success = pushableUpdate(this, dir)
+    const success = maybePushableUpdate(this, dir)
     maybeFakeWin()
     if (checkWin()) {
       PlayAndRecordSound(sndWin)
@@ -697,4 +697,11 @@ function findActor(cst, p) {
   } else {
     return as[0]
   }
+}
+
+function findActorUnderMe(cst, that) {
+  // finds an actor with the given constructor(s) at the given actor's location
+  const as = allActors(cst)
+  const mpos = that.pos.mapPos()
+  return as.find(a=>!a.dead && a !== that && mpos.equals(a.pos))
 }
