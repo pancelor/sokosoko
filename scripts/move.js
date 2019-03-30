@@ -55,7 +55,7 @@ class Tracer {
   }
 }
 const tracer = new Tracer()
-// tracer.toggle()
+tracer.toggle()
 
 function arrEqual(a1, a2) {
   assert(a1.length === a2.length)
@@ -71,7 +71,7 @@ function resetPushableCache() {
 }
 function pushableCached(fxn, altFxn) {
   return (that, ...args) => {
-    args = [that, that.pos.x, that.pos.y, ...args]
+    let hashArgs = [that, that.pos.x, that.pos.y, ...args]
     let entries = pushCache.get(fxn.name)
     if (!entries) {
       entries = []
@@ -79,36 +79,42 @@ function pushableCached(fxn, altFxn) {
     }
     let foundMatch = false
     for (const pastArgs of entries) {
-      assert(pastArgs.length === args.length)
-      if (arrEqual(args, pastArgs)) foundMatch = true
+      assert(pastArgs.length === hashArgs.length)
+      if (arrEqual(hashArgs, pastArgs)) foundMatch = true
     }
-    if (foundMatch) return altFxn(...args)
-    const ret = fxn(...args)
-    entries.push([...args])
+    if (foundMatch) return altFxn(that, ...args)
+    const ret = fxn(that, ...args)
+    entries.push([...hashArgs])
     return ret
   }
 }
 RegisterTest("pushCache", () => {
   const divertedResults = []
-  function spy(x, y) { const res = 10*x+y; divertedResults.push(res); return res }
+  function spy(that, x, y) { assert(that); const res = 10*x+y; divertedResults.push(res); return res }
 
   let callCount = 0
-  function foo_(x, y) { callCount += 1; return 10*x + y }
+  function foo_(that, x, y) { assert(that); callCount += 1; return 10*x + y }
   const foo = pushableCached(foo_, spy)
 
+  const that = {pos: {x:10, y:20}}
   assertEqual(callCount, 0)
-  assertEqual(foo(1, 2), 12)
+  assertEqual(foo(that, 1, 2), 12)
   assertEqual(divertedResults.length, 0)
   assertEqual(callCount, 1)
 
-  assertEqual(foo(3, 4), 34)
+  assertEqual(foo(that, 3, 4), 34)
   assertEqual(divertedResults.length, 0)
   assertEqual(callCount, 2)
 
-  assertEqual(foo(3, 4), 34)
+  assertEqual(foo(that, 3, 4), 34)
   assertEqual(divertedResults.length, 1)
   assertEqual(callCount, 2) // didnt increment
   assertEqual(divertedResults[0], 34) // routed to the alternate function
+
+  that.pos.x = 9
+  assertEqual(foo(that, 3, 4), 34)
+  assertEqual(divertedResults.length, 1) // didnt divert
+  assertEqual(callCount, 3) // incremented again
 
   resetPushableCache()
 })
@@ -189,8 +195,8 @@ function maybePushableUpdate_(that, dir) {
   assert(numIters === 0 || numIters === 1)
   return r(true)
 }
-const maybePushableUpdate = tracer.tracify(maybePushableUpdate_)
-// const maybePushableUpdate = tracer.tracify(pushableCached(maybePushableUpdate_, cullInfinite))
+// const maybePushableUpdate = tracer.tracify(maybePushableUpdate_)
+const maybePushableUpdate = tracer.tracify(pushableCached(maybePushableUpdate_, cullInfinite))
 
 
 
@@ -223,8 +229,8 @@ function maybeTeleOut_(that, dir) {
 
   return r(false)
 }
-const maybeTeleOut = tracer.tracify(maybeTeleOut_)
-// const maybeTeleOut = tracer.tracify(pushableCached(maybeTeleOut_, cullInfinite))
+// const maybeTeleOut = tracer.tracify(maybeTeleOut_)
+const maybeTeleOut = tracer.tracify(pushableCached(maybeTeleOut_, cullInfinite))
 
 // * if we're standing on a mini,
 //   * (remember, we've already optimistically moved)
@@ -262,8 +268,8 @@ function maybeTeleIn_(that, dir) {
   if (maybePushableUpdate(that, dir)) return r(true)
   return r(false)
 }
-const maybeTeleIn = tracer.tracify(maybeTeleIn_)
-// const maybeTeleIn = tracer.tracify(pushableCached(maybeTeleIn_, cullInfinite))
+// const maybeTeleIn = tracer.tracify(maybeTeleIn_)
+const maybeTeleIn = tracer.tracify(pushableCached(maybeTeleIn_, cullInfinite))
 
 // * try to tele the food into me
 function maybeConsume_(that, food, dir) {
@@ -300,8 +306,8 @@ function maybeConsume_(that, food, dir) {
   }
   return r(true)
 }
-const maybeConsume = tracer.tracify(maybeConsume_)
-// const maybeConsume = tracer.tracify(pushableCached(maybeConsume_, cullInfinite))
+// const maybeConsume = tracer.tracify(maybeConsume_)
+const maybeConsume = tracer.tracify(pushableCached(maybeConsume_, cullInfinite))
 
 function lifted(lifter, target, cb) {
   // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it
