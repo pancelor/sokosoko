@@ -196,7 +196,7 @@ function maybePushableUpdate_(that, dir) {
   return r(true)
 }
 // const maybePushableUpdate = tracer.tracify(maybePushableUpdate_)
-const maybePushableUpdate = tracer.tracify(pushableCached(maybePushableUpdate_, cullInfinite))
+const maybePushableUpdate = pushableCached(tracer.tracify(maybePushableUpdate_), cullInfinite)
 
 
 
@@ -229,7 +229,7 @@ function maybeTeleOut_(that, dir) {
 
   return r(false)
 }
-const maybeTeleOut = tracer.tracify(pushableCached(maybeTeleOut_, cullInfinite))
+const maybeTeleOut = pushableCached(tracer.tracify(maybeTeleOut_), cullInfinite)
 // const maybeTeleOut = tracer.tracify(maybeTeleOut_)
 
 // * if we're standing on a mini,
@@ -268,6 +268,7 @@ function maybeTeleIn_(that, dir) {
   if (maybePushableUpdate(that, dir)) return r(true)
   return r(false)
 }
+// there's some bug: swapping the order of the wrappers here makes movement always kill you??
 const maybeTeleIn = tracer.tracify(pushableCached(maybeTeleIn_, cullInfinite))
 // const maybeTeleIn = tracer.tracify(maybeTeleIn_)
 
