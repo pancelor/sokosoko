@@ -72,7 +72,7 @@ class BasePos {
 
 class MapPos extends BasePos {
   serialize() {
-    return `${this.constructor.name} ${this.x} ${this.y}`
+    return `${this.x} ${this.y}`
   }
   str() {
     return `MapPos(${this.x}, ${this.y})`
@@ -137,7 +137,7 @@ class RoomPos extends BasePos {
     this.room_ = room_
   }
   serialize() {
-    return `${this.constructor.name} ${this.room_.name} ${this.x} ${this.y}`
+    return `${this.room_.name} ${this.x} ${this.y}`
   }
   str() {
     return `RoomPos(${this.room_.name}, ${this.x}, ${this.y})`
@@ -298,23 +298,23 @@ class Room {
         const ix = tiles[rr].findIndex(name=>!solid(name))
         if (ix !== -1) {
           // assertEqual(openings[1], null) // doesn't really work...
-          openings[1] = new RoomPos(this, ix, y)
+          openings[1] = new RoomPos(this, ix, y).mapPos()
         }
       }
       if (rr + 1 === this.end) {
         const ix = tiles[rr].findIndex(name=>!solid(name))
         if (ix !== -1) {
           // assertEqual(openings[3], null) // doesn't really work...
-          openings[3] = new RoomPos(this, ix, y)
+          openings[3] = new RoomPos(this, ix, y).mapPos()
         }
       }
       if (!solid(tiles[rr][0])) {
         // assertEqual(openings[2], null) // doesn't really work...
-        openings[2] = new RoomPos(this, 0, y)
+        openings[2] = new RoomPos(this, 0, y).mapPos()
       }
       if (!solid(tiles[rr][lastColumn])) {
         // assertEqual(openings[0], null) // doesn't really work...
-        openings[0] = new RoomPos(this, lastColumn, y)
+        openings[0] = new RoomPos(this, lastColumn, y).mapPos()
       }
     }
     return openings

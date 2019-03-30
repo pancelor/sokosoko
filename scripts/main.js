@@ -239,7 +239,7 @@ function _devmodeMouseClick(e, pos) {
       const collision = findActor(null, pos)
       if (collision) {
         if (collision.constructor === Mini) {
-          player.frameStack = new Frame(collision.id, player.frameStack)
+          player.frameStack = new Frame(collision, player.frameStack)
           return
         } else {
           console.warn("overlap")
