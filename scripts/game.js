@@ -1,62 +1,3 @@
-class Tracer {
-  static indent_str = "  "
-  constructor(silent) {
-    this.indent = 0
-    this.silent = silent
-  }
-
-  tracify(fxn) {
-    return (...args) => {
-      this.enter(fxn.name, args)
-      const ret = fxn(...args)
-      this.exit(fxn.name, args, ret)
-      return ret
-    }
-  }
-
-  toggle() {
-    this.silent = !this.silent
-  }
-
-  // main fxnality
-  printSignature(name, args) {
-    const parts = []
-    parts.push(`${name}(`)
-    for (const a of args) {
-      if (a.str) {
-        parts.push(`${a.str()}, `)
-      } else {
-        parts.push(`${serialize(a)}, `)
-      }
-    }
-    parts.push(")")
-    return parts.join('')
-  }
-  enter(name, args) {
-    this.print(`-> ${this.printSignature(name, args)}`)
-    this.changeIndent(1)
-  }
-  exit(name, args, ret) {
-    this.changeIndent(-1)
-    this.print(`${ret} <- ${this.printSignature(name, args)}`)
-  }
-  changeIndent(di) {
-    this.indent += di
-    assert(this.indent >= 0)
-  }
-  print(msg) {
-    if (this.silent) return
-    const parts = []
-    for (let i = 0; i < this.indent; i++) {
-      parts.push(Tracer.indent_str)
-    }
-    parts.push(msg)
-    console.log(parts.join(''))
-  }
-}
-const tracer = new Tracer()
-tracer.toggle()
-
 class BasePos {
   constructor(x, y) {
     this.x = x
@@ -582,7 +523,7 @@ class Player extends Actor {
   }
 
   update(dir) {
-    // hack_seen_teles = new Set()
+    resetPushableCache()
     const success = maybePushableUpdate(this, dir)
     maybeFakeWin()
     if (checkWin()) {

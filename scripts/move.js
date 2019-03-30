@@ -1,3 +1,126 @@
+class Tracer {
+  static indent_str = "  "
+  constructor(silent) {
+    this.indent = 0
+    this.silent = silent
+  }
+
+  tracify(fxn) {
+    return (...args) => {
+      this.enter(fxn.name, args)
+      const ret = fxn(...args)
+      this.exit(fxn.name, args, ret)
+      return ret
+    }
+  }
+
+  toggle() {
+    this.silent = !this.silent
+  }
+
+  // main fxnality
+  printSignature(name, args) {
+    const parts = []
+    parts.push(`${name}(`)
+    for (const a of args) {
+      if (a.str) {
+        parts.push(`${a.str()}, `)
+      } else {
+        parts.push(`${serialize(a)}, `)
+      }
+    }
+    parts.push(")")
+    return parts.join('')
+  }
+  enter(name, args) {
+    this.print(`-> ${this.printSignature(name, args)}`)
+    this.changeIndent(1)
+  }
+  exit(name, args, ret) {
+    this.changeIndent(-1)
+    this.print(`${ret} <- ${this.printSignature(name, args)}`)
+  }
+  changeIndent(di) {
+    this.indent += di
+    assert(this.indent >= 0)
+  }
+  print(msg) {
+    if (this.silent) return
+    const parts = []
+    for (let i = 0; i < this.indent; i++) {
+      parts.push(Tracer.indent_str)
+    }
+    parts.push(msg)
+    console.log(parts.join(''))
+  }
+}
+const tracer = new Tracer()
+// tracer.toggle()
+
+function arrEqual(a1, a2) {
+  assert(a1.length === a2.length)
+  for (let i = 0; i < a1.length; i += 1) {
+    if (a1[i] !== a2[i]) return false
+  }
+  return true
+}
+
+let pushCache = new Map()
+function resetPushableCache() {
+  pushCache = new Map()
+}
+function pushableCached(fxn, altFxn) {
+  return (that, ...args) => {
+    args = [that, that.pos.x, that.pos.y, ...args]
+    let entries = pushCache.get(fxn.name)
+    if (!entries) {
+      entries = []
+      pushCache.set(fxn.name, entries)
+    }
+    let foundMatch = false
+    for (const pastArgs of entries) {
+      assert(pastArgs.length === args.length)
+      if (arrEqual(args, pastArgs)) foundMatch = true
+    }
+    if (foundMatch) return altFxn(...args)
+    const ret = fxn(...args)
+    entries.push([...args])
+    return ret
+  }
+}
+RegisterTest("pushCache", () => {
+  const divertedResults = []
+  function spy(x, y) { const res = 10*x+y; divertedResults.push(res); return res }
+
+  let callCount = 0
+  function foo_(x, y) { callCount += 1; return 10*x + y }
+  const foo = pushableCached(foo_, spy)
+
+  assertEqual(callCount, 0)
+  assertEqual(foo(1, 2), 12)
+  assertEqual(divertedResults.length, 0)
+  assertEqual(callCount, 1)
+
+  assertEqual(foo(3, 4), 34)
+  assertEqual(divertedResults.length, 0)
+  assertEqual(callCount, 2)
+
+  assertEqual(foo(3, 4), 34)
+  assertEqual(divertedResults.length, 1)
+  assertEqual(callCount, 2) // didnt increment
+  assertEqual(divertedResults[0], 34) // routed to the alternate function
+
+  resetPushableCache()
+})
+
+function cullInfinite(...args) {
+  console.log("culling", args);
+  const that = args[0]
+  PlayAndRecordSound(sndInfinite)
+  that.die()
+  return true // `that` was able to move,, into the infinite abyss
+}
+
 function buildRet(that, oldPos, oldFrameStack) {
   return (b) => {
     if (b) {
@@ -16,8 +139,18 @@ function buildRet(that, oldPos, oldFrameStack) {
   }
 }
 
+// DRY without subclassing for pushable objects
+//
+// Do each of these steps, aborting when the
+// * optimistically move in the given direction (might have to revert later)
+// * maybe teleport out
+// * check if im in a wall
+// * maybe teleport in
+// * see if I'm on top of something i should have pushed
+//   * try eating it, if i'm a mini
+//   * try pushing it
+// * succeed!
 function maybePushableUpdate_(that, dir) {
-  // DRY without subclassing for pushable objects
   assert(that.frameStack)
 
   const oldPos = that.pos
@@ -39,6 +172,7 @@ function maybePushableUpdate_(that, dir) {
     if (!lifted(that, toPush, ()=>maybePushableUpdate(toPush, dir))) return r(false)
     const surprise = findActorUnderMe([Crate, Mini], that)
     if (surprise) {
+      assert(0, "push surprise oh no")
       // weird recursion happened and we can't go where we wanted to go,
       // even though we just pushed toPush off of that position
 
@@ -56,7 +190,14 @@ function maybePushableUpdate_(that, dir) {
   return r(true)
 }
 const maybePushableUpdate = tracer.tracify(maybePushableUpdate_)
+// const maybePushableUpdate = tracer.tracify(pushableCached(maybePushableUpdate_, cullInfinite))
 
+
+
+// * if the position/direction we were just at was at a level opening,
+//   * (remember, we've already optimistically moved)
+// * optimistically teleport out of the mini - new pos is right on top of mini
+// * try moving out
 function maybeTeleOut_(that, dir) {
   // if that is standing in a room opening and moving out (dir)
   //   move that to the parent Frame (teleport out one room)
@@ -68,8 +209,7 @@ function maybeTeleOut_(that, dir) {
   const oldFrameStack = that.frameStack
   const r = buildRet(that, oldPos, oldFrameStack)
 
-  const innerLevel = that.frameStack.innerRoom()
-  const outPos = innerLevel.openings()[dir]
+  const outPos = that.frameStack.innerRoom().openings()[dir] // the logic near here can be simplified/sped up; prolly doesn't matter tho
   if (!outPos || !outPos.addDir(dir).equals(that.pos)) return r(false)
 
   // teleport
@@ -81,27 +221,23 @@ function maybeTeleOut_(that, dir) {
   // that has now teleported; try to move
   if (maybePushableUpdate(that, dir)) return r(true)
 
-  // pretty sure this is a bad idea; the physics don't work
-  // (e.g. if `that` is pushing against a wall, the normal force gets
-  // transmitted to the player inside the mini, not the mini itself)
-  // // try to counter-push the mini we're teleporting out of
-  // if (lifted(that, mini, ()=>maybePushableUpdate(mini, oppDir(dir)))) {
-  //   return true
-  // }
-
   return r(false)
 }
 const maybeTeleOut = tracer.tracify(maybeTeleOut_)
+// const maybeTeleOut = tracer.tracify(pushableCached(maybeTeleOut_, cullInfinite))
 
-// let hack_seen_teles
-
+// * if we're standing on a mini,
+//   * (remember, we've already optimistically moved)
+// * if it has an opening receptive to our direction,
+// * optimistically teleport into the mini - one tile before the opening
+// * try moving in
 function maybeTeleIn_(that, dir) {
   // if `that` is standing _on_ a Mini,
   //   move `that` into the mini
   // else do nothing
   // returns whether the tele happened
   assert(that.frameStack)
-  if (that.frameStack.length() >= 20) {
+  if (that.frameStack.length() >= 30) {
     // this is really really hacky
     console.warn("HACK infinite mini recursion")
     PlayAndRecordSound(sndInfinite)
@@ -117,13 +253,6 @@ function maybeTeleIn_(that, dir) {
   if (!mini) return r(false)
   const op = mini.innerRoom.openings()[oppDir(dir)]
   if (!op) return r(false)
-  // if (hack_seen_teles.has(mini.id)) {
-  //   console.warn('infinite mini recursion detected; killing', serialize(that))
-  //   PlayAndRecordSound(sndInfinite)
-  //   that.die()
-  //   return true
-  // }
-  // hack_seen_teles.add(mini.id)
 
   that.setPos(op.addDir(oppDir(dir)))
   that.setFrameStack(new Frame(mini, that.frameStack))
@@ -134,7 +263,9 @@ function maybeTeleIn_(that, dir) {
   return r(false)
 }
 const maybeTeleIn = tracer.tracify(maybeTeleIn_)
+// const maybeTeleIn = tracer.tracify(pushableCached(maybeTeleIn_, cullInfinite))
 
+// * try to tele the food into me
 function maybeConsume_(that, food, dir) {
   // dir is the direction the _mini_ is moving
   assert(food.frameStack)
@@ -146,6 +277,7 @@ function maybeConsume_(that, food, dir) {
   if (!maybeTeleIn(food, oppDir(dir))) return r(false)
   const surprise = findActorUnderMe([Crate, Mini], that)
   if (surprise) {
+    assert(0, "consume surprise oh no")
     // this is very weird; eating the food has pushed/recursed some stuff
     // around in a way such that the food's old position is occupied again.
     // (e.g. green or purple/yellow room of newpush.lvl)
@@ -169,6 +301,7 @@ function maybeConsume_(that, food, dir) {
   return r(true)
 }
 const maybeConsume = tracer.tracify(maybeConsume_)
+// const maybeConsume = tracer.tracify(pushableCached(maybeConsume_, cullInfinite))
 
 function lifted(lifter, target, cb) {
   // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it
