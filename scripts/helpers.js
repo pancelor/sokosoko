@@ -106,6 +106,14 @@ function randInt(min, max) {
   return Math.floor(Math.random() * (max-min)) + min;
 }
 
+function randName(length) {
+  const chars = []
+  for (let i = 0; i < length; i += 1) {
+    chars.push(String.fromCharCode(randInt(65, 91)))
+  }
+  return chars.join('')
+}
+
 function choose(arr) {
   return arr[randInt(0, arr.length)]
 }
