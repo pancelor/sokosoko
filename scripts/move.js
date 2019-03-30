@@ -145,10 +145,17 @@ function pushableUpdate_(that, dir) {
     const toPush = findActor(cst, nextPos)
     if (!toPush) continue
 
+    const oldPos = that.pos
+    that.playMoveSound() // ?
+    that.setPos(nextPos)
+
     // how can toPush be a mini if we already called maybeTeleIn?
     // well, if there was either no opening, or we failed to get into the opening
     if (lifted(that, toPush, ()=>maybeConsume(that, toPush, dir))) { return true }
-    if (!lifted(that, toPush, ()=>pushableUpdate(toPush, dir))) { return false }
+    if (!lifted(that, toPush, ()=>pushableUpdate(toPush, dir))) {
+      that.setPos(oldPos)
+      return false
+    }
     const surprise = findActor([Crate, Mini], nextPos)
     if (surprise) {
       // weird recursion happened and we can't go where we wanted to go,
@@ -160,7 +167,8 @@ function pushableUpdate_(that, dir) {
       // compresses the crates infinitely, which is no good
       // (any maybe good justification for why they expand back out?
       // so that it looks like nothing happened?)
-      console.warn("surprise!", surprise.serialize())
+      console.warn("surprise!", that.serialize(), "->", surprise.serialize())
+      that.setPos(oldPos)
       return false
     }
   }
@@ -176,6 +184,7 @@ function lifted(lifter, target, cb) {
   // returns whatever cb returns
   assert(lifter.frameStack)
 
+  if (target.frameStack) return false
   // TODO: get player here and break the assert? is that possible
   assert(!target.frameStack)
 
