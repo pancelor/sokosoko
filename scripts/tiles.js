@@ -15,7 +15,7 @@ function solid(tileName) {
 
 function CanMoveToTile(p) {
   const rp = p.roomPos()
-  if (!rp) { return false }
+  if (rp.oob) { return false }
   if (!rp.inbounds()) { return false }
   if (solid(getTile(p))) { return false }
   return true

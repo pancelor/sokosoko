@@ -127,6 +127,7 @@ class RoomPos extends BasePos {
   static OOB(x, y) {
     // a hack to keep tracer from getting mad mid-teleport
     return {
+      oob: true,
       serialize: ()=>`OOB@(${x}, ${y})`
     }
   }
@@ -685,6 +686,10 @@ function allActors(csts) {
 
 function getActorId(id) {
   return actors.find(a=>a.id===id)
+}
+
+function deadActors(csts) {
+  return allActors(csts).filter(a=>a.dead)
 }
 
 function findActor(cst, p) {
