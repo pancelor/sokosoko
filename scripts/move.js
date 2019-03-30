@@ -123,8 +123,9 @@ RegisterTest("pushCache", () => {
 })
 
 function cullInfinite(...args) {
-  // console.log("culling", args);
+  console.log("descent", args);
   const that = args[0]
+  assert(that)
   PlayAndRecordSound(sndInfinite)
   that.die()
   return true // `that` was able to move,, into the infinite abyss
@@ -138,8 +139,7 @@ function buildRet(that, successCb, oldPos, oldFrameStack) {
         return true
       } else {
         console.warn("advanced NEW surprise")
-        that.die()
-        return true // we moved off into infinity, "succesfully"
+        return cullInfinite(that)
       }
     }
     if (oldPos) that.setPos(oldPos)
@@ -317,7 +317,11 @@ function lifted(lifter, target, cb) {
   // returns whatever cb returns
   assert(lifter.frameStack)
 
-  if (target.frameStack) return false
+  if (target.frameStack) {
+    // Target has already moved this turn; we must be in an infinite loop
+    // The deepest object dies, so bye bye lifter
+    return cullInfinite(lifter)
+  }
   // TODO: get player here and break the assert? is that possible
   assert(!target.frameStack)
 
