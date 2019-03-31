@@ -1,0 +1,44 @@
+levelData.push({
+  name: 'newpush2',
+  tileData: `
+    room @White
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x.......
+    x......x
+    x......x
+    xxxx.xxx
+
+    room @Orange
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    ........
+    x......x
+    x......x
+    xxxx.xxx
+  `,
+  actorData: `
+    Player White 1 2
+    Mini White 1 1 Green
+    Mini Green 4 4 Green
+    Crate Green 5 4 0
+    Mini White 4 1 Orange
+  `,
+  frameStackData: `
+    White
+  `,
+})

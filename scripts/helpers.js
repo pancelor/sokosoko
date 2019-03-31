@@ -504,6 +504,12 @@ function listLevels() {
   }
 }
 
+function debugActorState() {
+  for (const a of actors) {
+    console.log(a.serialize(), !a.dead);
+  }
+}
+
 function viewOffset() {
   // hacky
   return new MapPos(4, 4)

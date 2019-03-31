@@ -139,7 +139,7 @@ RegisterTest("pushCache", () => {
 function cullInfinite(that) {
   // console.log("gone:", that);
   assert(that)
-  PlayAndRecordSound(sndInfinite)
+  PlayAndRecordSound(sndDestroy)
   that.die()
   return true // `that` was able to move,, into the infinite abyss
 }
@@ -187,6 +187,10 @@ function maybePushableUpdate_(that, dir) {
     that.setFrameStack(oldFrameStack)
   })
   that.setPos(that.pos.addDir(dir)) // do this early; we'll undo it later if we need to
+
+  // if (that.pos.equals(new RoomPos(Room.findName("Orange"), 7, 4))) {
+  //   debugger;
+  // }
 
   if (maybeTeleOut(that, dir)) return r(true)
   if (!CanMoveToTile(that.pos)) return r(false)
@@ -244,7 +248,7 @@ function maybeTeleOut_(that, dir) {
   // teleport
   let fs = that.frameStack
   let mini = fs.mini
-  // start self-tele bullshit
+  // START SELF-TELE BULLSHIT
   let depth = 0
   while (that === mini) {
     depth += 1
@@ -253,27 +257,32 @@ function maybeTeleOut_(that, dir) {
     mini = fs.mini
   }
   assert(mini)
-  // end self-telebullshit
+  // END SELF-TELEBULLSHIT
   that.setPos(mini.pos)
   that.setFrameStack(fs.parent)
 
   // that has now teleported; try to move
   if (maybePushableUpdate(that, dir)) {
-    // re-start self-tele bullshit
+    // RE-START SELF-TELE BULLSHIT
     if (depth) {
       assert(that.constructor === Mini)
       PlayAndRecordSound(sndDuplicate)
       const clones = [that]
       let nextMini = that
       let sent = getSafeSentinel(100)
+      const lifter = { frameStack: that.frameStack } // hack
       while (sent()) {
         nextMini = Actor.clone(nextMini)
-        console.warn('cloning')
-        if (lifted(that, nextMini, ()=>!maybePushableUpdate(nextMini, dir))) {
+        if (lifted(lifter, nextMini, () => {
+          const res = !maybePushableUpdate(nextMini, dir)
+          lifter.frameStack = nextMini.frameStack // store lifter state for next mini
+          return res
+        })) {
+          nextMini.dead = true
           break
         }
         nextMini.dead = true
-        nextMini.setDead(false) // make undo work to re-kill it
+        nextMini.setDead(false) // make undo work to re-kill nextMini
         clones.push(nextMini)
       }
       let newInnardMini
@@ -284,7 +293,7 @@ function maybeTeleOut_(that, dir) {
       }
 
       // HACK: assume the player directly pushed `that` from within the same
-      // frameStack, not from afar using a box stick idk
+      // frameStack, not from afar using, idk a box stick
       let sent2 = getSafeSentinel()
       let pfs = player.frameStack
       while (sent2()) {
@@ -294,7 +303,7 @@ function maybeTeleOut_(that, dir) {
       }
       player.setFrameStack(new Frame(newInnardMini, pfs))
     }
-    // re-end self-tele bullshit
+    // RE-END SELF-TELE BULLSHIT
     return r(true)
   }
 
@@ -314,7 +323,7 @@ function maybeTeleIn_(that, dir) {
     // this is really really hacky
     assert(0, "this check shouldnt be hit anymore") // todo delete this whole scope?
     console.warn("HACK infinite mini recursion")
-    PlayAndRecordSound(sndInfinite)
+    PlayAndRecordSound(sndDestroy)
     that.die()
     return true
   }
@@ -358,7 +367,7 @@ function maybeConsume_(that, food, dir) {
   if (!maybeTeleIn(food, oppDir(dir))) return r(false)
   const surprise = findActorUnderMe([Crate, Mini, Player], that)
   if (surprise) { // todo: delete this block eventually
-    assert(0, "consume surprise oh no")
+    assert(0, "consume surprise oh no", that.serialize())
     // this is very weird; eating the food has pushed/recursed some stuff
     // around in a way such that the food's old position is occupied again.
     // (e.g. green or purple/yellow room of newpush.lvl)
@@ -373,7 +382,7 @@ function maybeConsume_(that, food, dir) {
     // a cop out and a bad experience as a player imo)
 
     console.warn("infinite nastiness occurs")
-    PlayAndRecordSound(sndInfinite)
+    PlayAndRecordSound(sndDestroy)
     // edit: god im playing with it more and everything is so fucky;
     // return false here is no good... but return true isn't great either
 
@@ -388,6 +397,10 @@ function lifted(lifter, target, cb) {
   // lifts target into lifter's frame, tries to update it in some way (with cb), and unlifts it
   // returns whatever cb returns
   // Might cull lifter if it detects infinity
+
+  // at one point i call this with a fake object with just a frameStack var;
+  // don't assume it has anything else pls
+
   assert(lifter.frameStack)
 
   if (target.frameStack) {
