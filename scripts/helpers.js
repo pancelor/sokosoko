@@ -306,6 +306,25 @@ function serialize(x) {
   }
 }
 
+// instead of this:
+//     while (true) {
+//       do stuff, break eventually
+//     }
+// use this:
+//     let s = getSafeSentinel()
+//     while (s()) {
+//       do stuff, break eventually
+//     }
+function getSafeSentinel(max=100) {
+  let i = 0
+  return () => {
+    i += 1
+    const b = i < max
+    if (!b) console.warn("loop sentinel triggered!")
+    return b
+  }
+}
+
 //
 // functions for use in the chrome dev tools:
 //

@@ -283,6 +283,15 @@ function Update(dir) {
   Raf()
 }
 
+function tempLogEvents(events) {
+  for (const {id, before, after} of events.half1) {
+    const allKeys = [...Object.keys(before), ...Object.keys(before)]
+    if (allKeys.includes("frameStack")) {
+      console.log(epochToString(events))
+    }
+  }
+}
+
 function checkWin() {
   return findActor(Flag, player.pos)
 }

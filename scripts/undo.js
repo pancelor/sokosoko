@@ -39,7 +39,7 @@ function EndEpoch() {
   // call this after gravity is over
   const epoch = collateEpoch(currentEpoch)
 
-  if (epoch.half1.length === 0 && epoch.sounds.length === 0) { return [] }
+  if (epoch.half1.length === 0 && epoch.sounds.length === 0) { return epoch }
 
   gameHistory.length = historyCursor
   gameHistory.push(epoch)
@@ -106,7 +106,8 @@ function collateEpoch2(epoch) {
 }
 RegisterTest("collateEpoch 0", () => {
   const epoch = { half1: [], sounds: ["fooSoundId"] }
-  const { sounds } = collateEpoch(epoch)
+  const { half1, sounds } = collateEpoch(epoch)
+  assertEqual(half1.length, 0)
   assertEqual(sounds.length, 1)
   assertEqual(sounds[0], "fooSoundId")
 })
