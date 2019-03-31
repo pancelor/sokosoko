@@ -280,6 +280,7 @@ function Update(dir) {
   StartEpoch()
   player.update(dir)
   events = EndEpoch()
+  // tempLogEvents(events)
   Raf()
 }
 
@@ -549,7 +550,7 @@ class Mini extends Actor {
     this.innerRoom = innerRoom
   }
   str() {
-    return `${this.innerRoom.name}${this.pos.str()}`
+    return `${this.innerRoom.name} ${this.pos.str()}`
   }
   serialize() {
     const tag = this.tag ? ` @${this.tag}` : ""

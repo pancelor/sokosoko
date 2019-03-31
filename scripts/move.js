@@ -294,8 +294,9 @@ function maybeTeleOut_(that, dir) {
 
       // HACK: assume the player directly pushed `that` from within the same
       // frameStack, not from afar using, idk a box stick
-      let sent2 = getSafeSentinel()
+      assert(player.frameStack.mini === that)
       let pfs = player.frameStack
+      let sent2 = getSafeSentinel()
       while (sent2()) {
         pfs = pfs.parent
         assert(pfs)
@@ -304,6 +305,28 @@ function maybeTeleOut_(that, dir) {
       player.setFrameStack(new Frame(newInnardMini, pfs))
     }
     // RE-END SELF-TELE BULLSHIT
+
+    // If we're a mini and we teleported out, update the player's framestack
+    // We should maybe update _everyone's_ framestack, but I think we
+    //   can assume that the turn is over now, since this chain of movement
+    //   finished successfully?
+    if (that.constructor === Mini) {
+      let pfs = player.frameStack
+      let minisToStack = []
+      let skipNext = false
+      while (pfs.parent) {
+        if (!skipNext) minisToStack.push(pfs.mini)
+        skipNext = (pfs.mini === that)
+        pfs = pfs.parent
+      }
+      assert(pfs.constructor === FrameBase)
+      let editedPfs = pfs
+      for (const m of minisToStack.reverse()) {
+        editedPfs = new Frame(m, editedPfs)
+      }
+      player.setFrameStack(editedPfs)
+    }
+
     return r(true)
   }
 
