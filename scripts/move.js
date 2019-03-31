@@ -193,7 +193,7 @@ function maybePushableUpdate_(that, dir) {
   if (maybeTeleIn(that, dir)) return r(true)
 
   let numIters = 0
-  for (const cst of [Crate, Mini]) {
+  for (const cst of [Crate, Mini, Player]) {
     const toPush = findActorUnderMe(cst, that)
     if (!toPush) continue
     numIters += 1
@@ -201,7 +201,7 @@ function maybePushableUpdate_(that, dir) {
     // well, if there was either no opening, or we failed to get into the opening
     if (lifted(that, toPush, ()=>maybeConsume(that, toPush, dir))) return r(true)
     if (lifted(that, toPush, ()=>!maybePushableUpdate(toPush, dir))) return r(false)
-    const surprise = findActorUnderMe([Crate, Mini], that)
+    const surprise = findActorUnderMe([Crate, Mini, Player], that)
     if (surprise) { // todo: delete this block eventually
       assert(0, "push surprise oh no")
       // weird recursion happened and we can't go where we wanted to go,
@@ -268,15 +268,15 @@ function maybeTeleOut_(that, dir) {
       let sent = getSafeSentinel(100)
       while (sent()) {
         nextMini = Actor.clone(nextMini)
-        nextMini.dead = true // not sure if it'll exist yet
         console.warn('cloning')
         if (lifted(that, nextMini, ()=>!maybePushableUpdate(nextMini, dir))) {
           break
         }
-        nextMini.setDead(false) // hooray it exists now (also, this line lets undo work to re-kill it)
+        nextMini.dead = true
+        nextMini.setDead(false) // make undo work to re-kill it
         clones.push(nextMini)
       }
-      let newInnardMinia
+      let newInnardMini
       if (depth - 1 < clones.length) {
         newInnardMini = clones[depth - 1]
       } else {
@@ -312,6 +312,7 @@ function maybeTeleIn_(that, dir) {
   assert(that.frameStack)
   if (that.frameStack.length() >= 30) {
     // this is really really hacky
+    assert(0, "this check shouldnt be hit anymore") // todo delete this whole scope?
     console.warn("HACK infinite mini recursion")
     PlayAndRecordSound(sndInfinite)
     that.die()
@@ -355,7 +356,7 @@ function maybeConsume_(that, food, dir) {
   })
 
   if (!maybeTeleIn(food, oppDir(dir))) return r(false)
-  const surprise = findActorUnderMe([Crate, Mini], that)
+  const surprise = findActorUnderMe([Crate, Mini, Player], that)
   if (surprise) { // todo: delete this block eventually
     assert(0, "consume surprise oh no")
     // this is very weird; eating the food has pushed/recursed some stuff
