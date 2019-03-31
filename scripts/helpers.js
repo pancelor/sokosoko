@@ -384,20 +384,16 @@ function listen(evName) {
 }
 
 let keyHist = null
-function recordingToggle() {
+function recordingCycle() {
   // returns the new state of the recording
   const wasOn = !!keyHist
-  if (wasOn) {
-    recordingStop()
-    return false
-  } else {
-    recordingStart()
-    return true
-  }
+  assert(wasOn)
+  recordingStop()
+  recordingStart()
 }
 function recordingStart() {
   console.log("Recording moves...")
-  recordingOutput.innerText = ""
+  // recordingOutput.innerText = ""
   keyHist = []
 }
 function recordingStop() {

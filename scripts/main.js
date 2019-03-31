@@ -45,7 +45,7 @@ function registerKeyListeners() {
       reset()
       Raf()
     } else if (e.code === "KeyP") {
-      recordingToggle()
+      recordingCycle()
     } else if (e.code === "KeyM") {
       muteToggle()
     } else if (e.code === "Space") {
