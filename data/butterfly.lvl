@@ -1,5 +1,5 @@
 levelData.push({
-  name: 'cards',
+  name: 'butterfly',
   tileData: `
     room @Black
     xxxxx.xx
@@ -106,8 +106,8 @@ levelData.push({
     Mini White 4 4 Blue
     Mini White 4 1 Orange
     Mini White 6 3 Orange
-    Mini White 1 1 Pink
-    Mini White 6 6 Purple
+    Mini Pink 4 4 Pink
+    Mini Purple 3 3 Purple
     Mini Orange 5 4 Orange
     Mini Black 6 6 Orange @m1
     Crate Black 1 1 1
