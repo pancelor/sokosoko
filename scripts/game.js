@@ -290,7 +290,7 @@ function InitGame() {
 }
 
 function Update(dir) {
-  if (checkWin()) { return }
+  if (checkWin() || player.dead) { return }
 
   StartEpoch()
   player.update(dir)
