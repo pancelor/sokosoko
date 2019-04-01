@@ -33,7 +33,7 @@ levelData.push({
 
     room @Black
     x.xxxxxx
-    x..xxxxx
+    x..x.xxx
     x..xxxxx
     x..xx...
     xx.xx.xx
@@ -53,9 +53,11 @@ levelData.push({
     Crate Green 2 5 1
     Crate Green 4 3 0
     Crate Green 4 6 0
+    Mini Black 4 1 Green @outer
   `,
   frameStackData: `
-    Green
+    Black
+    outer
     base
     new1
     m1
