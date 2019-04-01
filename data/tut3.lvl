@@ -6,10 +6,10 @@ levelData.push({
     xxxx.xxx
     x..x..xx
     x.....xx
-    x......x
+    .......x
     xx.....x
-    xxx....x
-    xxxxxx.x
+    xxx..xxx
+    xxxxxxxx
 
     room @Orange
     x.xxxxxx
@@ -26,7 +26,7 @@ levelData.push({
     xx.xx...
     xx.xxxxx
     x....xxx
-    x.xx...x
+    x.x...xx
     x......x
     xx.....x
     xxxxx.xx
@@ -42,14 +42,14 @@ levelData.push({
     xxxxxxxx
 
     room @Green
-    xxxxxxxx
+    xxxx.xxx
     xxx...xx
     .......x
     xxxx...x
     xxx...xx
     x......x
     xxxx...x
-    xxxxxx.x
+    xxxxxxxx
 
     room @Red
     xxxxxx.x
@@ -93,11 +93,11 @@ levelData.push({
   `,
   actorData: `
     Flag White 5 1
-    Player White 5 5
+    Player White 3 6
     Mini White 2 1 Red
     Mini Green 1 5 Blue
-    Mini Purple 5 3 Green @m3
-    Mini White 3 5 Purple @m2
+    Mini Purple 4 5 Green @m3
+    Mini White 5 5 Purple @m2
     Mini Blue 4 1 Pink
     Mini Yellow 5 3 Black
     Mini Orange 4 4 Orange
