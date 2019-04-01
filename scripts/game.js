@@ -283,6 +283,7 @@ let player
 let gotBonus
 function InitGame() {
   // note: tiles/actors have already been loaded
+  viewFrameStack = player.frameStack
   gotBonus = false
   InitHistory()
   actors.forEach(a=>a.onGameInit())
@@ -293,6 +294,7 @@ function Update(dir) {
 
   StartEpoch()
   player.update(dir)
+  viewFrameStack = player.frameStack
   events = EndEpoch()
   // tempLogEvents(events)
   Raf()
@@ -315,6 +317,7 @@ function maybeFakeWin() {
   const a = findActor(FakeFlag, player.pos)
   if (!a) { return false }
   a.die()
+  return true
 }
 
 function destroyActor(a) { // hacky; don't use me
@@ -344,12 +347,27 @@ async function DrawMinis(ctxMap) {
       })
     }
   }
+  // draw highlight if we're zoomed out
+  let pfs = player.frameStack
+  if (viewFrameStack.length() < pfs.length()) {
+    while (viewFrameStack.length() + 1 < pfs.length()) {
+      assert(pfs.mini && pfs.parent)
+      pfs = pfs.parent
+    }
+    assert(viewFrameStack.length() + 1  === pfs.length())
+    const m = pfs.mini
+    const dest = m.pos.scale(tileSize)
+    ctxWith(ctxMap, {strokeStyle: 'white', globalAlpha: '0.85', lineWidth: 4}, () => {
+      ctxMap.strokeRect(dest.x, dest.y, tileSize, tileSize)
+    })
+  }
 }
 
+let viewFrameStack
 async function DrawView(ctx) {
   const screenshotMap = await createImageBitmap(canvasMap)
-  const innerFrame = player.frameStack
-  const outerFrame = player.frameStack.parent
+  const innerFrame = viewFrameStack
+  const outerFrame = viewFrameStack.parent
 
   ctxWith(ctx, {fillStyle: 'white'}, cls)
 
@@ -388,6 +406,11 @@ async function DrawView(ctx) {
     src.x, src.y, innerW, innerH,
     dest.x, dest.y, innerW, innerH
   )
+
+  // draw gray if we're zoomed in
+  if (!viewFrameStack.equals(player.frameStack)) {
+    ctxWith(ctx, {fillStyle: 'white', globalAlpha: "0.35"}, cls)
+  }
 }
 
 function DrawMisc(ctxView) {

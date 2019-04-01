@@ -223,6 +223,7 @@ function Undo() {
   // play sounds
   playSound(sndUndo)
 
+  viewFrameStack = player.frameStack
   Raf()
 }
 
@@ -246,5 +247,6 @@ function Redo() {
     playSound(document.getElementById(id))
   }
 
+  viewFrameStack = player.frameStack
   Raf()
 }

@@ -182,7 +182,7 @@ function translateMouseFromView(e) {
   let x = Math.floor(e.offsetX / tileSize)
   let y = Math.floor(e.offsetY / tileSize)
   let {x: dx, y: dy} = viewOffset().scale(-1)
-  const room = player.frameStack.innerRoom()
+  const room = viewFrameStack.innerRoom()
   const roomPos = new RoomPos(room, x+dx, y+dy)
   if (!roomPos.inbounds()) { return { e, pos: null } }
 
@@ -191,6 +191,7 @@ function translateMouseFromView(e) {
 
 let storedActor = null
 function mouseClick({e, pos}) {
+  maybeChangeViewFrameStack(e, pos)
   if (!devmode) return
   StartEpoch()
   _devmodeMouseClick(e, pos)
@@ -215,17 +216,37 @@ function mouseMove({e, pos}) {
   }
 }
 
-let editingTiles = false
-function _devmodeMouseClick(e, pos) {
+function maybeChangeViewFrameStack(e, pos) {
   // zoom out on border-click
+  if (e.button !== 0) return false
   if (!pos) {
-    if (e.button === 0) {
-      if (player.frameStack.parent) {
+    const allowedToZoomOut = devmode || (viewFrameStack.length() > player.frameStack.length())
+    if (!allowedToZoomOut) return false
+    if (viewFrameStack.parent) {
+      viewFrameStack = viewFrameStack.parent
+      if (storedActor === player) {
+        assert(player.frameStack.parent)
         player.frameStack = player.frameStack.parent
       }
+      return true
     }
-    return
+    return false
   }
+  if (devmode && editingTiles) return false
+  // zoom in on mini-click
+  const mini = findActor(Mini, pos)
+  if (mini) {
+    viewFrameStack = new Frame(mini, viewFrameStack)
+    if (storedActor === player) {
+      player.frameStack = new Frame(mini, player.frameStack)
+    }
+    return true
+  }
+  return false
+}
+
+let editingTiles = false
+function _devmodeMouseClick(e, pos) {
   if (editingTiles) {
     if (e.button === 0) {
       setTileWall(pos)
@@ -235,20 +256,13 @@ function _devmodeMouseClick(e, pos) {
   } else {
     // assert we're editing actors
     if (e.button === 0) {
-      // zoom in on mini-click
-      const collision = findActor(null, pos)
-      if (collision) {
-        if (collision.constructor === Mini) {
-          player.frameStack = new Frame(collision, player.frameStack)
-          return
-        } else {
-          if (storedActor) console.warn("overlap")
-          return
-        }
+      // left click: paste (or move old pasted thing)
+      if (findActor(null, pos)) {
+        if (storedActor) console.warn("overlap")
+        return
       }
 
-      // left click: paste (or move old pasted thing)
-      if (!storedActor) { return }
+      if (!storedActor) return
       storedActor.setPos(pos)
       storedActor.setDead(false)
       storedActor = null
