@@ -310,21 +310,23 @@ function maybeTeleOut_(that, dir) {
     // We should maybe update _everyone's_ framestack, but I think we
     //   can assume that the turn is over now, since this chain of movement
     //   finished successfully?
-    if (that.constructor === Mini) {
+    if (that.constructor === Mini && player.frameStack.hasMini(that)) {
       let pfs = player.frameStack
       let minisToStack = []
-      let skipNext = false
-      while (pfs.parent) {
-        if (!skipNext) minisToStack.push(pfs.mini)
-        skipNext = (pfs.mini === that)
+      let sent3 = getSafeSentinel()
+      while (sent3()) {
+        minisToStack.push(pfs.mini)
+        if (pfs.mini === that) break
         pfs = pfs.parent
       }
-      assert(pfs.constructor === FrameBase)
-      let editedPfs = pfs
+
+      const top = new Frame(that, null) // gonna edit `parent` later
+      let loopFs = top
       for (const m of minisToStack.reverse()) {
-        editedPfs = new Frame(m, editedPfs)
+        loopFs = new Frame(m, loopFs)
       }
-      player.setFrameStack(editedPfs)
+      top.parent = loopFs
+      player.setFrameStack(loopFs)
     }
 
     return r(true)
@@ -342,14 +344,6 @@ const maybeTeleOut = tracer.tracify(maybeTeleOut_)
 // * try moving in
 function maybeTeleIn_(that, dir) {
   assert(that.frameStack)
-  if (that.frameStack.length() >= 30) {
-    // this is really really hacky
-    assert(0, "this check shouldnt be hit anymore") // todo delete this whole scope?
-    console.warn("HACK infinite mini recursion")
-    PlayAndRecordSound(sndDestroy)
-    that.die()
-    return true
-  }
 
   const oldPos = that.pos
   const oldFrameStack = that.frameStack

@@ -155,6 +155,10 @@ class FrameBase {
     return []
   }
 
+  hasMini(mini) {
+    return false
+  }
+
   length() {
     return 1
   }
@@ -167,28 +171,38 @@ class FrameBase {
 
 class Frame {
   constructor(mini, parent) {
-    assert(mini)
-    assert(parent)
     this.mini = mini
     this.parent = parent
   }
   serialize() {
-    return `${this.constructor.name} ${this.mini.id} ${this.parent.serialize()}`
+    return this.loopProtection(()=> `${this.constructor.name} ${this.mini.id} ${this.parent.serialize()}`)
   }
   str() {
-    return `${this.parent.str()} | ${this.innerRoom().name}`
+    return this.loopProtection(()=> `${this.parent.str()} | ${this.innerRoom().name}`)
   }
 
   innerRoom() {
     return this.mini.innerRoom
   }
 
+  loopProtection(cb) {
+    assert(!this.visited, "inifinte loop in frameStack")
+    this.visited = true
+    const res = cb()
+    this.visited = undefined
+    return res
+  }
   mapMini(f) {
-    return [f(this.mini), ...this.parent.mapMini(f)]
+    return this.loopProtection(()=>[f(this.mini), ...this.parent.mapMini(f)])
+  }
+
+  hasMini(mini) {
+    // whether the given mini is in this frameStack
+    return this.loopProtection(() => this.mini === mini || this.parent.hasMini(mini))
   }
 
   length() {
-    return 1 + this.parent.length()
+    return this.loopProtection(() => 1 + this.parent.length())
   }
 
   equals(other) {
@@ -200,7 +214,7 @@ class Frame {
     if (p1 === null) {
       return (p2 === null)
     } else {
-      return p1.equals(p2)
+      return this.loopProtection(()=>p1.equals(p2))
     }
   }
 }
