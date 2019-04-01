@@ -367,7 +367,30 @@ function maybeTeleIn_(that, dir) {
 
   // `that` has now teleported to an oob-location
   // next to the mini; try to move into the mini
-  if (maybePushableUpdate(that, dir)) return r(true)
+  if (maybePushableUpdate(that, dir)) {
+    // If we're a mini and we teleported in, update the player's framestack
+    // We should maybe update _everyone's_ framestack, but I think we
+    //   can assume that the turn is over now, since this chain of movement
+    //   finished successfully?
+    if (that.constructor === Mini && player.frameStack.hasMini(that)) {
+      // hack hack hack hack yikes this is gross
+      function insertFrame(this_, mini, targetParent, skip) {
+        if (this_.constructor === FrameBase) return this_
+        assert(targetParent.constructor === Mini)
+        return this_.loopProtection(() => {
+          let found = this_.mini.innerRoom === targetParent.innerRoom
+          if (found && skip) {
+            found = false
+            skip -= 1
+          }
+          return found ? new Frame(mini, this_) : new Frame(this_.mini, insertFrame(this_.parent, mini, targetParent, skip))
+        })
+      }
+      const newParent = oldFrameStack.mini
+      player.setFrameStack(insertFrame(player.frameStack, mini, newParent, 1))
+    }
+    return r(true)
+  }
   return r(false)
 }
 // const maybeTeleIn = pushableCached(tracer.tracify(maybeTeleIn_), cullInfinite)

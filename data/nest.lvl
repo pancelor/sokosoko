@@ -44,7 +44,7 @@ levelData.push({
     room @Green
     xxxxxxxx
     x.....xx
-    .......x
+    ........
     xxxx...x
     xxx...xx
     x......x
@@ -114,6 +114,7 @@ levelData.push({
     Crate Yellow 5 4 0
     Crate Blue 3 3 0
     Mini Blue 6 3 Red
+    Mini White 3 5 Green
   `,
   frameStackData: `
     Red
