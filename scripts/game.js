@@ -320,6 +320,13 @@ async function DrawMinis(ctxMap) {
       src.x, src.y, pixSize, pixSize,
       dest.x, dest.y, pixSize, pixSize,
     )
+    ctxWith(ctxMap, {
+      font: `10px Consolas`,
+      fillStyle: "black",
+      textAlign: "center",
+    }, () => {
+      ctxMap.fillText(m.id, m.pos.x*tileSize, m.pos.y*tileSize)
+    })
   }
 }
 
