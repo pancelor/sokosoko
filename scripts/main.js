@@ -247,6 +247,7 @@ function maybeChangeViewFrameStack(e, pos) {
 
 let editingTiles = false
 function _devmodeMouseClick(e, pos) {
+  if (!pos) return
   if (editingTiles) {
     if (e.button === 0) {
       setTileWall(pos)
