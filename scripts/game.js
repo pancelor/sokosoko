@@ -186,10 +186,11 @@ class Frame {
   }
 
   loopProtection(cb) {
-    assert(!this.visited, "inifinte loop in frameStack")
-    this.visited = true
+    const name = randName(10)
+    assert(!this[name], "inifinte loop in frameStack")
+    this[name] = true
     const res = cb()
-    this.visited = undefined
+    delete this[name]
     return res
   }
   mapMini(f) {

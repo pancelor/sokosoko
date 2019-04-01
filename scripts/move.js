@@ -374,20 +374,21 @@ function maybeTeleIn_(that, dir) {
     //   finished successfully?
     if (that.constructor === Mini && player.frameStack.hasMini(that)) {
       // hack hack hack hack yikes this is gross
-      function insertFrame(this_, mini, targetParent, skip) {
+      function insertFrame(this_, mini_, targetParent) {
         if (this_.constructor === FrameBase) return this_
         assert(targetParent.constructor === Mini)
+        const newParent_ = insertFrame(this_.parent, mini_, targetParent)
         return this_.loopProtection(() => {
-          let found = this_.mini.innerRoom === targetParent.innerRoom
-          if (found && skip) {
-            found = false
-            skip -= 1
+          if (this_.mini.innerRoom === targetParent.innerRoom) {
+            return new Frame(mini_, new Frame(this_.mini, newParent_))
+          } else {
+            return new Frame(this_.mini, newParent_)
           }
-          return found ? new Frame(mini, this_) : new Frame(this_.mini, insertFrame(this_.parent, mini, targetParent, skip))
         })
       }
-      const newParent = oldFrameStack.mini
-      player.setFrameStack(insertFrame(player.frameStack, mini, newParent, 1))
+      const newParent = insertFrame(player.frameStack.parent, mini, oldFrameStack.mini)
+      const newFs = new Frame(player.frameStack.mini, newParent)
+      player.setFrameStack(newFs)
     }
     return r(true)
   }
