@@ -92,8 +92,8 @@ levelData.push({
     xxxxxxxx
   `,
   actorData: `
-    Player White 2 5
     Flag White 5 5
+    Player White 2 5
     Mini Red 1 1 Red
     Mini Blue 1 1 Blue
     Mini Green 1 1 Green
