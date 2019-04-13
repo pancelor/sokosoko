@@ -1,0 +1,131 @@
+levelData.push({
+  name: 'tree',
+  tileData: `
+    room @White
+    xxxxxxxx
+    x......x
+    x.xxx..x
+    x.x.x..x
+    xxx.x..x
+    x...x..x
+    xxxxx..x
+    xxxxxxxx
+
+    room @Red
+    xxxxxx.x
+    x.x..x.x
+    x.xx...x
+    x.x..x.x
+    ..x.xx.x
+    x.x.xxxx
+    x.......
+    xx.xxxxx
+
+    room @Blue
+    xx.xxxxx
+    x...x..x
+    x.xxxx.x
+    x.x..xxx
+    x.x.xx.x
+    x....x.x
+    x.xx...x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    x.x....x
+    xxxxx..x
+    ........
+    xxx.xxxx
+    xxx.xxxx
+    x.xxx.xx
+    xxxxx.xx
+
+    room @Purple
+    xxx.xxxx
+    xxx.xxxx
+    x.x.x.xx
+    ....x..x
+    x......x
+    xxxxx..x
+    xx.xxx.x
+    xxxxxxxx
+
+    room @Yellow
+    xxxxxxxx
+    xxxxx.xx
+    ...xx..x
+    xx.xxx.x
+    x......x
+    x.xxx.xx
+    xxx.x...
+    xxxxxxxx
+
+    room @Black
+    xxx.xxxx
+    xxx.x..x
+    x...xx.x
+    x.xxxx.x
+    x...xx.x
+    xxx..x.x
+    x.xx.x.x
+    xxxx.xxx
+
+    room @Pink
+    xxx.xxxx
+    xxx.xxxx
+    xx...x.x
+    xx..xxxx
+    xx..xx.x
+    xxx.xxxx
+    ....x.xx
+    xxx.xxxx
+
+    room @Orange
+    xxxxx.xx
+    xxxxx.xx
+    xx.xx.xx
+    xx.xx.xx
+    xx.xx.xx
+    xx.xxxxx
+    xx.x.x.x
+    xx.xxxxx
+  `,
+  actorData: `
+    Flag White 1 5
+    Player White 3 3
+    Mini White 1 1 White
+    Mini White 3 5 Red
+    Mini Blue 6 1 Blue
+    Mini Yellow 2 3 Green
+    Mini White 6 6 Purple
+    Mini White 5 6 Yellow
+    Mini White 6 5 Black
+    Mini Pink 3 0 Green
+    Mini Red 1 5 Pink
+    Mini Pink 1 6 Orange
+    Crate White 5 1 0
+    Crate White 6 1 1
+    Crate Red 3 6 0
+    Mini Red 4 6 Purple
+    Mini Red 6 4 Blue
+    Mini Red 3 1 Yellow
+    Crate Yellow 2 4 0
+    Mini Purple 6 6 Red
+    Mini Pink 0 6 Orange
+    Mini Pink 3 2 Orange
+    Mini Orange 2 3 Orange
+    Mini Orange 5 3 Orange
+    Mini Pink 4 2 Pink
+    Mini Blue 4 3 Yellow
+    Mini Yellow 5 1 Red
+    Mini Yellow 1 5 Black
+    Mini Blue 6 4 Black
+    Mini Black 2 2 Red
+    Mini Pink 2 6 Orange
+    Crate Red 1 4 0
+  `,
+  frameStackData: `
+    White
+  `,
+})
