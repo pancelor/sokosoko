@@ -2,13 +2,13 @@ levelData.push({
   name: 'tut3',
   tileData: `
     room @Purple
-    xxxxxxxx
-    xxx.....
-    xx...xxx
+    xxxx.xxx
+    xxxx..xx
+    ..xxx.xx
+    x.....xx
+    xxx.xxxx
+    xx..x...
     xx....xx
-    xxxxx.xx
-    ....x..x
-    xx.....x
     xxxxxxxx
 
     room @Orange
@@ -39,16 +39,16 @@ levelData.push({
     xx.xx..x
     x......x
     x..xxxxx
-    xxxxxxxx
+    xx.xxxxx
 
     room @Green
     xxxxxxxx
-    xxx...xx
+    xx....xx
     .......x
-    xxxx...x
-    xxx...xx
+    xxx....x
+    xxxx.x.x
     x......x
-    xxxx...x
+    xxxxx..x
     xxxxxxxx
 
     room @Red
@@ -56,9 +56,9 @@ levelData.push({
     xx.xx.xx
     x..xxxxx
     x.xxx..x
-    x..xxxxx
-    x..x.xxx
-    xx.xxx.x
+    x..x..xx
+    x..x...x
+    xx.xx..x
     xx.xxxxx
 
     room @Yellow
@@ -109,7 +109,9 @@ levelData.push({
     Mini Blue 5 3 Red
     Mini White 2 2 Red
     Mini Blue 3 2 Red
-    Mini Purple 3 2 Purple
+    Mini Green 4 5 Purple
+    Crate Purple 2 3 0
+    Mini Red 5 5 Purple
   `,
   frameStackData: `
     Red
