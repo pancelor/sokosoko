@@ -1,7 +1,7 @@
 levelData.push({
   name: 'template',
   tileData: `
-    room @Red
+    room @White
     xxxxxxxx
     x......x
     x......x
@@ -11,7 +11,7 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    room @White
+    room @Red
     xxxxxxxx
     x......x
     x......x
@@ -92,8 +92,9 @@ levelData.push({
     xxxxxxxx
   `,
   actorData: `
-    Flag White 5 5
+    Flag White 6 2
     Player White 2 5
+    Mini White 1 1 White
     Mini Red 1 1 Red
     Mini Blue 1 1 Blue
     Mini Green 1 1 Green
@@ -102,10 +103,6 @@ levelData.push({
     Mini Black 1 1 Black
     Mini Pink 1 1 Pink
     Mini Orange 1 1 Orange
-    Crate White 1 1 0
-    Crate White 2 1 0
-    Crate White 3 1 0
-    Crate White 4 1 0
     Crate White 5 1 0
     Crate White 6 1 1
   `,
