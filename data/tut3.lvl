@@ -36,40 +36,40 @@ levelData.push({
     x......x
     xx......
     x..xx.xx
-    xx.xx..x
+    xx.xx.xx
     x......x
-    x..xxxxx
-    xxxxxxxx
+    x..xx..x
+    xx.xxxxx
 
     room @Green
     xxxxxxxx
     xxx...xx
     .......x
-    xxxx...x
-    xxx...xx
-    x......x
-    xxxx...x
+    xxxx..xx
+    xx...xxx
+    xx...x.x
+    x...xxxx
     xxxxxxxx
 
     room @Red
     xx.xxxxx
-    xx.xx.xx
-    xx..xxxx
-    .xx.x..x
-    xx..xxxx
+    xx.x..xx
     xx...xxx
-    xx.xxx.x
+    .xx.xx.x
+    xx..x..x
+    xx..x.xx
+    xx.xx.xx
     xx.xxxxx
 
     room @Yellow
-    xxxxxx.x
-    x...xx.x
-    xxxxxx.x
-    xxxxx..x
-    xxxxx..x
-    xxx...xx
-    xxx.xxxx
-    xxx.xxxx
+    xxxxxxxx
+    x.xxxxxx
+    xxxx...x
+    xxx..x.x
+    x.x.xx.x
+    x...xxxx
+    xxxxxxxx
+    xxxxx.xx
 
     room @Pink
     x.xxxxxx
@@ -94,25 +94,24 @@ levelData.push({
   actorData: `
     Flag White 5 1
     Player White 3 6
-    Mini Green 1 5 Blue
-    Mini White 5 5 Green @m3
+    Mini Green 2 4 Blue
+    Mini White 5 5 Green
     Mini Pink 2 3 Pink
-    Mini Yellow 5 3 Black
     Mini Orange 3 1 Orange
     Mini Blue 2 5 White @m1
-    Crate Red 2 1 0
     Mini Red 2 4 Red
-    Crate White 2 3 0
-    Mini Red 5 3 Blue @m0
-    Mini Yellow 3 5 Black
-    Crate Yellow 5 4 0
+    Mini Red 5 4 Blue @m0
     Mini Blue 5 3 Red
     Mini White 2 2 Red
-    Mini Blue 3 2 Red
     Mini Purple 3 2 Purple
+    Mini Green 6 5 Red @m3
+    Mini Blue 3 2 Red
+    Crate White 2 3 1
+    Crate Red 2 1 0
   `,
   frameStackData: `
-    Red
+    Green
+    m3
     m0
     m1
   `,
