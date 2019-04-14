@@ -30,6 +30,16 @@ levelData.push({
     xx...x.x
     xxxxxx.x
     xxxxxx.x
+
+    room @Black
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
   `,
   actorData: `
     Flag White 3 1
@@ -40,8 +50,10 @@ levelData.push({
     Crate White 5 6 0
     Crate Blue 3 3 0
     Crate Red 5 3 0
+    Mini Black 4 4 White @m1
   `,
   frameStackData: `
-    White
+    Black
+    m1
   `,
 })
