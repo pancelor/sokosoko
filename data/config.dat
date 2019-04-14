@@ -4,9 +4,9 @@ const levelData = []
 const mainLevelNames = [
   "tut1",
   "tut2",
-  "original",
   "tut3",
-  "tree",
+  "original",
+  "tree", // must be after original
   "dolphin",
   "tunnels",
 ]

@@ -425,11 +425,7 @@ function DrawMisc(ctxView) {
     ctxView.strokeRect(dest.x, dest.y, innerW, innerH)
   })
 
-  // draw canvas border
-  ctxWith(ctxView, {strokeStyle: "black"}, () => {
-    ctxView.strokeRect(0, 0, canvasView.width, canvasView.height)
-  })
-
+  // draw "you win!"
   if (checkWin()) {
     const lines = ["You win!"]
     if (gotBonus) lines.push("very good")
@@ -437,8 +433,13 @@ function DrawMisc(ctxView) {
     drawMessage(ctxView, lines)
   }
 
-  // draw hud
+  // draw mute button
   ctxView.drawImage(gameMuted ? imgSoundOff : imgSoundOn, canvasView.width - tileSize, 0)
+
+  // draw canvas border
+  ctxWith(ctxView, {strokeStyle: "black"}, () => {
+    ctxView.strokeRect(0, 0, canvasView.width, canvasView.height)
+  })
 }
 
 function DrawActors(ctxMap, ctxMini) {

@@ -395,7 +395,7 @@ function loadNextLevel() {
 function devmodeInit() {
   const match = window.location.hash.match(/^(#(?<dev>dev))?(#(?<level>[\w\d_]+))?$/)
   const { dev, level } = match.groups
-  if (level) loadLevel(level)
+  if (level) reset(level)
   if (dev) devmodeOn()
 }
 
