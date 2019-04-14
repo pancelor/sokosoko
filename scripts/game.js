@@ -436,6 +436,9 @@ function DrawMisc(ctxView) {
     if (CanContinue()) lines.push("[space] to continue")
     drawMessage(ctxView, lines)
   }
+
+  // draw hud
+  ctxView.drawImage(gameMuted ? imgSoundOff : imgSoundOn, canvasView.width - tileSize, 0)
 }
 
 function DrawActors(ctxMap, ctxMini) {

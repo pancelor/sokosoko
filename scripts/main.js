@@ -48,6 +48,7 @@ function registerKeyListeners() {
       recordingCycle()
     } else if (e.code === "KeyM") {
       muteToggle()
+      Raf()
     } else if (e.code === "Space") {
       if (checkWin()) {
         loadNextLevel()
@@ -134,12 +135,17 @@ function lockScroll(cb) {
   scrollTo(x,y)
 }
 
+// this isn't good enough for user experience
+// let viewFocused
 function registerMouseListeners() {
   mousepos = new MapPos(0, 0)
   window.addEventListener("contextmenu", (e) => {
     e.preventDefault()
     return false
   })
+  // canvasView.addEventListener("focus", () => { viewFocused = true })
+  // canvasView.addEventListener("blur", () => { viewFocused = false })
+
   canvasMap.addEventListener("mousedown", (e) => {
     mouseClick(translateMouseFromMap(e))
     Raf()
@@ -150,6 +156,8 @@ function registerMouseListeners() {
     return false
   })
   canvasView.addEventListener("mousedown", (e) => {
+    // if (!viewFocused) return
+
     mouseClick(translateMouseFromView(e))
     Raf()
 
@@ -196,8 +204,10 @@ function translateMouseFromView(e) {
 
 let storedActor = null
 function mouseClick({e, pos}) {
-  maybeChangeViewFrameStack(e, pos)
+  if (maybeToggleMute(e)) return
   if (!devmode) return
+  maybeChangeViewFrameStack(e, pos) // do we want to let non-devmode users use this?
+
   StartEpoch()
   _devmodeMouseClick(e, pos)
   EndEpoch()
@@ -219,6 +229,18 @@ function mouseMove({e, pos}) {
       }
     }
   }
+}
+
+function maybeToggleMute(e) {
+  // hacky calculation here
+  const x = e.offsetX
+  const y = e.offsetY
+  const W = canvasView.width
+  if (0 <= y && y < tileSize && W - tileSize <= x && x < W) {
+    muteToggle()
+    return true
+  }
+  return false
 }
 
 function maybeChangeViewFrameStack(e, pos) {
@@ -363,6 +385,7 @@ function nextLevelName(targetName) {
   }
 }
 function CanContinue() {
+  if (!mainLevelNames.includes(currentLevelName)) return false
   return nextLevelName(currentLevelName) !== null
 }
 function loadNextLevel() {
