@@ -63,12 +63,12 @@ levelData.push({
 
     room @Black
     xxxx.xxx
-    x.xx.xxx
-    x.x.....
-    ..x.xxxx
-    xxx...xx
-    x.....xx
+    x..x.xxx
+    x.......
+    x..xxxxx
     xxxxxxxx
+    xxxxx.xx
+    ......xx
     xxxxxxxx
 
     room @Pink
@@ -92,7 +92,7 @@ levelData.push({
     xx.xxxxx
   `,
   actorData: `
-    Flag Black 1 5
+    Flag Black 1 2
     Player Purple 6 2
     Mini Yellow 3 3 Green
     Mini Pink 2 0 Green
