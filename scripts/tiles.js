@@ -108,5 +108,5 @@ function setTileFloor(p) {
 
 function SaveLevel(name) {
   name = name.toLowerCase()
-  downloadFile(`${name}.lvl`, Export(name))
+  downloadFile(`${name}.lvl`, Export())
 }

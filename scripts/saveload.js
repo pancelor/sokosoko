@@ -265,7 +265,9 @@ function exportFrameStackString() {
   return lines.join("\n")
 }
 
-function Export(name) {
+function Export() {
+  const name = currentLevelName.toLowerCase()
+  assert(name.length > 0)
   const lines = []
   lines.push("levelData.push({")
   lines.push(`  name: '${name}',`)
