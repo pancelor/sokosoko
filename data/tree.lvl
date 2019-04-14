@@ -36,16 +36,16 @@ levelData.push({
     x..x...x
     xxxxx..x
     ........
-    xxx.xxxx
-    x.x.xx.x
-    x.xxx..x
-    xxxxx.xx
+    xxx.xx.x
+    x.xxxx.x
+    x.xx...x
+    xxxx.xxx
 
     room @Purple
-    xxx.xxxx
-    xxx.xxxx
-    x.x.x.xx
-    ....x.xx
+    xx.xxxxx
+    xx.x...x
+    x..xxx.x
+    ....xxxx
     x......x
     xxxxxx.x
     xx.x.x.x
@@ -55,31 +55,31 @@ levelData.push({
     xxxxxxxx
     xxx.x.xx
     ....x..x
-    xx.xxx.x
+    xxx.xx.x
     x......x
-    x.xxx.xx
+    xxxxx.xx
     x..x....
     xxxxxxxx
 
     room @Black
-    xxx.xxxx
-    xxx.x..x
-    x...xx.x
-    x.xxx..x
-    x..xx.xx
-    xx..x.xx
-    x..xx.xx
-    x.xxxxxx
+    xxxx.xxx
+    x.xx.xxx
+    x.x.....
+    ..x.xxxx
+    xxx...xx
+    x.....xx
+    xxxxxxxx
+    xxxxxxxx
 
     room @Pink
-    xxx.xxxx
-    xxx.xxxx
-    xx...x.x
-    xx..xxxx
-    xx..xx.x
-    xxx.xxxx
-    ....x.xx
-    xxx.xxxx
+    xx.xxxxx
+    xx.xxxxx
+    x...x.xx
+    x..xxxxx
+    x..xxx.x
+    xx.xxxxx
+    ...x.xxx
+    xx.xxxxx
 
     room @Orange
     xxxxx.xx
@@ -92,11 +92,10 @@ levelData.push({
     xx.xxxxx
   `,
   actorData: `
-    Flag Black 5 6
-    Player Black 5 1
-    Mini Black 6 3 Red
-    Mini Yellow 2 3 Green
-    Mini Pink 3 0 Green
+    Flag Black 1 5
+    Player Purple 6 2
+    Mini Yellow 3 3 Green
+    Mini Pink 2 0 Green
     Mini Red 1 5 Pink
     Mini Pink 1 6 Orange
     Crate White 5 1 0
@@ -105,24 +104,25 @@ levelData.push({
     Mini Red 4 6 Purple
     Mini Red 6 4 Blue
     Mini Red 3 1 Yellow
-    Crate Yellow 2 4 0
+    Crate Yellow 3 4 0
     Mini Purple 6 6 Red
     Mini Pink 0 6 Orange
-    Mini Pink 3 2 Orange
+    Mini Pink 2 2 Orange
     Mini Orange 2 4 Orange
     Mini Orange 5 3 Orange
-    Mini Pink 4 2 Pink
+    Mini Pink 3 2 Pink
     Mini Blue 4 3 Yellow
     Mini Yellow 5 1 Red
-    Mini Yellow 1 5 Black
+    Mini Yellow 1 4 Black
     Mini Blue 6 4 Black
-    Mini Black 2 2 Red
-    Mini Pink 2 6 Orange
+    Mini Black 4 2 Red
     Crate Red 1 4 0
-    Mini Green 2 1 Black @m1
+    Mini Green 6 6 Black
+    Mini Purple 5 1 Green
+    Mini Pink 6 4 Purple @m1
   `,
   frameStackData: `
-    Green
+    Pink
     m1
   `,
 })
