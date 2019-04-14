@@ -1,3 +1,15 @@
 const tileSize = 32
 const miniTileSize = 4
 const levelData = []
+const mainLevelNames = [
+  "tut1",
+  "tut2",
+  "original",
+  "tut3",
+  "tree",
+  "dolphin",
+  "tunnels",
+]
+const otherLevelNames = [
+  "wack",
+]

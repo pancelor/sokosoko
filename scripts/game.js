@@ -433,6 +433,7 @@ function DrawMisc(ctxView) {
   if (checkWin()) {
     const lines = ["You win!"]
     if (gotBonus) lines.push("very good")
+    if (CanContinue()) lines.push("[space] to continue")
     drawMessage(ctxView, lines)
   }
 }

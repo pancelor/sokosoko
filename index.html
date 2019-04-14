@@ -32,18 +32,13 @@
       <li>R: restart</li>
       <li>M: toggle mute</li>
     </ul>
-    <h3>Good Levels</h3>
-    <ul>
-      <li>TUT1</li>
-      <li>TUT2</li>
-      <li>TUT3</li>
-      <li>ORIGINAL</li>
-      <li>TUNNELS</li>
-      <li>DOLPHIN</li>
+    <h3>Main Levels</h3>
+    <ul id="mainLevelsList">
+      <!-- list is auto-generated in JS -->
     </ul>
     <h3>Other Levels</h3>
-    <ul>
-      <li>WACK</li>
+    <ul id="otherLevelsList">
+      <!-- list is auto-generated in JS -->
     </ul>
   </div>
 
@@ -95,21 +90,28 @@
 
   <script type="application/javascript" src="./data/config.dat"></script>
 
-  <script type="application/javascript" src="./data/original.lvl"></script>
-  <script type="application/javascript" src="./data/wack.lvl"></script>
-  <script type="application/javascript" src="./data/dolphin.lvl"></script>
-  <script type="application/javascript" src="./data/tunnels.lvl"></script>
+  <!-- levels start -->
+
+  <!-- main levels; edit sequence in config.dat -->
   <script type="application/javascript" src="./data/tut1.lvl"></script>
   <script type="application/javascript" src="./data/tut2.lvl"></script>
+  <script type="application/javascript" src="./data/original.lvl"></script>
   <script type="application/javascript" src="./data/tut3.lvl"></script>
-  <script type="application/javascript" src="./data/butterfly.lvl"></script>
   <script type="application/javascript" src="./data/tree.lvl"></script>
+  <script type="application/javascript" src="./data/dolphin.lvl"></script>
+  <script type="application/javascript" src="./data/tunnels.lvl"></script>
+  <script type="application/javascript" src="./data/wack.lvl"></script>
 
+  <!-- almost ready: -->
+  <script type="application/javascript" src="./data/butterfly.lvl"></script>
+
+  <!-- vague sketches ready: -->
   <script type="application/javascript" src="./data/sidle.lvl"></script>
   <script type="application/javascript" src="./data/bite.lvl"></script>
   <script type="application/javascript" src="./data/abacus.lvl"></script>
   <script type="application/javascript" src="./data/glass.lvl"></script>
 
+  <!-- tech experiments / bug repros: -->
   <script type="application/javascript" src="./data/oneway.lvl"></script>
   <script type="application/javascript" src="./data/oneway2.lvl"></script>
   <script type="application/javascript" src="./data/paradox.lvl"></script>
@@ -122,6 +124,7 @@
   <script type="application/javascript" src="./data/nest.lvl"></script>
 
   <script type="application/javascript" src="./data/template.lvl"></script>
+  <!-- levels end -->
 
   <script type="application/javascript" src="./scripts/chromeTest.js"></script>
   <script type="application/javascript" src="./scripts/helpers.js"></script>

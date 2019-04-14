@@ -49,6 +49,11 @@ function registerKeyListeners() {
     } else if (e.code === "KeyM") {
       muteToggle()
     } else if (e.code === "Space") {
+      if (checkWin()) {
+        loadNextLevel()
+        Raf()
+        return
+      }
       if (devmode) {
         editingTiles = !editingTiles
         if (editingTiles) storedActor = null
@@ -342,6 +347,28 @@ function loadLevel(name) {
   return true
 }
 
+// returns the next level name
+// defaults to the first level
+// returns null if targetName is the last level
+function nextLevelName(targetName) {
+  let found = false
+  for (const name of mainLevelNames) {
+    if (found) return name
+    if (name === targetName) found = true
+  }
+  if (found) {
+    return null
+  } else {
+    return mainLevelNames[0]
+  }
+}
+function CanContinue() {
+  return nextLevelName(currentLevelName) !== null
+}
+function loadNextLevel() {
+  if (CanContinue()) reset(nextLevelName(currentLevelName))
+}
+
 function devmodeInit() {
   const match = window.location.hash.match(/^(#(?<dev>dev))?(#(?<level>[\w\d_]+))?$/)
   const { dev, level } = match.groups
@@ -349,7 +376,23 @@ function devmodeInit() {
   if (dev) devmodeOn()
 }
 
+function editLevelList() {
+  function addListItem(parent, text) {
+    const child = document.createElement('li')
+    child.innerText = text
+    parent.appendChild(child)
+  }
+
+  for (const name of mainLevelNames) {
+    addListItem(mainLevelsList, name.toUpperCase())
+  }
+  for (const name of otherLevelNames) {
+    addListItem(otherLevelsList, name.toUpperCase())
+  }
+}
+
 function init() {
+  editLevelList()
   RunTests()
 
   // enable key listeners / focus on the canvases
@@ -362,7 +405,7 @@ function init() {
   registerLevelCodeListener()
   registerKeyListeners()
   registerMouseListeners()
-  reset('original')
+  loadNextLevel()
 
   devmodeInit()
 }
