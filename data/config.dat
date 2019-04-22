@@ -6,6 +6,7 @@ const mainLevelNames = [
   "two",
   "three",
   "original",
+  "butterfly",
   "tree", // must be after original
   "dolphin",
   "tunnels",
