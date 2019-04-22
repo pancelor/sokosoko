@@ -85,9 +85,23 @@ function registerKeyListeners() {
       startHoldInterval() // do next held button on stack immediately
     }
   }
-  canvasView.addEventListener("keydown", e => {
+
+  function maybeSave(e) {
     if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") {
       SaveLevel(levelCodeInput.value)
+      return true
+    } else {
+      return false
+    }
+  }
+  levelCodeInput.addEventListener("keydown", e => {
+    if (maybeSave(e)) {
+      e.preventDefault()
+      return false
+    }
+  })
+  canvasView.addEventListener("keydown", e => {
+    if (maybeSave(e)) {
       e.preventDefault()
       return false
     }
