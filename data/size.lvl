@@ -27,9 +27,9 @@ levelData.push({
     x......x
     x......x
     x......x
+    x..x...x
     x......x
-    x......x
-    xxxx.xxx
+    xxx.xxxx
 
     room @Blue
     xxxxxxxx
@@ -66,7 +66,7 @@ levelData.push({
     x......x
     x......x
     x......x
-    x......x
+    .......x
     x......x
     x......x
     xxxx.xxx
@@ -103,22 +103,24 @@ levelData.push({
   `,
   actorData: `
     Flag White 6 2
-    Player Brown 4 5
+    Player Brown 3 4
     Mini White 1 1 White
-    Mini Brown 2 4 Red
+    Mini Brown 3 2 Red
     Mini Blue 1 1 Blue
     Mini Green 1 1 Green
     Mini Purple 1 1 Purple
-    Mini Red 4 4 Yellow
+    Mini Red 5 4 Yellow
     Mini Black 1 1 Black
     Mini Pink 1 1 Pink
     Mini Orange 1 1 Orange
     Crate White 5 1 0
     Crate White 6 1 1
-    Mini White 3 2 Brown
+    Mini White 3 2 Brown @m1
+    Crate Red 4 6 0
+    Crate Brown 5 5 0
   `,
   frameStackData: `
     White
-    Mini White 3 2 Brown
+    m1
   `,
 })
