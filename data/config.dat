@@ -10,6 +10,7 @@ const mainLevelNames = [
   "tree", // must be after original
   "dolphin",
   "tunnels",
+  "bite",
 ]
 const otherLevelNames = [
   "wack",
