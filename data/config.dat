@@ -2,9 +2,9 @@ const tileSize = 32
 const miniTileSize = 4
 const levelData = []
 const mainLevelNames = [
+  "zero",
   "one",
   "two",
-  "three",
   "original",
   "tunnels",
   "size",
