@@ -420,8 +420,10 @@ function DrawMisc(ctxView) {
   const innerH = 8 * tileSize
   const dest = viewOffset().scale(tileSize)
 
-  // draw solid player
-  drawImgMap(ctxView, lookupActorImg(player), player.pos.roomPos().add(viewOffset())) // v hacky
+  // draw solid player if we're zoomed in
+  if (viewFrameStack.equals(player.frameStack) && !player.dead) {
+    drawImgMap(ctxView, lookupActorImg(player), player.pos.roomPos().add(viewOffset())) // v hacky
+  }
 
   // draw frame border
   ctxWith(ctxView, {strokeStyle: "white", lineWidth: 7, globalAlpha: 0.4}, () => {
