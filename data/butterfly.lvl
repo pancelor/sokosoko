@@ -45,9 +45,9 @@ levelData.push({
     xxxxxxxx
     xxxxxxxx
     xxxxxxxx
+    xxxxxxxx
     xxx.....
     ....xxxx
-    xxx.xxxx
     xxx.xxxx
     xxx.xxxx
 
@@ -62,14 +62,14 @@ levelData.push({
     xxxxxx.x
 
     room @Green
-    xxxx.xxx
-    xxxx.xxx
-    xxxx.xxx
-    xxxx.xxx
-    .....xxx
     xxx.xxxx
     xxx.xxxx
     xxx.xxxx
+    xxx.xxxx
+    ....xxxx
+    xx.xxxxx
+    xx.xxxxx
+    xx.xxxxx
 
     room @Purple
     xxx.xxxx
