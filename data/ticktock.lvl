@@ -1,0 +1,138 @@
+levelData.push({
+  name: 'ticktock',
+  tileData: `
+    room @Brown
+    x.xxxxxx
+    x.xxxxxx
+    x.xxxxxx
+    x.xxxxxx
+    x......x
+    xxxxxx.x
+    x......x
+    x.xxxxxx
+
+    room @White
+    xxxxxxxx
+    x...x..x
+    x.x.x.xx
+    x.x.x.xx
+    x.x.x.xx
+    x.x.x.xx
+    x.x...xx
+    xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    x......x
+    x.xxxx.x
+    x.x....x
+    x.x.xxxx
+    x.x.xxxx
+    ..x.....
+    xxxxxxxx
+
+    room @Blue
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Purple
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Yellow
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Black
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Pink
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Orange
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+  `,
+  actorData: `
+    Flag White 6 1
+    Player White 1 6
+    Mini Blue 1 1 Blue
+    Mini Green 1 1 Green
+    Mini Purple 1 1 Purple
+    Mini Yellow 1 1 Yellow
+    Mini Black 1 1 Black
+    Mini Pink 1 1 Pink
+    Mini Orange 1 1 Orange
+    Mini White 1 4 Brown
+    Mini White 1 5 Brown
+    Mini White 1 3 Brown
+    Mini White 1 2 Brown
+    Mini White 3 2 Brown
+    Mini White 3 3 Brown
+    Mini White 3 4 Brown
+    Mini White 3 5 Brown
+    Mini White 5 5 Brown
+    Mini White 5 4 Brown
+    Mini White 5 3 Brown
+    Mini White 5 2 Brown
+    Mini Brown 2 4 Red
+    Mini Brown 3 4 Red
+    Mini Brown 4 4 Red
+    Mini Brown 5 4 Red
+    Mini Brown 5 6 Red
+    Mini Brown 4 6 Red
+    Mini Brown 3 6 Red
+    Mini Brown 2 6 Red
+  `,
+  frameStackData: `
+    White
+  `,
+})

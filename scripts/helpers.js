@@ -487,6 +487,17 @@ const win = (dt=0) => playSolution("win", dt)
 const bonus = (dt=0) => playSolution("bonus", dt)
 const cheese = (dt=0) => playSolution("cheese", dt)
 
+const winTickTock = (dt=0) => {
+  reset()
+  let redR = `011111000003322233300000`
+  let redL = `222211100011222223333322`
+  let brownU = `10${redR}${redR}${redR}${redR}112${redL}${redL}${redL}${redL}11111`
+  let brownD = `33330${redR}${redR}${redR}${redR}332${redL}${redL}${redL}${redL}332`
+  let sol = `1${brownU}${brownU}${brownU}${brownU}003${brownD}${brownD}${brownD}${brownD}001${brownU}${brownU}${brownU}${brownU}`
+  console.log({length: sol.length});
+  play(sol, dt)
+}
+
 let devmode = false
 function devmodeOn() {
   devmode = true
