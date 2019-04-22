@@ -420,6 +420,9 @@ function DrawMisc(ctxView) {
   const innerH = 8 * tileSize
   const dest = viewOffset().scale(tileSize)
 
+  // draw solid player
+  drawImgMap(ctxView, lookupActorImg(player), player.pos.roomPos().add(viewOffset())) // v hacky
+
   // draw frame border
   ctxWith(ctxView, {strokeStyle: "white", lineWidth: 7, globalAlpha: 0.4}, () => {
     ctxView.strokeRect(dest.x, dest.y, innerW, innerH)
@@ -448,7 +451,13 @@ function DrawMisc(ctxView) {
 }
 
 function DrawActors(ctxMap, ctxMini) {
-  allActors().forEach(e=>e.draw(ctxMap, ctxMini))
+  allActors().forEach((a) => {
+    if (a === player) {
+      ctxWith(ctxMap, {globalAlpha: 0.25}, () => a.draw(ctxMap, ctxMini))
+    } else {
+      a.draw(ctxMap, ctxMini)
+    }
+  })
 }
 
 function lookupActorImg(actor) {
