@@ -7,8 +7,9 @@ const mainLevelNames = [
   "three",
   "original",
   "tunnels",
-  "dolphin",
+  "size",
   "butterfly",
+  "dolphin",
   "tree",
   "bite",
 ]
