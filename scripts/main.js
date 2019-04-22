@@ -254,6 +254,7 @@ function maybeGuiInteract(e) {
       return maybeLoadNextLevel()
     }
   }
+  return false
 }
 
 function maybeChangeViewFrameStack(e, pos) {
