@@ -385,6 +385,7 @@ function nextLevelName(targetName) {
   }
 }
 function CanContinue() {
+  if (!currentLevelName) return true // game start
   if (!mainLevelNames.includes(currentLevelName)) return false
   return nextLevelName(currentLevelName) !== null
 }

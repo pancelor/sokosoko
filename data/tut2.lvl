@@ -3,9 +3,9 @@ levelData.push({
   tileData: `
     room @White
     xxxxxxxx
-    x......x
-    x....x.x
-    x..xxxxx
+    xx....xx
+    x.....xx
+    x...xxxx
     x..xx..x
     x...xx.x
     xx.....x
@@ -65,7 +65,7 @@ levelData.push({
     Flag White 5 4
     Player White 1 4
     Mini White 4 6 Red
-    Mini White 3 2 Blue
+    Mini White 4 2 Blue
     Crate White 3 6 0
     Mini Blue 3 2 Red
     Mini Blue 3 3 Green
@@ -73,7 +73,6 @@ levelData.push({
     Mini White 5 6 Red
     Crate Yellow 7 4 0
     Crate Yellow 6 4 0
-    Mini White 6 2 Red
     Mini Black 4 4 White @m1
   `,
   frameStackData: `
