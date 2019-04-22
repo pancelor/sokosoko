@@ -9,9 +9,9 @@ const mainLevelNames = [
   "tunnels",
   "size",
   "butterfly",
-  "dolphin",
   "tree",
   "bite",
+  "dolphin",
 ]
 const otherLevelNames = [
   "wack",
