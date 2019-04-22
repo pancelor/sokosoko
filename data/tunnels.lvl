@@ -21,7 +21,7 @@ levelData.push({
     xxxx.xxx
     xxxx.xxx
 
-    room @Yellow
+    room @Brown
     xxxxxxxx
     x..xx..x
     x.xxxxxx
@@ -47,9 +47,9 @@ levelData.push({
     Mini Green 2 6 Blue @temp1
     Mini Blue 2 5 Black @m1
     Mini Black 2 4 Green @m2
-    Mini Yellow 4 4 Blue @new1
-    Mini Blue 6 2 Yellow @new2
-    Mini Green 6 5 Yellow @base
+    Mini Brown 4 4 Blue @new1
+    Mini Blue 6 2 Brown @new2
+    Mini Green 6 5 Brown @base
     Crate Green 2 5 1
     Crate Green 4 3 0
     Crate Green 4 6 0
