@@ -4,7 +4,7 @@ levelData.push({
     room @Pink
     xxx.xxxx
     xxx.xxxx
-    xxx.xxxx
+    xxx.x.xx
     xxx.xxxx
     .x......
     xx.xxxxx
@@ -14,8 +14,8 @@ levelData.push({
     room @Purple
     xxxxxxxx
     xxxxxxxx
-    xxxxxxxx
     xxxx..xx
+    xxxx...x
     xxxx...x
     xxxx...x
     xxxxx..x
@@ -24,16 +24,16 @@ levelData.push({
     room @Yellow
     xxxxxxxx
     xxxxxxxx
-    xxxxxxxx
     xx..xxxx
     x...xxxx
     x...xxxx
-    x..xxxxx
+    x...xxxx
+    x..xxx.x
     xx.xxxxx
 
     room @Brown
     xxx.xxxx
-    xxx.xx.x
+    xxx..x.x
     xxx..xxx
     xxx.....
     xxx..xxx
@@ -57,7 +57,7 @@ levelData.push({
     xx.x.xxx
     xx.x...x
     xx.xxxxx
-    .x.x..xx
+    ...x..xx
     xx.xxxxx
     xx.xxxxx
 
@@ -73,42 +73,42 @@ levelData.push({
 
     room @White
     xxxxxxxx
-    x.....xx
-    x......x
-    x.xxx..x
+    x...x..x
+    xx.....x
+    xx.xxxxx
+    x....xxx
     x...xxxx
-    x......x
-    x.....xx
+    xxx....x
     xxxxxxxx
 
     room @Black
-    xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    xxxxxxxx
+    xx.xxxxx
+    xx.xxxxx
+    xx..xxxx
+    xx..xxxx
+    xxx.xxxx
+    xxx.xxxx
+    xxx.xxxx
+    xxx.xxxx
 
     room @Orange
     xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
     xxxxxxxx
+    xxxxxxxx
+    xxx.xxxx
+    xx....xx
+    ....x.xx
+    xxxxx.xx
+    xxxxx.xx
   `,
   actorData: `
-    Flag White 4 5
-    Player White 3 2
+    Flag White 6 6
+    Player White 1 1
     Mini Brown 4 2 Blue @m1
     Mini White 5 2 Green @m2
-    Mini Black 1 1 Black
+    Mini Black 3 2 Black
     Mini Yellow 3 5 Pink
-    Mini Orange 1 1 Orange
+    Mini Brown 4 1 Orange
     Mini Blue 2 3 Purple
     Mini Blue 4 4 Yellow
     Mini Purple 4 5 Pink
@@ -119,11 +119,19 @@ levelData.push({
     Mini Purple 4 4 Blue
     Crate Pink 3 4 1
     Crate Pink 6 4 0
-    Crate White 1 2 0
-    Mini White 5 6 Red
-    Mini White 1 4 Brown
+    Crate White 2 2 0
+    Mini Pink 5 2 Red
+    Mini White 2 4 Brown
+    Mini White 3 6 Brown
+    Mini Yellow 6 6 White @m3
+    Mini Orange 3 3 Orange
+    Crate Orange 3 4 0
+    Crate Black 3 3 0
+    Mini Purple 6 4 Black
+    Mini Yellow 1 4 Black
   `,
   frameStackData: `
-    White
+    Yellow
+    m3
   `,
 })
