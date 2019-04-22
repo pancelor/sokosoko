@@ -433,13 +433,15 @@ function DrawMisc(ctxView) {
     drawMessage(ctxView, lines)
   }
 
-  // draw mute button
-  ctxView.drawImage(gameMuted ? imgSoundOff : imgSoundOn, canvasView.width - tileSize, 0)
-
   // draw canvas border
   ctxWith(ctxView, {strokeStyle: "black"}, () => {
     ctxView.strokeRect(0, 0, canvasView.width, canvasView.height)
   })
+
+  // draw mute button
+  ctxView.drawImage(gameMuted ? imgSoundOff : imgSoundOn, canvasView.width - tileSize, 0)
+  if (CanGoBack()) ctxView.drawImage(imgArrowLeft, 0, canvasView.height - tileSize)
+  if (CanContinue()) ctxView.drawImage(imgArrowRight, canvasView.width - tileSize, canvasView.height - tileSize)
 }
 
 function DrawActors(ctxMap, ctxMini) {

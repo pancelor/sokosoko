@@ -51,7 +51,7 @@ function registerKeyListeners() {
       Raf()
     } else if (e.code === "Space") {
       if (checkWin()) {
-        loadNextLevel()
+        maybeLoadNextLevel()
         Raf()
         return
       }
@@ -204,7 +204,7 @@ function translateMouseFromView(e) {
 
 let storedActor = null
 function mouseClick({e, pos}) {
-  if (maybeToggleMute(e)) return
+  if (maybeGuiInteract(e)) return
   if (!devmode) return
   maybeChangeViewFrameStack(e, pos) // do we want to let non-devmode users use this?
 
@@ -231,16 +231,32 @@ function mouseMove({e, pos}) {
   }
 }
 
-function maybeToggleMute(e) {
+function maybeGuiInteract(e) {
   // hacky calculation here
   const x = e.offsetX
   const y = e.offsetY
   const W = canvasView.width
-  if (0 <= y && y < tileSize && W - tileSize <= x && x < W) {
+  const H = canvasView.height
+  const firstCol = 0 <= x && x < tileSize
+  const firstRow = 0 <= y && y < tileSize
+  const lastCol = W - tileSize <= x && x < W
+  const lastRow = H - tileSize <= y && y < H
+  console.log({
+    firstCol,
+    firstRow,
+    lastCol,
+    lastRow,
+  });
+  if (firstRow && lastCol) {
     muteToggle()
     return true
   }
-  return false
+  if (lastRow && firstCol) {
+    return maybeLoadPrevLevel()
+  }
+  if (lastRow && lastCol) {
+    return maybeLoadNextLevel()
+  }
 }
 
 function maybeChangeViewFrameStack(e, pos) {
@@ -389,8 +405,42 @@ function CanContinue() {
   if (!mainLevelNames.includes(currentLevelName)) return false
   return nextLevelName(currentLevelName) !== null
 }
-function loadNextLevel() {
-  if (CanContinue()) reset(nextLevelName(currentLevelName))
+function maybeLoadNextLevel() {
+  if (CanContinue()) {
+    reset(nextLevelName(currentLevelName))
+    return true
+  } else {
+    return false
+  }
+}
+
+// returns the prev level name
+// defaults to the last level
+// returns null if targetName is the first level
+function prevLevelName(targetName) {
+  let found = false
+  for (let i = mainLevelNames.length - 1; i >= 0; --i) {
+    const name = mainLevelNames[i]
+    if (found) return name
+    if (name === targetName) found = true
+  }
+  if (found) {
+    return null
+  } else {
+    return mainLevelNames[mainLevelNames.length - 1]
+  }
+}
+function CanGoBack() {
+  if (!mainLevelNames.includes(currentLevelName)) return false
+  return prevLevelName(currentLevelName) !== null
+}
+function maybeLoadPrevLevel() {
+  if (CanGoBack()) {
+    reset(prevLevelName(currentLevelName))
+    return true
+  } else {
+    return false
+  }
 }
 
 function devmodeInit() {
@@ -429,7 +479,7 @@ function init() {
   registerLevelCodeListener()
   registerKeyListeners()
   registerMouseListeners()
-  loadNextLevel()
+  maybeLoadNextLevel()
 
   devmodeInit()
 }
