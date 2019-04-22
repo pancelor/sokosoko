@@ -251,12 +251,13 @@ function maybeGuiInteract(e) {
     muteToggle()
     return true
   }
-  if (lastRow && firstCol) {
-    return maybeLoadPrevLevel()
-  }
-  if (lastRow && lastCol) {
-    return maybeLoadNextLevel()
-  }
+  // these are too confusing in the first 10 seconds of seeing the game
+  // if (lastRow && firstCol) {
+  //   return maybeLoadPrevLevel()
+  // }
+  // if (lastRow && lastCol) {
+  //   return maybeLoadNextLevel()
+  // }
 }
 
 function maybeChangeViewFrameStack(e, pos) {
