@@ -93,9 +93,9 @@ levelData.push({
 
     room @Black
     xxxxx.xx
-    x.....xx
-    xxxxx.xx
+    xxx...xx
     xx..x.xx
+    xx.xx.xx
     xx.xx.xx
     xx.x..xx
     xx...xxx
@@ -116,7 +116,7 @@ levelData.push({
     Mini Purple 5 4 Black
     Mini Purple 6 1 Black
     Mini Purple 7 1 Black
-    Mini Black 5 3 Black
+    Mini Black 5 2 Black
     Mini Red 6 5 Brown
     Mini White 3 3 Black
     Mini Red 1 1 White @m2
@@ -124,6 +124,7 @@ levelData.push({
     Mini Purple 3 4 Black
     Crate White 2 2 1
     Crate Purple 5 5 0
+    Mini Black 2 5 Black
   `,
   frameStackData: `
     Red
