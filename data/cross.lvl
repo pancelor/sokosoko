@@ -4,21 +4,21 @@ levelData.push({
     room @Brown
     xxxx.xxx
     xxx..x.x
-    xxx.xxxx
-    ..x.xx..
+    ..x.xxxx
+    x.x.xx..
     x......x
     xxx.xxxx
-    x.x..xxx
-    xxxx.xxx
+    x.x...xx
+    xxxxx.xx
 
     room @White
     xxxxxxxx
+    x.xxxxxx
+    xxx....x
     x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
+    x...x..x
+    x...x..x
+    x...x..x
     xxxxxxxx
 
     room @Yellow
@@ -44,20 +44,20 @@ levelData.push({
     room @Purple
     xx.xxxxx
     xx.xxxxx
-    xx.xxxxx
-    ....xxxx
-    xxxxxxxx
-    xxxxxxxx
-    xxxxxxxx
-    xxxxxxxx
+    xx.xx.xx
+    ....x.xx
+    xxxx....
+    xxxxxx.x
+    xxxx...x
+    xxxx.xxx
 
     room @Red
     xxxxxx.x
     ...x...x
-    x..x.x.x
-    x.xx.xxx
+    xx.x.x.x
+    x..x.xxx
     x......x
-    x.xx.x..
+    x..x.x..
     x.x..xxx
     xxx.xxxx
 
@@ -82,39 +82,37 @@ levelData.push({
     x.xxxxxx
 
     room @Pink
-    xxxx.xxx
-    xx.x.x.x
-    x..x.x.x
-    x.xx.x.x
-    ..xx.x.x
-    xxxx.x..
-    x..x.x.x
-    xxxx.xxx
+    xxxxx.xx
+    xxxxx.xx
+    x...x.xx
+    x...x.xx
+    ....x.xx
+    xxxxx.x.
+    x..xx.xx
+    xxxxx.xx
 
     room @Orange
     xxxxx.xx
-    xxx....x
     xxxxxxxx
     ........
     xxxxxxxx
-    xxxxxxxx
-    x......x
+    x...xxxx
+    x...xxxx
+    x...xxxx
     xx.xxxxx
   `,
   actorData: `
-    Flag White 6 2
-    Player Red 3 7
-    Mini White 1 1 White
+    Flag Purple 5 2
+    Player Orange 2 5
     Mini Red 6 4 Yellow
-    Mini Red 1 3 Blue
+    Mini Red 1 4 Blue
     Mini Red 4 6 Green
     Mini Red 6 1 Purple
     Mini Red 5 1 Black
     Mini Black 5 4 Pink
     Mini Black 2 1 Orange
-    Crate White 5 1 0
-    Crate White 6 1 1
-    Mini White 3 4 Red @m1
+    Crate White 5 3 0
+    Mini White 3 3 Red
     Mini Red 4 4 Brown
     Mini Green 4 5 Brown
     Mini Green 1 3 Brown
@@ -136,8 +134,7 @@ levelData.push({
     Crate Yellow 6 4 0
     Crate Yellow 7 4 0
     Crate Yellow 5 4 0
-    Mini Red 2 2 Purple
-    Mini Red 1 1 Orange
+    Mini Red 2 3 Purple
     Mini Blue 3 1 Yellow
     Mini Blue 5 5 Yellow
     Mini Blue 5 6 Orange
@@ -146,6 +143,13 @@ levelData.push({
     Mini Blue 4 0 Brown
     Mini Blue 2 3 Purple
     Mini Blue 3 2 Orange
+    Mini White 6 2 Orange
+    Mini White 3 6 Pink
+    Mini White 2 4 Orange @m1
+    Mini White 6 5 Pink
+    Mini White 5 5 Purple
+    Mini Purple 5 4 Pink
+    Mini White 1 5 Purple
   `,
   frameStackData: `
     White
