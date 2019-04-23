@@ -114,7 +114,7 @@ levelData.push({
     Mini Orange 1 1 Orange
     Crate White 5 1 0
     Crate White 6 1 1
-    Mini White 3 4 Yellow
+    Mini White 3 4 Yellow @m1
     Crate Yellow 4 5 0
     Crate Yellow 5 1 0
     Mini Yellow 4 3 Brown
@@ -122,6 +122,6 @@ levelData.push({
   `,
   frameStackData: `
     White
-    Mini White 3 4 Yellow
+    m1
   `,
 })

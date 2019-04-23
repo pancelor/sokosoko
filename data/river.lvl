@@ -1,0 +1,131 @@
+levelData.push({
+  name: 'river',
+  tileData: `
+    room @Brown
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @White
+    xxxxxxxx
+    x...xx.x
+    xxx.xx.x
+    xxx....x
+    x...xx.x
+    x.xxxx.x
+    x......x
+    xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    xxxxxxxx
+    xx..xxxx
+    xxxxx..x
+    x.xxx.xx
+    xxxxx..x
+    xxxxxxxx
+    xxxx.xxx
+
+    room @Blue
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxx.xxxx
+    xxx..xxx
+    xxx..xxx
+    xxxx.xxx
+    xxxx....
+    .....xxx
+    xxx.xxxx
+    xxx.xxxx
+
+    room @Purple
+    xxx.xxxx
+    xx..x...
+    xx.xx.xx
+    xx.x..xx
+    xx...xxx
+    xxxx.xxx
+    xxx..xxx
+    xxx.xxxx
+
+    room @Yellow
+    xx.xxxxx
+    xx..xx.x
+    xx..x..x
+    xxx.xxxx
+    xx..xx.x
+    xx.xxxxx
+    xx..xx.x
+    xxx.xxxx
+
+    room @Black
+    xxx.xxxx
+    xxx.xxxx
+    xxx.xxxx
+    xxx.xxxx
+    xxx.....
+    xxxx.xxx
+    xxxx.xxx
+    xxxx.xxx
+
+    room @Pink
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Orange
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+  `,
+  actorData: `
+    Flag White 6 1
+    Player White 5 3
+    Mini Brown 6 1 White
+    Mini Green 4 2 Red
+    Mini Blue 1 1 Blue
+    Mini White 3 3 Purple
+    Mini Green 3 6 Yellow
+    Mini Pink 1 1 Pink
+    Mini Orange 1 1 Orange
+    Mini Brown 1 1 Brown
+    Crate Purple 4 4 0
+    Crate Brown 6 2 1
+    Mini White 3 2 Purple
+    Mini White 1 1 Green
+    Crate Green 6 4 0
+    Crate Yellow 3 2 0
+    Mini Yellow 2 6 Black
+    Mini Yellow 3 1 Black
+    Crate Black 4 5 0
+    Crate Black 4 6 0
+    Crate Black 4 7 0
+    Mini White 6 3 Green
+  `,
+  frameStackData: `
+    White
+  `,
+})
