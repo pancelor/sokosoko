@@ -3,7 +3,7 @@ levelData.push({
   tileData: `
     room @Brown
     xxxx.xxx
-    xxx..xxx
+    xxx..x.x
     xxx.xxxx
     ..x.xx..
     x......x
@@ -23,23 +23,13 @@ levelData.push({
 
     room @Yellow
     xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
     xxxxxxxx
-
-    room @Blue
     xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    xxxxxxxx
+    xxxxx.xx
+    xxx.....
+    ....x.xx
+    xxx.x.xx
+    xxxxx.xx
 
     room @Green
     xx.xxxxx
@@ -52,23 +42,23 @@ levelData.push({
     xxx.xxxx
 
     room @Purple
+    xx.xxxxx
+    xx.xxxxx
+    xx.xxxxx
+    ....xxxx
     xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
+    xxxxxxxx
+    xxxxxxxx
     xxxxxxxx
 
     room @Red
     xxxxxx.x
-    xxxx...x
-    xxxx.xxx
+    ...x...x
+    x..x.x.x
+    x.xx.xxx
     x......x
-    ..xx.x..
-    xxxx.xxx
-    xxx..xxx
+    x.xx.x..
+    x.x..xxx
     xxx.xxxx
 
     room @Black
@@ -81,22 +71,32 @@ levelData.push({
     ......xx
     xxxxxxxx
 
+    room @Blue
+    xxxx.xxx
+    xxx....x
+    xx...x.x
+    x..x.x.x
+    x.x..x.x
+    x.x....x
+    x.xx...x
+    x.xxxxxx
+
     room @Pink
     xxxx.xxx
     xx.x.x.x
     x..x.x.x
     x.xx.x.x
-    xxxx.x.x
+    ..xx.x.x
     xxxx.x..
     x..x.x.x
     xxxx.xxx
 
     room @Orange
-    xxxxxxxx
+    xxxxx.xx
     xxx....x
-    x.xxx.xx
     xxxxxxxx
     ........
+    xxxxxxxx
     xxxxxxxx
     x......x
     xx.xxxxx
@@ -105,17 +105,17 @@ levelData.push({
     Flag White 6 2
     Player Red 3 7
     Mini White 1 1 White
-    Mini Red 6 3 Yellow
+    Mini Red 6 4 Yellow
     Mini Red 1 3 Blue
     Mini Red 4 6 Green
-    Mini Purple 1 1 Purple
+    Mini Red 6 1 Purple
     Mini Red 5 1 Black
     Mini Black 5 4 Pink
     Mini Black 2 1 Orange
     Crate White 5 1 0
     Crate White 6 1 1
     Mini White 3 4 Red @m1
-    Mini Red 4 3 Brown
+    Mini Red 4 4 Brown
     Mini Green 4 5 Brown
     Mini Green 1 3 Brown
     Crate Green 3 5 0
@@ -127,6 +127,25 @@ levelData.push({
     Crate Green 2 3 0
     Mini Black 2 2 Green
     Mini Black 1 2 Pink
+    Mini Purple 3 3 Purple
+    Crate Purple 1 3 0
+    Mini Black 5 6 Purple
+    Crate Yellow 3 5 0
+    Mini Yellow 3 6 Brown
+    Mini Yellow 5 3 Brown
+    Crate Yellow 6 4 0
+    Crate Yellow 7 4 0
+    Crate Yellow 5 4 0
+    Mini Red 2 2 Purple
+    Mini Red 1 1 Orange
+    Mini Blue 3 1 Yellow
+    Mini Blue 5 5 Yellow
+    Mini Blue 5 6 Orange
+    Mini Blue 6 5 Pink
+    Mini Blue 4 2 Brown
+    Mini Blue 4 0 Brown
+    Mini Blue 2 3 Purple
+    Mini Blue 3 2 Orange
   `,
   frameStackData: `
     White
