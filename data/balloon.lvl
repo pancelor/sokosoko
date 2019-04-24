@@ -1,0 +1,131 @@
+levelData.push({
+  name: 'balloon',
+  tileData: `
+    room @Brown
+    xxxxxxxx
+    xx....xx
+    x......x
+    .....x.x
+    x....x.x
+    xx...x.x
+    xx..xx.x
+    xxxxxx.x
+
+    room @White
+    xxxxxxxx
+    x.....xx
+    x...x.xx
+    x..xx.xx
+    xxxxx..x
+    x......x
+    x.....xx
+    xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    x.xx...x
+    xxx....x
+    .......x
+    xx.xxxxx
+    x..x...x
+    x....x.x
+    xxxxxxxx
+
+    room @Blue
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Purple
+    xxxxx.xx
+    xxxx....
+    x.xxx..x
+    xxxxx..x
+    x......x
+    xxxxx.xx
+    xx..x.xx
+    xxxxx.xx
+
+    room @Yellow
+    xxxxxxxx
+    xx...xxx
+    x.....xx
+    x.....xx
+    x.....xx
+    xx...xxx
+    xxxx.x.x
+    xxxx.xxx
+
+    room @Orange
+    xx.xxxxx
+    ....xxxx
+    xxx.x.xx
+    x.x.xxxx
+    x......x
+    xxxxxx.x
+    xx.xx..x
+    xxxxx.xx
+
+    room @Pink
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Black
+    xxxxx.xx
+    x.....xx
+    xxxxx.xx
+    x...x.xx
+    xx.xx.xx
+    xx.x..xx
+    xx.x.xxx
+    xx.xxxxx
+  `,
+  actorData: `
+    Flag White 2 5
+    Player Brown 2 3
+    Mini Brown 3 5 Red
+    Mini Blue 1 1 Blue
+    Mini Green 1 1 Green
+    Mini Purple 3 4 Purple
+    Mini Red 5 2 Yellow
+    Mini Purple 5 6 Orange
+    Mini Pink 1 1 Pink
+    Mini White 5 1 Brown @m1
+    Mini Brown 6 6 Purple
+    Mini Purple 5 4 Black
+    Mini Purple 6 1 Black
+    Mini Purple 7 1 Black
+    Mini Black 5 3 Black
+    Mini Red 6 5 Brown
+    Mini Red 1 1 White @m2
+    Mini Purple 4 4 Black
+    Crate White 2 2 1
+    Crate Purple 5 5 0
+  `,
+  frameStackData: `
+    Red
+    m2
+    m1
+  `,
+})
