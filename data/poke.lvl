@@ -1,7 +1,7 @@
 levelData.push({
   name: 'poke',
   tileData: `
-    room @Purple
+    room @White
     xxxx.xxx
     x.xx.xxx
     x.x..x.x
@@ -25,9 +25,9 @@ levelData.push({
     xxxxxxxx
     x......x
     x.xxx.xx
-    xxx....x
-    xxxxxx.x
-    xx.xx..x
+    x.x....x
+    x.xxxx.x
+    x......x
     xx.xx.xx
     xxxxx.xx
 
@@ -51,7 +51,7 @@ levelData.push({
     xx.xx..x
     xxxxxxxx
 
-    room @Yellow
+    room @Purple
     xxxxxxxx
     x......x
     x......x
@@ -61,7 +61,7 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    room @White
+    room @Yellow
     xxxxxxxx
     x..x....
     x.xx.xxx
@@ -83,8 +83,8 @@ levelData.push({
 
     room @Pink
     xxxxxxxx
-    x.....xx
-    x.xx.xxx
+    x...xxxx
+    x.x..x.x
     x.xx.xxx
     x......x
     xxxxx.xx
@@ -102,24 +102,24 @@ levelData.push({
     xxxxxxxx
   `,
   actorData: `
-    Flag Purple 6 2
-    Player Purple 2 6
-    Mini Green 2 6 Purple
+    Flag White 6 2
+    Player White 2 6
+    Mini Green 2 6 White
     Mini Blue 4 3 Red
-    Mini Purple 1 1 Pink
+    Mini White 1 1 Pink
     Mini Blue 2 6 Green
-    Mini Yellow 1 1 Yellow
-    Mini Purple 3 4 White
+    Mini Purple 1 1 Purple
+    Mini White 3 4 Yellow
     Mini Black 1 1 Black
     Mini Pink 3 4 Blue
     Mini Orange 1 1 Orange
-    Mini Purple 3 3 Brown
+    Mini White 3 3 Brown
     Mini Red 3 3 Blue
     Mini Red 1 2 Green
     Mini Green 6 5 Green
-    Mini Red 2 6 Purple @m1
-    Mini White 5 4 Blue
-    Crate Purple 3 5 0
+    Mini Pink 6 2 White @m1
+    Mini Yellow 5 4 Blue
+    Crate White 3 5 0
   `,
   frameStackData: `
     Red
