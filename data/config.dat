@@ -7,7 +7,7 @@ const mainLevelNames = [
   "two",
   "original",
   "tunnels",
-  "stomach",
+  "oldstomach",
   "butterfly",
   "size",
   "tree",
@@ -17,4 +17,5 @@ const mainLevelNames = [
 const otherLevelNames = [
   "wack",
   "bridge",
+  "bellyache",
 ]
