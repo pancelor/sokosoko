@@ -1,7 +1,7 @@
 levelData.push({
   name: 'balloon',
   tileData: `
-    room @Brown
+    room @Blue
     xxxxxxxx
     xx....xx
     x......x
@@ -31,7 +31,7 @@ levelData.push({
     x....x.x
     xxxxxxxx
 
-    room @Blue
+    room @Green
     xxxxxxxx
     x......x
     x......x
@@ -41,7 +41,7 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    room @Green
+    room @Brown
     xxxxxxxx
     x......x
     x......x
@@ -103,20 +103,20 @@ levelData.push({
   `,
   actorData: `
     Flag White 2 5
-    Player Brown 2 3
-    Mini Brown 3 5 Red
-    Mini Blue 1 1 Blue
+    Player Blue 2 3
+    Mini Blue 3 5 Red
     Mini Green 1 1 Green
+    Mini Brown 1 1 Brown
     Mini Purple 2 4 Purple
     Mini Red 5 2 Yellow
     Mini Purple 5 6 Orange
     Mini Pink 1 1 Pink
-    Mini White 5 1 Brown @m1
-    Mini Brown 6 6 Purple
+    Mini White 5 1 Blue @m1
+    Mini Blue 6 6 Purple
     Mini Purple 5 4 Black
     Mini Purple 6 1 Black
     Mini Purple 7 1 Black
-    Mini Red 6 5 Brown
+    Mini Red 6 5 Blue
     Mini Red 1 1 White @m2
     Mini Purple 4 4 Black
     Crate White 2 2 1
