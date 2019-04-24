@@ -7,7 +7,7 @@ levelData.push({
     x.x..x.x
     x.x.xx.x
     x......x
-    x.x.xxxx
+    x.x.x..x
     x...xxxx
     xxxxxxxx
 
@@ -88,8 +88,8 @@ levelData.push({
     x.xx.xxx
     x......x
     xxxxx.xx
-    x.....xx
-    x.xxxxxx
+    xx....xx
+    xx.xxxxx
 
     room @Orange
     xxxxxxxx
