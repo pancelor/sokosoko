@@ -1,7 +1,7 @@
 levelData.push({
   name: 'stomach',
   tileData: `
-    room @Brown
+    room @White
     xxxxxxxx
     x......x
     x......x
@@ -11,15 +11,15 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    room @White
+    room @Brown
     xxx.xxxx
     xx.....x
     x..xx..x
     x...x.xx
     x.xxx.xx
     xxx.x...
-    x...xxxx
-    x.xxxxxx
+    xxx.xxxx
+    xxx.xxxx
 
     room @Red
     xxx.xxxx
@@ -47,7 +47,7 @@ levelData.push({
     x.....xx
     x..x..xx
     xx....xx
-    xxxx...x
+    xxxxx..x
     xx.xxx.x
     xxxxxxxx
 
@@ -73,12 +73,12 @@ levelData.push({
 
     room @Black
     xxxxxxxx
-    x...xxxx
+    xx..x.xx
+    x.....xx
+    x...x.xx
+    x.x.x..x
+    xxx.xx.x
     xxx....x
-    x.x.x.xx
-    xxx.x.xx
-    xxx....x
-    xxxxxx.x
     xxxxxxxx
 
     room @Pink
@@ -102,24 +102,24 @@ levelData.push({
     xxxxxxxx
   `,
   actorData: `
-    Flag White 3 5
-    Player White 6 2
+    Flag Brown 3 5
+    Player Brown 6 2
     Mini Yellow 3 4 Red
     Mini Blue 1 1 Blue
     Mini Purple 1 1 Purple
     Mini Green 2 6 Black @m2
     Mini Pink 1 1 Pink
     Mini Orange 1 1 Orange
-    Mini Brown 1 1 Brown
-    Mini White 3 3 Green
-    Mini Black 3 2 White @m1
-    Mini White 5 4 Yellow
-    Mini Green 3 4 White
-    Crate White 7 5 0
-    Crate Black 4 2 0
+    Mini White 1 1 White
+    Mini Brown 3 3 Green
+    Mini Black 5 4 Brown @m1
+    Mini Brown 5 4 Yellow
+    Mini Green 3 4 Brown
+    Crate Brown 7 5 0
     Mini Red 5 5 Yellow
     Crate Red 5 3 0
     Crate Yellow 2 5 0
+    Mini Black 2 3 Brown
   `,
   frameStackData: `
     Green

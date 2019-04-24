@@ -59,6 +59,10 @@ function registerKeyListeners() {
     } else if (e.code === "KeyM") {
       muteToggle()
       Raf()
+    } else if (e.code === "BracketLeft") {
+      maybeLoadPrevLevel()
+    } else if (e.code === "BracketRight") {
+      maybeLoadNextLevel()
     } else if (e.code === "Space") {
       if (checkWin()) {
         maybeLoadNextLevel()
@@ -265,16 +269,16 @@ function maybeGuiInteract(e) {
   const firstRow = 0 <= y && y < tileSize
   const lastCol = W - tileSize <= x && x < W
   const lastRow = H - tileSize <= y && y < H
-  if (firstRow && lastCol) {
+  if (firstRow && lastCol && e.button === 0) {
     muteToggle()
     return true
   }
   if (devmode) {
   // these are too confusing in the first 10 seconds of seeing the game
-    if (lastRow && firstCol) {
+    if (lastRow && firstCol && e.button === 0) {
       return maybeLoadPrevLevel()
     }
-    if (lastRow && lastCol) {
+    if (lastRow && lastCol && e.button === 0) {
       return maybeLoadNextLevel()
     }
   }
