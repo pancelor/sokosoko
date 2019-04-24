@@ -16,9 +16,9 @@ levelData.push({
     xxxxxxxx
     ........
     xxxxxxxx
-    xxxxxxxx
-    xxxxxxxx
-    xxxxxxxx
+    xx.xxxxx
+    xxxxx.xx
+    x..xxxxx
     xxxxxxxx
 
     room @White
@@ -46,7 +46,7 @@ levelData.push({
     xxx...xx
     .......x
     xxxx..xx
-    xx....xx
+    xx.....x
     xx.xx..x
     x.....xx
     xxxxxxxx
@@ -103,7 +103,7 @@ levelData.push({
     Mini Blue 6 3 Red
     Mini White 2 2 Red
     Mini Purple 3 2 Purple
-    Mini Green 6 5 Red @m3
+    Mini Yellow 2 6 Red @m3
     Mini Blue 3 2 Red
     Crate Red 2 1 1
     Crate White 2 3 0
@@ -111,7 +111,7 @@ levelData.push({
     Mini Green 3 2 Yellow
   `,
   frameStackData: `
-    Green
+    Yellow
     m3
     m0
     m1
