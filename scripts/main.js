@@ -9,7 +9,6 @@ function registerLevelCodeListener() {
 }
 
 function registerKeyListeners() {
-  const holdIntervalLength = 150
   let heldDirs = []
   let holdInterval
   const keyDirMap = {
@@ -24,6 +23,16 @@ function registerKeyListeners() {
     "KeyZ": 4,
     "KeyY": 5,
   }
+  const holdIntervalLength = {
+    // different delays per input type
+    0: 150,
+    1: 150,
+    2: 150,
+    3: 150,
+    4: 75, // undo / redo are shorter
+    5: 75,
+    undefined: 150, // sorta hacky
+  }
   function onKeyHold() {
     const dir = back(heldDirs)
     if (dir === undefined) {
@@ -36,7 +45,8 @@ function registerKeyListeners() {
     clearInterval(holdInterval)
     onKeyHold()
     if (!enableHeldButtons) { return }
-    holdInterval = setInterval(onKeyHold, holdIntervalLength)
+    const dir = back(heldDirs)
+    holdInterval = setInterval(onKeyHold, holdIntervalLength[dir])
   }
   function onKeyDown(e) {
     if (e.code === "KeyR") {
