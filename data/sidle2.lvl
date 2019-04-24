@@ -1,0 +1,125 @@
+levelData.push({
+  name: 'sidle2',
+  tileData: `
+    room @Red
+    x.xxxxxx
+    x.xx...x
+    x.x..x.x
+    x.x.xx.x
+    x.x.x..x
+    xxx.x.xx
+    xx....xx
+    xx.xxxxx
+
+    room @White
+    xxxxxxxx
+    x...xx.x
+    x.x.xxxx
+    x......x
+    x.x.xx.x
+    x.xxx..x
+    x.....xx
+    xxxxxxxx
+
+    room @Blue
+    xxxxx.xx
+    xx..x.xx
+    x.......
+    x...xx.x
+    x.xxx..x
+    .......x
+    xx.x...x
+    xx.xxxxx
+
+    room @Green
+    xxx.xxxx
+    xxx...xx
+    x......x
+    ...xxx.x
+    x.xxx...
+    x......x
+    xx...xxx
+    xxxx.xxx
+
+    room @Purple
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Yellow
+    xx.xxxxx
+    xx...xxx
+    x.....xx
+    x.x.x.xx
+    x.x.x...
+    x.x.xxxx
+    ..x..x.x
+    xxxx.xxx
+
+    room @Black
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Pink
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Orange
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+  `,
+  actorData: `
+    Flag Red 1 4
+    Player Yellow 3 5
+    Mini Yellow 3 2 Red
+    Mini Red 4 6 Green
+    Mini Purple 1 1 Purple
+    Mini Black 1 1 Black
+    Mini Pink 1 1 Pink
+    Mini Orange 1 1 Orange
+    Mini White 3 3 Yellow @m2
+    Mini Red 4 1 Green
+    Mini Red 6 1 Green
+    Mini Green 2 5 Yellow
+    Mini Green 5 2 Yellow
+    Mini Green 6 5 Blue
+    Mini Blue 5 5 Yellow
+    Mini Red 3 4 Blue
+    Mini Red 5 4 Blue
+    Mini White 5 6 Green
+    Mini White 1 3 Blue
+    Mini White 2 6 Red
+    Mini Yellow 6 6 White @m1
+    Mini Green 1 2 Red
+    Mini Blue 1 2 Red
+    Mini Blue 3 2 Green
+  `,
+  frameStackData: `
+    Yellow
+    m1
+    m2
+  `,
+})
