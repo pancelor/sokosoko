@@ -11,7 +11,7 @@ const mainLevelNames = [
   "butterfly",
   "size",
   "tree",
-  "bite",
+  "flare",
   "dolphin",
 ]
 const otherLevelNames = [

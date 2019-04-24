@@ -1,5 +1,5 @@
 levelData.push({
-  name: 'bite',
+  name: 'flare',
   tileData: `
     room @Pink
     xxx.xxxx
