@@ -107,7 +107,7 @@ levelData.push({
     Mini Yellow 3 4 Red
     Mini Blue 1 1 Blue
     Mini Purple 1 1 Purple
-    Mini Green 2 6 Black @m2
+    Mini Yellow 1 1 Black @m2
     Mini Pink 1 1 Pink
     Mini Orange 1 1 Orange
     Mini White 1 1 White
@@ -122,7 +122,7 @@ levelData.push({
     Mini Black 2 3 Brown
   `,
   frameStackData: `
-    Green
+    Yellow
     m2
     m1
   `,
