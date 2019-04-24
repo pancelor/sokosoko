@@ -16,8 +16,8 @@ levelData.push({
     x..x.xxx
     x......x
     x...x..x
-    xxx....x
-    xx..xxxx
+    x......x
+    xx...xxx
     x......x
     xxxxxxxx
 
@@ -81,6 +81,7 @@ levelData.push({
     Crate Blue 2 3 0
     Player Yellow 1 6
     Mini White 6 5 White @miniOuter1
+    Mini Yellow 2 5 Red
   `,
   frameStackData: `
     White
