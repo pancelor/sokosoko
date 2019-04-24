@@ -4,6 +4,7 @@ const levelData = []
 const mainLevelNames = [
   "zero",
   "one",
+  "stomach",
   "two",
   "original",
   "tunnels",
