@@ -3,9 +3,9 @@ levelData.push({
   tileData: `
     room @Brown
     xxxx.xxx
-    xxx..x.x
-    ..x.xxxx
-    x.x.xx..
+    xxx..xxx
+    ..x.xx..
+    x.x.xx.x
     x......x
     xxx.xxxx
     x.x...xx
@@ -22,14 +22,14 @@ levelData.push({
     xxxxxxxx
 
     room @Yellow
-    xxxxxxxx
-    xxxxxxxx
-    xxxxxxxx
+    xxxx.xxx
+    xxxx..xx
+    ........
     xxxxx.xx
-    xxx.....
-    ....x.xx
-    xxx.x.xx
-    xxxxx.xx
+    xxxx..xx
+    x.xx.xxx
+    x.xx.x.x
+    xxxx.xxx
 
     room @Green
     xx.xxxxx
@@ -65,20 +65,20 @@ levelData.push({
     xxxxxxxx
     x......x
     x..xxx.x
-    x.......
-    x......x
-    x......x
+    xxxxxx..
+    xx...x.x
+    x....x.x
     .......x
     xxxxxxxx
 
     room @Blue
-    xxxx.xxx
-    x......x
-    x....x.x
-    x......x
-    x......x
-    x......x
-    x......x
+    x.xx.xxx
+    x.xx.x.x
+    x.x..x.x
+    x.xxxx.x
+    x.xx...x
+    x.xx.xxx
+    x.x...xx
     x.xxxxxx
 
     room @Pink
@@ -104,12 +104,12 @@ levelData.push({
   actorData: `
     Flag Purple 1 5
     Player Orange 2 5
-    Mini Black 4 1 Yellow
-    Mini Black 3 1 Blue
+    Mini Black 2 5 Yellow
+    Mini Yellow 4 2 Blue
     Mini Red 4 6 Green
     Mini Red 6 1 Purple
     Mini Red 5 1 Black
-    Mini Black 2 1 Orange
+    Mini Black 4 6 Orange
     Crate White 5 3 0
     Mini White 3 3 Red
     Mini Red 4 4 Brown
@@ -118,13 +118,13 @@ levelData.push({
     Crate Green 3 5 0
     Crate Green 3 7 0
     Crate Green 3 6 0
-    Mini Black 2 5 Brown
+    Mini Black 1 5 Brown
     Crate Green 2 3 0
     Mini Black 2 2 Green
     Mini Black 1 2 Pink
     Mini Purple 3 3 Purple
     Crate Purple 1 3 0
-    Crate Black 4 4 0
+    Crate Yellow 0 2 0
     Mini White 6 1 Orange
     Mini White 3 6 Pink
     Mini White 2 4 Orange @m1
@@ -135,6 +135,13 @@ levelData.push({
     Crate Purple 1 4 0
     Crate Purple 2 4 1
     Mini White 1 1 White @m2
+    Crate Yellow 3 2 0
+    Crate Yellow 1 2 0
+    Crate Yellow 2 2 0
+    Crate Yellow 5 2 0
+    Crate Yellow 6 2 0
+    Crate Yellow 7 2 0
+    Mini Black 3 6 Brown
   `,
   frameStackData: `
     White
