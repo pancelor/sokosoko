@@ -12,8 +12,6 @@ const mainLevelNames = [
   "size",
   "flare",
   "dolphin",
-]
-const otherLevelNames = [
   "wack",
   "door",
   "bellyache",

@@ -487,9 +487,6 @@ function editLevelList() {
   for (const name of mainLevelNames) {
     addListItem(mainLevelsList, name.toUpperCase())
   }
-  for (const name of otherLevelNames) {
-    addListItem(otherLevelsList, name.toUpperCase())
-  }
 }
 
 function init() {
