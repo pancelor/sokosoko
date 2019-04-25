@@ -2,10 +2,10 @@ levelData.push({
   name: 'door',
   tileData: `
     room @Brown
-    xxxxxxxx
-    x.xxxxxx
-    xxxxx..x
-    x..x...x
+    xxxxx.xx
+    x.xxx.xx
+    xxxx...x
+    x..x....
     x....x.x
     x..x...x
     xxxxx..x
@@ -54,12 +54,12 @@ levelData.push({
     room @Red
     xxxxxxxx
     x..x..xx
-    x......x
-    x.....xx
-    x......x
-    x......x
-    x.xxxxxx
+    xxxx...x
+    x..x.xxx
     xxxxxxxx
+    x..xxx.x
+    ...x.xxx
+    xx.xxxxx
 
     room @Orange
     xxxx.xxx
@@ -107,7 +107,7 @@ levelData.push({
     Mini Orange 3 3 Blue
     Mini Orange 5 4 Green
     Crate White 3 5 0
-    Mini Red 2 1 Red
+    Mini Brown 6 2 Red
     Mini Brown 1 1 Brown @m1
     Crate Orange 4 0 0
     Crate Orange 4 2 0
@@ -131,9 +131,12 @@ levelData.push({
     Crate Blue 5 5 0
     Mini White 3 1 Orange
     Mini Brown 6 4 Orange
-    Mini Blue 4 5 Blue
-    Mini Green 3 2 Green
     Crate Orange 4 7 0
+    Crate Brown 7 3 0
+    Crate Brown 5 1 0
+    Crate Brown 5 0 0
+    Mini Blue 4 5 Brown
+    Mini Green 3 2 Brown
   `,
   frameStackData: `
     Brown
