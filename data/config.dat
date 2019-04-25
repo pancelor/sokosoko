@@ -15,6 +15,6 @@ const mainLevelNames = [
 ]
 const otherLevelNames = [
   "wack",
-  "bridge",
+  "door",
   "bellyache",
 ]
