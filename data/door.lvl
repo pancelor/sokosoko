@@ -1,0 +1,142 @@
+levelData.push({
+  name: 'door',
+  tileData: `
+    room @Brown
+    xxxxxxxx
+    x.xxxxxx
+    xxxxx..x
+    x..x...x
+    x....x.x
+    x..x...x
+    xxxxx..x
+    xxxxxxxx
+
+    room @White
+    x.xxxxxx
+    x....x.x
+    xx.x...x
+    x..xx..x
+    x...xx.x
+    x...x..x
+    x...x..x
+    xxxxxx.x
+
+    room @Yellow
+    xxxxxxxx
+    xxxxxxxx
+    xxxx....
+    xxx..xxx
+    xxx..xxx
+    ....xxxx
+    xxxxxxxx
+    xxxxxxxx
+
+    room @Green
+    xx.xxxxx
+    xx.xxxxx
+    ....xxxx
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+
+    room @Black
+    xxxxxxxx
+    xxxx.xxx
+    xxxxxx.x
+    ...xxxxx
+    x.......
+    xxxx.x.x
+    xxxx...x
+    xxxx.xxx
+
+    room @Red
+    xxxxxxxx
+    x..x..xx
+    x......x
+    x.....xx
+    x......x
+    x......x
+    x.xxxxxx
+    xxxxxxxx
+
+    room @Orange
+    xxxx.xxx
+    xxxx.xxx
+    xxxx.x..
+    xxx....x
+    xx....xx
+    ...x.xxx
+    xxxx.xxx
+    xxxx.xxx
+
+    room @Blue
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+    xxxx....
+    xxxxx.xx
+    xxxxx.xx
+
+    room @Pink
+    xxxxx.xx
+    xxxxx..x
+    x...x..x
+    x...x..x
+    ....x.xx
+    xxxxx.x.
+    x..xx.xx
+    xxxxx.xx
+
+    room @Purple
+    xxxxx.xx
+    xxxxxxxx
+    ........
+    xxxxx..x
+    x...x..x
+    x...x..x
+    x...xxxx
+    xx.xxxxx
+  `,
+  actorData: `
+    Flag Brown 1 4
+    Player Brown 5 5
+    Mini Orange 3 3 Blue
+    Mini Orange 5 4 Green
+    Crate White 3 5 0
+    Mini Red 2 1 Red
+    Mini Brown 1 1 Brown @m1
+    Crate Orange 4 0 0
+    Crate Orange 4 2 0
+    Crate Black 1 4 0
+    Crate Brown 6 5 0
+    Crate Orange 4 5 0
+    Crate Orange 4 6 0
+    Crate Orange 4 3 0
+    Mini Orange 4 4 Yellow
+    Mini White 6 1 Purple @m3
+    Mini White 3 6 Pink
+    Mini White 2 4 Purple
+    Mini White 6 5 Pink
+    Mini White 5 5 Black
+    Mini Black 5 4 Pink
+    Mini White 1 5 Black
+    Crate Black 2 4 1
+    Mini Brown 4 4 White @m2
+    Crate Orange 4 1 0
+    Crate Green 2 2 0
+    Crate Blue 5 5 0
+    Mini White 3 1 Orange
+    Mini Brown 6 4 Orange
+    Mini Blue 4 5 Blue
+    Mini Green 3 2 Green
+    Crate Orange 4 7 0
+  `,
+  frameStackData: `
+    Brown
+    m1
+  `,
+})
