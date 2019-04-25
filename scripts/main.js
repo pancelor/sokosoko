@@ -146,14 +146,15 @@ function registerKeyListeners() {
 
 function ProcessInput(code) {
   assert([0,1,2,3,4,5].includes(code))
-  RecordKeyHist(code)
   if (code === 4) {
     Undo()
   } else if (code === 5) {
     Redo()
   } else {
-    Update(code) // code is dir
+    const res = Update(code) // code is dir
+    if (!res) return // skip recording key hist if update failed
   }
+  RecordKeyHist(code)
 }
 
 function lockScroll(cb) {

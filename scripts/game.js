@@ -291,14 +291,15 @@ function InitGame() {
 }
 
 function Update(dir) {
-  if (checkWin() || player.dead) { return }
+  if (checkWin() || player.dead) { return false }
 
   StartEpoch()
-  player.update(dir)
+  const res = player.update(dir)
   viewFrameStack = player.frameStack
   events = EndEpoch()
   // tempLogEvents(events)
   Raf()
+  return res
 }
 
 function tempLogEvents(events) {
