@@ -161,7 +161,11 @@ function lockScroll(cb) {
 // let viewFocused
 function registerMouseListeners() {
   mousepos = new MapPos(0, 0)
-  window.addEventListener("contextmenu", (e) => {
+  canvasView.addEventListener("contextmenu", (e) => {
+    e.preventDefault()
+    return false
+  })
+  canvasMap.addEventListener("contextmenu", (e) => {
     e.preventDefault()
     return false
   })
@@ -395,7 +399,7 @@ function reset(name=null) {
 function loadLevel(name) {
   if (!Import(name)) { return false }
   currentLevelName = name
-  levelCodeInput.value = name
+  levelCodeInput.value = name.toUpperCase()
   if (devmode) window.location.hash = `#dev#${name}`
   InitGame()
   canvasView.focus()
