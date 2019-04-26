@@ -255,19 +255,14 @@ function exportFrameStackString() {
   const lines = []
   lines.push("  frameStackData: `")
   let frame = player.frameStack
-  while (true) {
-    if (frame.constructor === FrameBase) {
-      lines.splice(1, 0, `    ${frame.innerRoom().name}`)
-      break
-    } else {
-      let tag = frame.mini.tag
-      if (tag === undefined) {
-        tag = randName(10)
-        frame.mini.tag = tag
-      }
-      lines.splice(1, 0, `    ${tag}`)
-      frame = frame.parent
+  while (frame.parent) {
+    let tag = frame.mini.tag
+    if (tag === undefined) {
+      tag = randName(10)
+      frame.mini.tag = tag
     }
+    lines.splice(1, 0, `    ${tag}`)
+    frame = frame.parent
   }
   lines.push("  `,")
   return lines.join("\n")
