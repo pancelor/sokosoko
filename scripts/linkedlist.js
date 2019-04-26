@@ -76,6 +76,15 @@ function equals(listA, listB, cmp=(a,b)=>a===b) {
   return res
 }
 
+function extractLoop(list) {
+  if (list === null) return null
+  if (list.iting) return list
+  list.iting = true
+  const res = extractLoop(list.parent)
+  list.iting = false
+  return res
+}
+
 function map(list, cb) {
   if (list === null) return null
   const [loop, par] = loopProtection(list, () => {
@@ -195,6 +204,11 @@ RegisterTest("linkedlist", () => {
   assert(!equals(loop3, loop1))
   assert(!equals(loop3, loop2))
   assert( equals(loop3, loop3))
+
+  // extractLoop
+  console.log("l0", lshow(extractLoop(l0)))
+  console.log("l1", lshow(extractLoop(l1)))
+  console.log("loop1", lshow(extractLoop(loop1)))
 
   // tricky loops: (regression tests)
   assertEqual(makeLoop(null), null)
