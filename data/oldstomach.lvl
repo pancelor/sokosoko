@@ -17,9 +17,9 @@ levelData.push({
     x..xx..x
     x...x.xx
     x.xxx.xx
-    xxx.x...
-    xxx.xxxx
-    xxx.xxxx
+    xxxxx...
+    xx..xxxx
+    xx.xxxxx
 
     room @Red
     xxx.xxxx
@@ -73,11 +73,11 @@ levelData.push({
 
     room @Black
     xxxxxxxx
-    xx.xxxxx
+    x..xxxxx
     x.....xx
     x...x.xx
     x.x.x..x
-    xxx.xx.x
+    x.x.xx.x
     xxx....x
     xxxxxxxx
 
@@ -102,7 +102,7 @@ levelData.push({
     xxxxxxxx
   `,
   actorData: `
-    Flag Brown 3 5
+    Flag Brown 3 6
     Player Brown 6 2
     Mini Yellow 3 4 Red
     Mini Blue 1 1 Blue
