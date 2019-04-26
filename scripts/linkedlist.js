@@ -29,6 +29,15 @@ function equals(listA, listB, cmp=(a,b)=>a===b) {
   return cmp(listA.data, listB.data) && equals(listA.parent, listB.parent)
 }
 
+function createLoop(list, loopPoint) {
+  // points the last element of list to loopPoint
+  assert(list)
+  while (list.parent) {
+    list = list.parent
+  }
+  list.parent = loopPoint
+}
+
 RegisterTest("linkedlist", () => {
   // normal list stuff
   const l0 = null
@@ -42,4 +51,7 @@ RegisterTest("linkedlist", () => {
   assert(!equals(l1, l0))
   assert( equals(l1, l1))
   assert( equals(l1, l2))
+  // loops
+  createLoop(l1, l1)
+  console.log(lshow(l1))
 })
