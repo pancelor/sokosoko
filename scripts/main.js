@@ -10,7 +10,7 @@ function registerLevelCodeListener() {
 
 function registerKeyListeners() {
   let heldDirs = []
-  let holdInterval
+  let holdTimeout
   const keyDirMap = {
     "KeyD": 0,
     "ArrowRight": 0,
@@ -23,35 +23,28 @@ function registerKeyListeners() {
     "KeyZ": 4,
     "KeyY": 5,
   }
-  const holdIntervalLength = {
+  const holdDelay = {
     // different delays per input type
-    0: 150,
-    1: 150,
-    2: 150,
-    3: 150,
-    4: 75, // undo / redo are shorter
-    5: 75,
-    undefined: 150, // sorta hacky
+    // each entry is [initialDelay, holdDelay]
+    0: [150, 150],
+    1: [150, 150],
+    2: [150, 150],
+    3: [150, 150],
+    4: [300, 75], // undo / redo are different than normal directions
+    5: [300, 75],
   }
-  function onKeyHold() {
+  function onKeyHold(wait=false) {
     const dir = back(heldDirs)
-    if (dir === undefined) {
-      clearInterval(holdInterval)
-      return
-    }
+    if (dir === undefined) return
     ProcessInput(dir)
-  }
-  function startHoldInterval() {
-    clearInterval(holdInterval)
-    onKeyHold()
-    if (!enableHeldButtons) { return }
-    const dir = back(heldDirs)
-    holdInterval = setInterval(onKeyHold, holdIntervalLength[dir])
+    clearTimeout(holdTimeout)
+    if (!enableHeldButtons) return
+    holdTimeout = setTimeout(onKeyHold, holdDelay[dir][wait ? 0 : 1])
   }
   function onKeyDown(e) {
     if (e.code === "KeyR") {
       if (devmode) return // too confusing; ctrl-r instead pls
-      clearInterval(holdInterval)
+      clearTimeout(holdTimeout)
       reset()
       Raf()
     } else if (e.code === "KeyP") {
@@ -87,7 +80,7 @@ function registerKeyListeners() {
         heldDirs.push(dir)
       }
 
-      startHoldInterval()
+      onKeyHold(true)
     }
   }
   function onKeyUp(e) {
@@ -96,7 +89,7 @@ function registerKeyListeners() {
     const keyWasCurrent = (dir === back(heldDirs))
     heldDirs = heldDirs.filter(d=>d!==dir)
     if (keyWasCurrent) {
-      startHoldInterval() // do next held button on stack immediately
+      onKeyHold(false) // do next held button on stack immediately
     }
   }
 
