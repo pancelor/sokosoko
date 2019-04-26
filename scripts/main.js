@@ -52,6 +52,10 @@ function registerKeyListeners() {
     } else if (e.code === "KeyM") {
       muteToggle()
       Raf()
+    } else if (e.code === "KeyQ") {
+      if (!devmode) return
+      cycleStoredActor(e.shiftPressed ? -1 : 1)
+      Raf()
     } else if (e.code === "BracketLeft") {
       maybeLoadPrevLevel()
     } else if (e.code === "BracketRight") {
@@ -64,7 +68,7 @@ function registerKeyListeners() {
       }
       if (devmode) {
         editingTiles = !editingTiles
-        if (editingTiles) storedActor = null
+        storedActor = null
         Raf()
       }
     } else if (e.code === "Escape") {
@@ -255,6 +259,30 @@ function mouseMove({e, pos}) {
       }
     }
   }
+}
+
+let stockActorsPos = 0;
+let stockActors = [
+  "Mini White 0 0 Red",
+  "Mini White 0 0 White",
+  "Mini White 0 0 Blue",
+]
+function cycleStoredActor(scrollAmount) {
+  if (storedActor) {
+    assert(currentEpoch === undefined)
+    StartEpoch() // annoying and hacky, but easier than making die() work better
+    console.log('epoch');
+    storedActor.die()
+    EndEpoch()
+  }
+
+  stockActorsPos += scrollAmount
+  stockActorsPos = saneMod(stockActorsPos, stockActors.length)
+  const a = deserSingleActor(stockActors[stockActorsPos])
+  assert(a)
+  actors.push(a);
+  storedActor = a;
+  storedActor.setDead(true)
 }
 
 function maybeGuiInteract(e) {

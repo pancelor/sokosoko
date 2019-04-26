@@ -129,6 +129,23 @@ function buildDeserActorClass() {
   return res
 }
 
+function deserSingleActor(line, deserActorClass=null) {
+  if (!deserActorClass) deserActorClass = buildDeserActorClass()
+  const match = line.match(/^(?<data>[^@]+)\s*(@(?<tag>[\w\d+]+))?$/)
+  if (!match) return null
+  const { data, tag } = match.groups
+  const type = data.split(' ')[0]
+  const klass = deserActorClass[type]
+  assert(klass !== undefined, `could not find actor type "${type}" for deserialization`)
+  const a = klass.deserialize(data)
+  if (tag) {
+    assert(!taggedActors[tag], `trying to tag multiple actors as @${tag}`)
+    taggedActors[tag] = a.id
+    a.tag = tag
+  }
+  return a
+}
+
 function importActors(actorData) {
   // imports `actorData` into the global var `actors`
   const deserActorClass = buildDeserActorClass()
@@ -137,19 +154,9 @@ function importActors(actorData) {
   taggedActors = {}
   actors = [];
   for (let l of lines) {
-    const match = l.match(/^(?<data>[^@]+)\s*(@(?<tag>[\w\d+]+))?$/)
-    assert(match)
-    const { data, tag } = match.groups
-    const type = data.split(' ')[0]
-    const klass = deserActorClass[type]
-    assert(klass !== undefined, `could not find actor type "${type}" for deserialization`)
-    const a = klass.deserialize(data)
-    actors.push(a);
-    if (tag) {
-      assert(!taggedActors[tag], `trying to tag multiple actors as @${tag}`)
-      taggedActors[tag] = a.id
-      a.tag = tag
-    }
+    const a = deserSingleActor(l, deserActorClass)
+    assert(a)
+    actors.push(a)
   }
 }
 
