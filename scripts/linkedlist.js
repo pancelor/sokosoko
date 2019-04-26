@@ -13,7 +13,7 @@ function loopProtection(node, cb) {
 
 function append(list, data) {
   if (list === null) return cons(data, null)
-  let [loop, par] = loopProtection(list, () => {
+  const [loop, par] = loopProtection(list, () => {
     return append(list.parent, data)
   })
   if (loop) throw new Error("Can't append to a loop")
@@ -22,7 +22,7 @@ function append(list, data) {
 
 function concat(listA, listB) {
   if (listA === null) return listB
-  let [loop, par] = loopProtection(listA, () => {
+  const [loop, par] = loopProtection(listA, () => {
     return concat(listA.parent, listB)
   })
   if (loop) throw new Error("Can't concat to a loop")
@@ -31,7 +31,7 @@ function concat(listA, listB) {
 
 function length(list) {
   if (list === null) return 0
-  let [loop, par] = loopProtection(list, () => {
+  const [loop, par] = loopProtection(list, () => {
     return length(list.parent)
   })
   if (loop) return Infinity
@@ -41,7 +41,7 @@ function length(list) {
 function lshow(node, n=100) {
   if (node === null) return "null"
 
-  let [loop, par] = loopProtection(node, () => {
+  const [loop, par] = loopProtection(node, () => {
     assert(n > 0, "real (but undetected) infinite loop in lshow")
     return lshow(node.parent, n-1)
   })
@@ -58,8 +58,16 @@ function equals(listA, listB, cmp=(a,b)=>a===b) {
 
   if (!cmp(listA.data, listB.data)) return false
 
-  if (listA.iting) return listB.iting
-  if (listB.iting) return listA.iting // always false
+  if (listA.iting) {
+    const eq = listA === listB
+    if (eq) {
+      assert(listB.iting)
+      return true
+    } else {
+      return false
+    }
+  }
+  if (listB.iting) return false
   listA.iting = true
   listB.iting = true
   const res = equals(listA.parent, listB.parent)
@@ -68,14 +76,28 @@ function equals(listA, listB, cmp=(a,b)=>a===b) {
   return res
 }
 
+function map(list, cb) {
+  if (list === null) return null
+  const [loop, par] = loopProtection(list, () => {
+    return map(list.parent, cb)
+  })
+  if (loop) {
+    // makeLoop(list)
+    return list
+  }
+  return cons(cb(list.data), par)
+}
+
 function makeLoop(list) {
   // points the last element of list to list
   if (list === null) return null
+  // const [loop, par]
   let node = list
   while (node.parent) {
     node = node.parent
   }
   node.parent = list
+  return list
 }
 
 RegisterTest("linkedlist", () => {
@@ -142,7 +164,7 @@ RegisterTest("linkedlist", () => {
   // loops
   //
 
-  const loop = concat(l1, null); makeLoop(loop)
+  const loop = makeLoop(concat(l1, null))
   assert(equals(l1, l2)) // didnt mutate l1
   assertEqual(lshow(loop), "(cons 2 (cons 4 (cons 7 <loop->2>)))")
   expectError(() => append(loop, 5), "Can't append to a loop")
@@ -156,9 +178,9 @@ RegisterTest("linkedlist", () => {
   assert(!equals(l3, loop))
   assert(!equals(l4, loop))
 
-  const loop1 = cons(6, cons(7, null)); makeLoop(loop1)
-  const loop2 = cons(6, cons(7, cons(8, null))); makeLoop(loop2)
-  const loop3 = cons(6, cons(7, cons(6, cons(7, null)))); makeLoop(loop3)
+  const loop1 = makeLoop(cons(6, cons(7, null)))
+  const loop2 = makeLoop(cons(6, cons(7, cons(8, null))))
+  const loop3 = makeLoop(cons(6, cons(7, cons(6, cons(7, null)))))
   assertEqual(lshow(loop1), "(cons 6 (cons 7 <loop->6>))")
   assertEqual(lshow(loop2), "(cons 6 (cons 7 (cons 8 <loop->6>)))")
   assertEqual(lshow(loop3), "(cons 6 (cons 7 (cons 6 (cons 7 <loop->6>))))")
@@ -174,5 +196,28 @@ RegisterTest("linkedlist", () => {
   assert(!equals(loop3, loop2))
   assert( equals(loop3, loop3))
 
+  // tricky loops: (regression tests)
   assertEqual(makeLoop(null), null)
+  assert(!equals(
+    cons(1, makeLoop(cons(2, null))), // 1 222...
+    makeLoop(cons(1, cons(2, null))))) // 1 21 21 21...
+  assert(!equals(
+    makeLoop(cons(6, cons(7, cons(0, cons(6, cons(7, null)))))), // 67067 67067 67067...
+    cons(6, cons(7, cons(0, makeLoop(cons(6, cons(7, null)))))))) // 670 67 67 67...
+
+  //
+  // map
+  //
+  assert(equals(
+    map(l1, x=>x*10),
+    cons(20, cons(40, cons(70, null)))))
+  assert(equals(l1, l2)) // didn't mutate l1
+
+  const expected = cons(30, makeLoop(cons(60, cons(70, null))))
+  const actual = map(cons(3, loop1), x=>x*10)
+  console.log(lshow(expected))
+  console.log(lshow(actual))
+  assert(equals(
+    actual,
+    expected))
 })
