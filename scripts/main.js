@@ -292,11 +292,11 @@ function maybeChangeViewFrameStack(e, pos) {
   if (!pos) {
     const allowedToZoomOut = devmode || (viewFrameStack.length() > player.frameStack.length())
     if (!allowedToZoomOut) return false
-    if (viewFrameStack.parent) {
-      viewFrameStack = viewFrameStack.parent
+    if (viewFrameStack.parent()) {
+      viewFrameStack = viewFrameStack.parent()
       if (storedActor === player) {
-        assert(player.frameStack.parent)
-        player.frameStack = player.frameStack.parent
+        assert(player.frameStack.parent())
+        player.frameStack = player.frameStack.parent()
       }
       return true
     }

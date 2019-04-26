@@ -360,11 +360,11 @@ async function DrawMinis(ctxMap) {
   let pfs = player.frameStack
   if (viewFrameStack.length() < pfs.length()) {
     while (viewFrameStack.length() + 1 < pfs.length()) {
-      assert(pfs.mini && pfs.parent)
-      pfs = pfs.parent
+      assert(pfs.mini() && pfs.parent())
+      pfs = pfs.parent()
     }
     assert(viewFrameStack.length() + 1  === pfs.length())
-    const m = pfs.mini
+    const m = pfs.mini()
     const dest = m.pos.scale(tileSize)
     ctxWith(ctxMap, {strokeStyle: 'white', globalAlpha: '0.85', lineWidth: 4}, () => {
       ctxMap.strokeRect(dest.x, dest.y, tileSize, tileSize)
@@ -376,13 +376,13 @@ let viewFrameStack
 async function DrawView(ctx) {
   const screenshotMap = await createImageBitmap(canvasMap)
   const innerFrame = viewFrameStack
-  const outerFrame = viewFrameStack.parent
+  const outerFrame = viewFrameStack.parent()
 
   ctxWith(ctx, {fillStyle: 'white'}, cls)
 
   // draw outer border
   if (outerFrame) {
-    const mini = innerFrame.mini
+    const mini = innerFrame.mini()
     assert(mini)
     assert(viewOffset().equals(4, 4)) // for (8,8): 2->3, 0.5->1
     const outerW = 2*tileSize

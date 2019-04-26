@@ -247,19 +247,19 @@ function maybeTeleOut_(that, dir) {
 
   // teleport
   let fs = that.frameStack
-  let mini = fs.mini
+  let mini = fs.mini()
   // START SELF-TELE BULLSHIT
   let depth = 0
   while (that === mini) {
     depth += 1
     console.warn("teleporting out of... myself?")
-    fs = fs.parent
-    mini = fs.mini
+    fs = fs.parent()
+    mini = fs.mini()
   }
   assert(mini)
   // END SELF-TELEBULLSHIT
   that.setPos(mini.pos)
-  that.setFrameStack(fs.parent)
+  that.setFrameStack(fs.parent())
 
   // that has now teleported; try to move
   if (maybePushableUpdate(that, dir)) {
@@ -294,11 +294,11 @@ function maybeTeleOut_(that, dir) {
 
       // HACK: assume the player directly pushed `that` from within the same
       // frameStack, not from afar using, idk a box stick
-      assert(player.frameStack.mini === that)
+      assert(player.frameStack.mini() === that)
       let pfs = player.frameStack
       let sent2 = getSafeSentinel()
       while (sent2()) {
-        pfs = pfs.parent
+        pfs = pfs.parent()
         assert(pfs)
         if (!pfs || pfs === that.frameStack) break
       }
@@ -320,9 +320,9 @@ function maybeTeleOut_(that, dir) {
       let minisToStack = []
       let sent3 = getSafeSentinel()
       while (sent3()) {
-        minisToStack.push(pfs.mini)
-        if (pfs.mini === that) break
-        pfs = pfs.parent
+        minisToStack.push(pfs.mini())
+        if (pfs.mini() === that) break
+        pfs = pfs.parent()
       }
 
       const top = new Frame(that, null) // gonna edit `parent` later
@@ -330,7 +330,7 @@ function maybeTeleOut_(that, dir) {
       for (const m of minisToStack.reverse()) {
         loopFs = new Frame(m, loopFs)
       }
-      top.parent = loopFs
+      top.parent_ = loopFs
       player.setFrameStack(loopFs)
     }
 
@@ -377,17 +377,17 @@ function maybeTeleIn_(that, dir) {
       function insertFrame(this_, mini_, targetParent) {
         if (this_.constructor === FrameBase) return this_
         assert(targetParent.constructor === Mini)
-        const newParent_ = insertFrame(this_.parent, mini_, targetParent)
+        const newParent_ = insertFrame(this_.parent(), mini_, targetParent)
         return this_.loopProtection(() => {
-          if (this_.mini.innerRoom === targetParent.innerRoom) {
-            return new Frame(mini_, new Frame(this_.mini, newParent_))
+          if (this_.innerRoom() === targetParent.innerRoom) {
+            return new Frame(mini_, new Frame(this_.mini(), newParent_))
           } else {
-            return new Frame(this_.mini, newParent_)
+            return new Frame(this_.mini(), newParent_)
           }
         })
       }
-      const newParent = insertFrame(player.frameStack.parent, mini, oldFrameStack.mini)
-      const newFs = new Frame(player.frameStack.mini, newParent)
+      const newParent = insertFrame(player.frameStack.parent(), mini, oldFrameStack.mini())
+      const newFs = new Frame(player.frameStack.mini(), newParent)
       player.setFrameStack(newFs)
     }
     return r(true)

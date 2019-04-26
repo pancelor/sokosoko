@@ -258,14 +258,14 @@ function exportFrameStackString() {
   const lines = []
   lines.push("  frameStackData: `")
   let frame = player.frameStack
-  while (frame.parent) {
-    let tag = frame.mini.tag
+  while (frame.parent()) {
+    let tag = frame.mini().tag
     if (tag === undefined) {
       tag = randName(10)
-      frame.mini.tag = tag
+      frame.mini().tag = tag
     }
     lines.splice(1, 0, `    ${tag}`)
-    frame = frame.parent
+    frame = frame.parent()
   }
   lines.push("  `,")
   return lines.join("\n")
