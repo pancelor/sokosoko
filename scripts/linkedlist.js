@@ -58,16 +58,19 @@ function equals(listA, listB, cmp=(a,b)=>a===b) {
 
   if (!cmp(listA.data, listB.data)) return false
 
-  let [loop, par] = loopProtection(listA, () => {
-    return equals(listA.parent, listB.parent)
-  })
-  if (loop) return false // TODO
-  return par
+  if (listA.iting) return listB.iting
+  if (listB.iting) return listA.iting // always false
+  listA.iting = true
+  listB.iting = true
+  const res = equals(listA.parent, listB.parent)
+  listA.iting = false
+  listB.iting = false
+  return res
 }
 
-function createLoop(list) {
-  // points the last element of list to loopPoint
-  assert(list)
+function makeLoop(list) {
+  // points the last element of list to list
+  if (list === null) return null
   let node = list
   while (node.parent) {
     node = node.parent
@@ -76,8 +79,11 @@ function createLoop(list) {
 }
 
 RegisterTest("linkedlist", () => {
+  //
   // normal list stuff
-  // also, make sure append and concat are nondestructive
+  //
+
+  // make sure append and concat are nondestructive
   const l0 = null
   const l1 = cons(2, cons(4, cons(7, null)))
   const l2 = cons(2, cons(4, cons(7, null)))
@@ -132,9 +138,11 @@ RegisterTest("linkedlist", () => {
     append(null, 1),
     cons(1, null)))
 
+  //
   // loops
-  const loop = concat(l1, null)
-  createLoop(loop)
+  //
+
+  const loop = concat(l1, null); makeLoop(loop)
   assert(equals(l1, l2)) // didnt mutate l1
   assertEqual(lshow(loop), "(cons 2 (cons 4 (cons 7 <loop->2>)))")
   expectError(() => append(loop, 5), "Can't append to a loop")
@@ -142,5 +150,29 @@ RegisterTest("linkedlist", () => {
   assertEqual(length(loop), Infinity)
   assert(!equals(loop, l1))
   assert(!equals(loop, null))
-  assert( equals(loop, loop))
+  assert(!equals(l0, loop))
+  assert(!equals(l1, loop))
+  assert(!equals(l2, loop))
+  assert(!equals(l3, loop))
+  assert(!equals(l4, loop))
+
+  const loop1 = cons(6, cons(7, null)); makeLoop(loop1)
+  const loop2 = cons(6, cons(7, cons(8, null))); makeLoop(loop2)
+  const loop3 = cons(6, cons(7, cons(6, cons(7, null)))); makeLoop(loop3)
+  assertEqual(lshow(loop1), "(cons 6 (cons 7 <loop->6>))")
+  assertEqual(lshow(loop2), "(cons 6 (cons 7 (cons 8 <loop->6>)))")
+  assertEqual(lshow(loop3), "(cons 6 (cons 7 (cons 6 (cons 7 <loop->6>))))")
+  assert( equals(loop1, loop1))
+  assert(!equals(loop1, loop2))
+  assert(!equals(loop1, loop3)) // tricky
+
+  assert(!equals(loop2, loop1))
+  assert( equals(loop2, loop2))
+  assert(!equals(loop2, loop3))
+
+  assert(!equals(loop3, loop1))
+  assert(!equals(loop3, loop2))
+  assert( equals(loop3, loop3))
+
+  assertEqual(makeLoop(null), null)
 })
