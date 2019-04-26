@@ -313,25 +313,25 @@ function maybeTeleOut_(that, dir) {
     if (that.constructor === Mini && player.frameStack.hasMini(that)) {
       // todo: make the framestack self-loop
       // for now though; die
-      PlayAndRecordSound(sndRip)
-      player.die()
+      // PlayAndRecordSound(sndRip)
+      // player.die()
 
-      // let pfs = player.frameStack
-      // let minisToStack = []
-      // let sent3 = getSafeSentinel()
-      // while (sent3()) {
-      //   minisToStack.push(pfs.mini)
-      //   if (pfs.mini === that) break
-      //   pfs = pfs.parent
-      // }
+      let pfs = player.frameStack
+      let minisToStack = []
+      let sent3 = getSafeSentinel()
+      while (sent3()) {
+        minisToStack.push(pfs.mini)
+        if (pfs.mini === that) break
+        pfs = pfs.parent
+      }
 
-      // const top = new Frame(that, null) // gonna edit `parent` later
-      // let loopFs = top
-      // for (const m of minisToStack.reverse()) {
-      //   loopFs = new Frame(m, loopFs)
-      // }
-      // top.parent = loopFs
-      // player.setFrameStack(loopFs)
+      const top = new Frame(that, null) // gonna edit `parent` later
+      let loopFs = top
+      for (const m of minisToStack.reverse()) {
+        loopFs = new Frame(m, loopFs)
+      }
+      top.parent = loopFs
+      player.setFrameStack(loopFs)
     }
 
     return r(true)

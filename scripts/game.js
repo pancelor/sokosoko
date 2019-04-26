@@ -653,6 +653,10 @@ class Mini extends Actor {
   playMoveSound() {
     PlayAndRecordSound(sndShove)
   }
+
+  newparent() {
+    return this.pos.room()
+  }
 }
 
 class FakeFlag extends Actor {}
