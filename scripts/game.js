@@ -136,9 +136,8 @@ class RoomPos extends BasePos {
 class FrameBase {
   constructor(innerRoom_) {
     assert(innerRoom_)
+    this.ll = null
     this.innerRoom_ = innerRoom_
-    this.mini_ = null
-    this.parent_ = null
   }
   serialize() {
     return `${this.constructor.name} ${this.innerRoom_.name}`
@@ -162,7 +161,7 @@ class FrameBase {
   }
 
   length() {
-    return 1
+    return length(this.ll)
   }
 
   equals(other) {
@@ -173,7 +172,7 @@ class FrameBase {
 
 class Frame {
   constructor(mini, parent) {
-    this.mini_ = mini
+    this.ll = cons(mini, parent.ll)
     this.parent_ = parent
   }
   serialize() {
@@ -184,7 +183,7 @@ class Frame {
   }
 
   mini() {
-    return this.mini_
+    return this.ll.data
   }
   parent() {
     return this.parent_
