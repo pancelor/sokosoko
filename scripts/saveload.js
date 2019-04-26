@@ -169,21 +169,24 @@ function importFrameStack(frameStackData) {
 
   let stack = null
   for (const l of lines) {
+    const match = l.match(/^(?<tag>[\w\d_]+)$/)
+    assert(match, `bad tag syntax: ${l}`)
+    const tag = match.groups.tag
+    const a = taggedActors[tag]
+    assert(a, `tag "${tag}" not found while importing frameStackData`)
+    const mini = getActorId(a)
+    assert(mini)
     if (!stack) {
       // first time through the loop
-      const room = Room.findName(l)
-      assert(room)
-      stack = new FrameBase(room)
-    } else {
-      const match = l.match(/^(?<tag>[\w\d_]+)$/)
-      assert(match, `bad tag syntax: ${l}`)
-      const tag = match.groups.tag
-      const a = taggedActors[tag]
-      assert(a, `tag "${tag}" not found while importing frameStackData`)
-      const mini = getActorId(a)
-      assert(mini)
-      stack = new Frame(mini, stack)
+      stack = new FrameBase(mini.pos.room())
     }
+    stack = new Frame(mini, stack)
+  }
+  if (!stack) {
+    // frameStackData was empty; default to a white room
+    const room = Room.findName("White")
+    assert(room)
+    stack = new FrameBase(room)
   }
   player = allActors(Player)[0] // hacky; dup
   assert(player)
