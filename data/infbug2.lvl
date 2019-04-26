@@ -51,7 +51,6 @@ levelData.push({
     Mini Green 7 5 Blue
   `,
   frameStackData: `
-    Purple
     m44
   `,
 })

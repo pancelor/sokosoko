@@ -39,6 +39,5 @@ levelData.push({
     Player White 4 4
   `,
   frameStackData: `
-    White
   `,
 })

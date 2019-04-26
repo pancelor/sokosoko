@@ -561,9 +561,13 @@ function viewOffset() {
 
 function reserializeAllLevels() {
   for (const { name } of levelData) {
-    assert(Import(name))
-    SaveLevel(name)
+    reserializeLevel(name)
   }
+}
+
+function reserializeLevel(name) {
+  assert(Import(name))
+  SaveLevel(name)
 }
 
 //

@@ -126,7 +126,6 @@ levelData.push({
     Mini White 5 5 Black
   `,
   frameStackData: `
-    White
     base
   `,
 })

@@ -117,6 +117,5 @@ levelData.push({
     Crate Red 6 7 0
   `,
   frameStackData: `
-    White
   `,
 })

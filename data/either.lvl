@@ -123,7 +123,6 @@ levelData.push({
     Mini Yellow 2 5 Yellow
   `,
   frameStackData: `
-    Black
     m1
   `,
 })

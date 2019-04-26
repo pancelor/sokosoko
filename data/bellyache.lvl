@@ -129,7 +129,6 @@ levelData.push({
     Crate Blue 5 3 0
   `,
   frameStackData: `
-    Blue
     m3
     m4
     m2

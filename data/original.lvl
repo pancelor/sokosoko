@@ -105,7 +105,6 @@ levelData.push({
     Mini Orange 4 4 White @m1
   `,
   frameStackData: `
-    Orange
     m1
     miniYellow
   `,

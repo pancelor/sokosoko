@@ -84,7 +84,6 @@ levelData.push({
     Mini Yellow 2 5 Red
   `,
   frameStackData: `
-    White
     miniOuter1
     miniOuter2
     miniBlack2
