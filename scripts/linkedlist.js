@@ -38,58 +38,73 @@ function length(list) {
   return 1 + par
 }
 
-function lshow(node, n=100) {
+function lshow(node) {
   if (node === null) return "null"
 
   const [loop, par] = loopProtection(node, () => {
-    assert(n > 0, "real (but undetected) infinite loop in lshow")
-    return lshow(node.parent, n-1)
+    return lshow(node.parent)
   })
   if (loop) return `<loop->${node.data}>`
   return `(cons ${node.data} ${par})`
 }
 
 function equals(listA, listB, cmp=(a,b)=>a===b) {
-  const aNull = listA === null
-  const bNull = listB === null
+  const {nonLoopPart: nlA, loopPart: lA} = splitOnLoop(listA)
+  const {nonLoopPart: nlB, loopPart: lB} = splitOnLoop(listB)
+  return equals_(nlA, nlB, cmp) && equals_(lA, lB, cmp)
+}
+
+function equals_(listA, listB, cmp=(a,b)=>a===b) {
+  // assert neither listA nor listB has a loop
+
+  const aNull = (listA === null)
+  const bNull = (listB === null)
   if (aNull && bNull) return true
   if (aNull !== bNull) return false
   assert(!aNull && !bNull)
 
   if (!cmp(listA.data, listB.data)) return false
 
-  if (listA.iting) {
-    const eq = listA === listB
-    if (eq) {
-      assert(listB.iting)
-      return true
-    } else {
-      return false
-    }
-  }
-  if (listB.iting) return false
+  assert(!listA.iting)
+  assert(!listB.iting)
   listA.iting = true
   listB.iting = true
-  const res = equals(listA.parent, listB.parent)
+  const res = equals_(listA.parent, listB.parent, cmp)
   listA.iting = false
   listB.iting = false
   return res
 }
 
 function extractLoop(list) {
-  if (list === null) return null
-  const [loop, par] = loopProtection(list, ()=>extractLoop(list.parent))
-  if (loop) return loop
-  return par
+  return splitOnLoop(list).loopPart
+}
+function extractNonLoop(list) {
+  return splitOnLoop(list).nonLoopPart
 }
 
-function map(list, cb) {
-  if (list === null) return null
-  let [loop, par] = loopProtection(list, () => {
-    return map(list.parent, cb)
-  })
-  if (loop) par = loop
-  return cons(cb(list.data), par)
+function splitOnLoop(list) {
+  // returns { nonLoopPart, loopPart }
+  // neither of these are loops; they are both normal linked lists
+  const flattened = []
+  const atlas = new Map()
+  let node = list
+  let i
+  for (i = 0; i < 1000; ++i) {
+    if (!node) break
+    if (atlas.has(node)) break
+    atlas.set(node, i)
+    flattened.push(node.data)
+    node = node.parent
+  }
+  if (i >= 1000) throw new Error("inf loop")
+  let nonLoopPart = null
+  let loopPart = null
+  const iStop = node ? atlas.get(node) : flattened.length
+  for (let i = flattened.length-1; i >= 0; --i) {
+    if (i >= iStop) loopPart = cons(flattened[i], loopPart)
+    else nonLoopPart = cons(flattened[i], nonLoopPart)
+  }
+  return { nonLoopPart, loopPart }
 }
 
 function makeLoop(list) {
@@ -201,39 +216,50 @@ RegisterTest("linkedlist", () => {
   assert( equals(loop3, loop3))
 
   // extractLoop
-  console.log("l0", lshow(extractLoop(l0)))
-  console.log("l1", lshow(extractLoop(l1)))
-  console.log("loop1", lshow(extractLoop(loop1)))
+  assert(equals(extractLoop(l0), null))
+  assert(equals(extractNonLoop(l0), l0))
+  assert(equals(extractLoop(l1), null))
+  assert(equals(extractNonLoop(l1), l1))
+  assert(equals(
+    extractLoop(loop1),
+    cons(6, cons(7, null))))
+  assert(equals(extractNonLoop(loop1), null))
+  assert(equals(
+    extractLoop(cons(1, makeLoop(cons(2, null)))), // 1 222...
+    cons(2, null)))
+  assert(equals(
+    extractNonLoop(cons(1, makeLoop(cons(2, null)))), // 1 222...
+    cons(1, null)))
 
   // tricky loops: (regression tests)
-  // assertEqual(makeLoop(null), null)
-  // assert(!equals(
-  //   cons(1, makeLoop(cons(2, null))), // 1 222...
-  //   makeLoop(cons(1, cons(2, null))))) // 1 21 21 21...
-  // assert(!equals(
-  //   makeLoop(cons(6, cons(7, cons(0, cons(6, cons(7, null)))))), // 67067 67067 67067...
-  //   cons(6, cons(7, cons(0, makeLoop(cons(6, cons(7, null)))))))) // 670 67 67 67...
-  // assert(equals( // failing
-  //   makeLoop(cons(6, cons(7, cons(0, cons(6, cons(7, null)))))), // 67067 67067 67067...
-  //   makeLoop(cons(6, cons(7, cons(0, cons(6, cons(7, null)))))))) // 67067 67067 67067...
+  assertEqual(makeLoop(null), null)
+  assert(!equals(
+    cons(1, makeLoop(cons(2, null))), // 1 222...
+    makeLoop(cons(1, cons(2, null))))) // 1 21 21 21...
+  assert(!equals(
+    makeLoop(cons(6, cons(7, cons(0, cons(6, cons(7, null)))))), // 67067 67067 67067...
+    cons(6, cons(7, cons(0, makeLoop(cons(6, cons(7, null)))))))) // 670 67 67 67...
+  assert(equals( // failing
+    makeLoop(cons(6, cons(7, cons(0, cons(6, cons(7, null)))))), // 67067 67067 67067...
+    makeLoop(cons(6, cons(7, cons(0, cons(6, cons(7, null)))))))) // 67067 67067 67067...
+  assert(equals(
+    cons(6, cons(7, cons(0, makeLoop(cons(6, cons(7, null)))))), // 670 67 67 67...
+    cons(6, cons(7, cons(0, makeLoop(cons(6, cons(7, null)))))))) // 670 67 67 67...
+
+  // //
+  // // map (tabled for now)
+  // //
   // assert(equals(
-  //   cons(6, cons(7, cons(0, makeLoop(cons(6, cons(7, null)))))), // 670 67 67 67...
-  //   cons(6, cons(7, cons(0, makeLoop(cons(6, cons(7, null)))))))) // 670 67 67 67...
+  //   map(l1, x=>x*10),
+  //   cons(20, cons(40, cons(70, null)))))
+  // assert(equals(l1, l2)) // didn't mutate l1
 
-  //
-  // map
-  //
-  assert(equals(
-    map(l1, x=>x*10),
-    cons(20, cons(40, cons(70, null)))))
-  assert(equals(l1, l2)) // didn't mutate l1
-
-  // failing:
-  const expected = cons(30, makeLoop(cons(60, cons(70, null))))
-  const actual = map(cons(3, loop1), x=>x*10)
-  console.log(lshow(expected))
-  console.log(lshow(actual))
-  assert(equals(
-    actual,
-    expected))
+  // // failing:
+  // const expected = cons(30, makeLoop(cons(60, cons(70, null))))
+  // const actual = map(cons(3, loop1), x=>x*10)
+  // console.log(lshow(expected))
+  // console.log(lshow(actual))
+  // assert(equals(
+  //   actual,
+  //   expected))
 })
