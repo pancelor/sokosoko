@@ -42,7 +42,7 @@ function expectError(cb, msgMatch='') {
       throw err
     }
   }
-  throw new Error("expected an error; got none")
+  throw new Error(`expected an error (${msgMatch}); got none`)
 }
 
 function assertObjMatch(actual, expected, _path="") {
