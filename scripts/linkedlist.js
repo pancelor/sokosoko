@@ -3,7 +3,7 @@ function cons(data, list) {
 }
 
 function loopProtection(node, cb) {
-  if (node.iting) return [true, null]
+  if (node.iting) return [node, null]
   node.iting = true
   const res = cb()
   node.iting = false
@@ -78,11 +78,9 @@ function equals(listA, listB, cmp=(a,b)=>a===b) {
 
 function extractLoop(list) {
   if (list === null) return null
-  if (list.iting) return list
-  list.iting = true
-  const res = extractLoop(list.parent)
-  list.iting = false
-  return res
+  const [loop, par] = loopProtection(list, ()=>extractLoop(list.parent))
+  if (loop) return loop
+  return par
 }
 
 function map(list, cb) {
