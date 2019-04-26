@@ -54,6 +54,7 @@ function registerKeyListeners() {
       Raf()
     } else if (e.code === "KeyQ") {
       if (!devmode) return
+      editingTiles = false
       cycleStoredActor(usingStockActors ? (e.shiftKey ? -1 : 1) : 0)
       Raf()
     } else if (e.code === "BracketLeft") {
