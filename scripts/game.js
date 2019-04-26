@@ -137,8 +137,8 @@ class FrameBase {
   constructor(innerRoom_) {
     assert(innerRoom_)
     this.innerRoom_ = innerRoom_
-    this.mini = null
-    this.parent = null
+    this.mini_ = null
+    this.parent_ = null
   }
   serialize() {
     return `${this.constructor.name} ${this.innerRoom_.name}`
@@ -150,9 +150,11 @@ class FrameBase {
   innerRoom() {
     return this.innerRoom_
   }
-
-  mapMini(f) {
-    return []
+  mini() {
+    return this.mini_
+  }
+  parent() {
+    return this.parent_
   }
 
   hasMini(mini) {
@@ -171,18 +173,25 @@ class FrameBase {
 
 class Frame {
   constructor(mini, parent) {
-    this.mini = mini
-    this.parent = parent
+    this.mini_ = mini
+    this.parent_ = parent
   }
   serialize() {
-    return this.loopProtection(()=> `${this.constructor.name} ${this.mini.id} ${this.parent.serialize()}`)
+    return this.loopProtection(()=> `${this.constructor.name} ${this.mini().id} ${this.parent().serialize()}`)
   }
   str() {
-    return this.loopProtection(()=> `${this.parent.str()} | ${this.innerRoom().name}`)
+    return this.loopProtection(()=> `${this.parent().str()} | ${this.innerRoom().name}`)
+  }
+
+  mini() {
+    return this.mini_
+  }
+  parent() {
+    return this.parent_
   }
 
   innerRoom() {
-    return this.mini.innerRoom
+    return this.mini().innerRoom
   }
 
   loopProtection(cb) {
@@ -193,25 +202,22 @@ class Frame {
     delete this[name]
     return res
   }
-  mapMini(f) {
-    return this.loopProtection(()=>[f(this.mini), ...this.parent.mapMini(f)])
-  }
 
   hasMini(mini) {
     // whether the given mini is in this frameStack
-    return this.loopProtection(() => this.mini === mini || this.parent.hasMini(mini))
+    return this.loopProtection(() => this.mini() === mini || this.parent().hasMini(mini))
   }
 
   length() {
-    return this.loopProtection(() => 1 + this.parent.length())
+    return this.loopProtection(() => 1 + this.parent().length())
   }
 
   equals(other) {
     if (other.constructor !== Frame) { return false }
-    if (this.mini !== other.mini) { return false }
+    if (this.mini() !== other.mini()) { return false }
 
-    const p1 = this.parent
-    const p2 = other.parent
+    const p1 = this.parent()
+    const p2 = other.parent()
     if (p1 === null) {
       return (p2 === null)
     } else {
