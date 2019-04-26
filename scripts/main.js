@@ -54,7 +54,7 @@ function registerKeyListeners() {
       Raf()
     } else if (e.code === "KeyQ") {
       if (!devmode) return
-      cycleStoredActor(e.shiftPressed ? -1 : 1)
+      cycleStoredActor(usingStockActors ? (e.shiftKey ? -1 : 1) : 0)
       Raf()
     } else if (e.code === "BracketLeft") {
       maybeLoadPrevLevel()
@@ -238,9 +238,7 @@ function mouseClick({e, pos}) {
   if (!devmode) return
   maybeChangeViewFrameStack(e, pos) // do we want to let non-devmode users use this?
 
-  StartEpoch()
   _devmodeMouseClick(e, pos)
-  EndEpoch()
 }
 
 let mousepos
@@ -259,30 +257,6 @@ function mouseMove({e, pos}) {
       }
     }
   }
-}
-
-let stockActorsPos = 0;
-let stockActors = [
-  "Mini White 0 0 Red",
-  "Mini White 0 0 White",
-  "Mini White 0 0 Blue",
-]
-function cycleStoredActor(scrollAmount) {
-  if (storedActor) {
-    assert(currentEpoch === undefined)
-    StartEpoch() // annoying and hacky, but easier than making die() work better
-    console.log('epoch');
-    storedActor.die()
-    EndEpoch()
-  }
-
-  stockActorsPos += scrollAmount
-  stockActorsPos = saneMod(stockActorsPos, stockActors.length)
-  const a = deserSingleActor(stockActors[stockActorsPos])
-  assert(a)
-  actors.push(a);
-  storedActor = a;
-  storedActor.setDead(true)
 }
 
 function maybeGuiInteract(e) {
@@ -340,6 +314,36 @@ function maybeChangeViewFrameStack(e, pos) {
   return false
 }
 
+let usingStockActors = false;
+let stockActorsPos = 0;
+let stockActors = [
+  "Mini White 0 8 White",
+  "Mini White 0 8 Red",
+  "Mini White 0 8 Orange",
+  "Mini White 0 8 Yellow",
+  "Mini White 0 8 Green",
+  "Mini White 0 8 Blue",
+  "Mini White 0 8 Purple",
+  "Mini White 0 8 Pink",
+  "Mini White 0 8 Brown",
+  "Mini White 0 8 Black",
+  "Crate White 0 8 0",
+  "Player White 0 8 0",
+  "Flag White 0 8 0",
+]
+function cycleStoredActor(scrollAmount) {
+  usingStockActors = true
+  if (storedActor) storedActor.dead = true // avoid undo system
+
+  stockActorsPos += scrollAmount
+  stockActorsPos = saneMod(stockActorsPos, stockActors.length)
+  const a = deserSingleActor(stockActors[stockActorsPos])
+  assert(a)
+  actors.push(a);
+  storedActor = a;
+  storedActor.dead = true // avoid undo system
+}
+
 let editingTiles = false
 function _devmodeMouseClick(e, pos) {
   if (!pos) return
@@ -358,21 +362,24 @@ function _devmodeMouseClick(e, pos) {
         return
       }
 
+      usingStockActors = false
       if (!storedActor) return
-      storedActor.setPos(pos)
-      storedActor.setDead(false)
+      storedActor.pos = pos // avoid undo system
+      storedActor.dead = false // avoid undo system
       storedActor = null
     } else if (e.button === 1) {
       // middle click: copy
+      usingStockActors = false
       storedActor = findActor(null, pos)
-      if (!storedActor) { return }
+      if (!storedActor) return
       storedActor = Actor.clone(storedActor)
-      storedActor.die()
+      storedActor.dead = true // avoid undo system
     } else if (e.button === 2) {
       // right click: cut
+      usingStockActors = false
       storedActor = findActor(null, pos)
-      if (!storedActor) { return }
-      storedActor.die()
+      if (!storedActor) return
+      storedActor.dead = true // avoid undo system
     } else { assert(0, "unknown mouse button") }
   }
 }
@@ -380,23 +387,29 @@ function _devmodeMouseClick(e, pos) {
 function drawDevmode(ctxMap) {
   if (!devmode) { return }
   if (editingTiles) {
-    ctxWith(ctxMap, {globalAlpha: 0.10, fillStyle: "white"}, ()=>{
-      ctxMap.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
+    const room = mousepos.room()
+    if (!room) return
+    const name = room.name
+    const img = document.getElementById(`img${name}Wall`)
+
+    ctxWith(ctxMap, {globalAlpha: 0.50}, ()=>{
+      drawImgMap(ctxMap, img, mousepos)
     })
   } else {
     if (!storedActor) { return }
 
     // mark storedActor
     const { x, y } = storedActor.pos
-    ctxWith(ctxMap, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
+    ctxWith(ctxMap, {globalAlpha: 0.65, fillStyle: "white"}, ()=>{
       ctxMap.fillRect(x*tileSize, y*tileSize, tileSize, tileSize)
     })
 
     // mark mousepos
     drawImgMap(ctxMap, lookupActorImg(storedActor), mousepos)
-    ctxWith(ctxMap, {globalAlpha: 0.5, fillStyle: "white"}, ()=>{
-      ctxMap.fillRect(mousepos.x*tileSize, mousepos.y*tileSize, tileSize, tileSize)
-    })
+    if (storedActor.constructor === Mini) {
+      // this lets you realize you're placing, e.g., a white mini in a white room
+      drawImgMap(ctxMap, imgMiniPlaceholder, mousepos)
+    }
   }
 }
 

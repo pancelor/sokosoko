@@ -138,6 +138,7 @@ function deserSingleActor(line, deserActorClass=null) {
   const klass = deserActorClass[type]
   assert(klass !== undefined, `could not find actor type "${type}" for deserialization`)
   const a = klass.deserialize(data)
+  if (!a) return null
   if (tag) {
     assert(!taggedActors[tag], `trying to tag multiple actors as @${tag}`)
     taggedActors[tag] = a.id
@@ -261,8 +262,8 @@ function exportFrameStackString() {
     } else {
       let tag = frame.mini.tag
       if (tag === undefined) {
-        tag = frame.mini.serialize()
-        console.warn("mini in frameStack doesn't have a tag:", tag)
+        tag = randName(10)
+        frame.mini.tag = tag
       }
       lines.splice(1, 0, `    ${tag}`)
       frame = frame.parent
@@ -278,8 +279,9 @@ function Export(name) {
   lines.push("levelData.push({")
   lines.push(`  name: '${name}',`)
   lines.push(exportTilesString())
+  const fs = exportFrameStackString() // hack: do this first so the actors get auto-tagged if needed
   lines.push(exportActorsString())
-  lines.push(exportFrameStackString())
+  lines.push(fs)
   lines.push("})")
   lines.push("")
   return lines.join("\n")

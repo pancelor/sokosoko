@@ -470,7 +470,8 @@ function lookupActorImg(actor) {
   } else if (cst === Crate) {
     return actor.special ? imgCrateSpecial : imgCrate
   } else if (cst === Mini) {
-    return imgMiniPlaceholder
+    const name = actor.innerRoom.name
+    return document.getElementById(`img${name}Floor`)
   } else if (cst === Flag) {
     return imgFlag
   } else if (cst === FakeFlag) {
