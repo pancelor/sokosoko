@@ -1,0 +1,128 @@
+levelData.push({
+  name: 'riptest1',
+  tileData: `
+    room @White
+    xxx.xxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    x......x
+    x......x
+    .......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Orange
+    xxxxxxxx
+    x......x
+    x......x
+    .......x
+    x......x
+    x......x
+    x......x
+    xxxx.xxx
+
+    room @Yellow
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Blue
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Purple
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Pink
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Brown
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Black
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+  `,
+  actorData: `
+    Flag White 6 1
+    Player White 2 2
+    Crate White 5 1 0
+    Mini Green 1 1 Green
+    Mini Blue 1 1 Blue
+    Mini Purple 1 1 Purple
+    Mini Pink 1 1 Pink
+    Mini Brown 1 1 Brown
+    Mini Black 1 1 Black
+    Mini White 1 4 White @base
+    Mini White 3 2 Red
+    Mini White 3 4 Orange
+    Mini White 4 4 Yellow
+    Mini White 5 4 Green
+    Mini White 3 5 Pink
+    Mini White 4 5 Brown
+    Mini White 5 5 Black
+    Mini Orange 4 7 Red
+    Mini Red 3 3 White
+  `,
+  frameStackData: `
+    base
+  `,
+})
