@@ -251,6 +251,7 @@ function maybeTeleOut_(that, dir) {
   // START SELF-TELE BULLSHIT
   let depth = 0
   while (that === mini) {
+    assert(0)
     depth += 1
     console.warn("teleporting out of... myself?")
     fs = fs.parent
@@ -314,24 +315,24 @@ function maybeTeleOut_(that, dir) {
     if (that.constructor === Mini && includes(player.frameStack, that)) {
       // todo: make the framestack self-loop
       // for now though; die
-      // PlayAndRecordSound(sndRip)
-      // player.die()
+      PlayAndRecordSound(sndRip)
+      player.die()
 
-      let pfs = player.frameStack
-      let minisToStack = []
-      let sent3 = getSafeSentinel()
-      while (sent3()) {
-        minisToStack.push(pfs.data)
-        if (pfs.data === that) break
-        pfs = pfs.parent
-      }
+      // let pfs = player.frameStack
+      // let minisToStack = []
+      // let sent3 = getSafeSentinel()
+      // while (sent3()) {
+      //   minisToStack.push(pfs.data)
+      //   if (pfs.data === that) break
+      //   pfs = pfs.parent
+      // }
 
-      let loopFs = cons(that, null) // gonna edit `parent` later
-      for (const m of minisToStack.reverse()) {
-        loopFs = cons(m, loopFs)
-      }
-      makeLoop(loopFs)
-      player.setFrameStack(loopFs)
+      // let loopFs = cons(that, null) // gonna edit `parent` later
+      // for (const m of minisToStack.reverse()) {
+      //   loopFs = cons(m, loopFs)
+      // }
+      // makeLoop(loopFs)
+      // player.setFrameStack(loopFs)
     }
 
     return r(true)
@@ -344,8 +345,28 @@ const maybeTeleOut = tracer.tracify(maybeTeleOut_)
 
 
 function xxTesting() {
-  // riptest2
-  play("030000003332", 0)
+  reset("riptest2")
+  play("0000103330111122", 0)
+  setTimeout(() => {
+    const that = findActor(Mini, new RoomPos(Room.findName("Red"), 1, 4));
+    console.log("pfs", xx(player.frameStack))
+    console.log("pfs.p", xx(player.frameStack.parent))
+    console.log("pfs.p.p", xx(player.frameStack.parent.parent))
+    console.log("pfs.p.p.p", xx(player.frameStack.parent.parent.parent))
+    console.log("pfs.p.p.p.p", xx(player.frameStack.parent.parent.parent.parent))
+    console.log("-----");
+    player.frameStack.parent.parent.parent = player.frameStack.parent
+    player.frameStack.parent.parent.data = that
+    console.log("pfs", xx(player.frameStack))
+    console.log("pfs.p", xx(player.frameStack.parent))
+    console.log("pfs.p.p", xx(player.frameStack.parent.parent))
+    console.log("pfs.p.p.p", xx(player.frameStack.parent.parent.parent))
+    console.log("pfs.p.p.p.p", xx(player.frameStack.parent.parent.parent.parent))
+  }, 1000)
+}
+
+function xx(node) {
+  return `${innerRoom(node).name} ${node.data.pos && node.data.pos.roomPos().str()}`
 }
 
 // * if we're standing on a mini,

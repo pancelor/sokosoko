@@ -15,11 +15,11 @@ levelData.push({
     xxxxxxxx
     x......x
     x......x
-    x......x
-    ....x..x
-    x...x..x
-    xxxxx..x
-    xxxxxxxx
+    x..xxx.x
+    .....x.x
+    x....x.x
+    xxxx.x.x
+    xxxx.xxx
 
     room @Orange
     xxxxxxxx
@@ -72,7 +72,7 @@ levelData.push({
     xxxxxxxx
 
     room @Pink
-    xxxxxxxx
+    xxxxx.xx
     x......x
     x......x
     x......x
@@ -103,7 +103,7 @@ levelData.push({
   `,
   actorData: `
     Player Red 0 4
-    Mini Yellow 1 2 Red
+    Mini Pink 6 1 Red
     Mini Orange 1 1 Orange
     Mini Green 1 1 Green
     Mini Blue 1 1 Blue
@@ -112,8 +112,8 @@ levelData.push({
     Mini Brown 1 1 Brown
     Mini Black 1 1 Black
     Mini White 3 2 Red @VBMTZYWHOF
-    Mini Red 3 5 Yellow
-    Mini White 3 6 Pink
+    Mini Red 3 4 Yellow
+    Mini Yellow 2 2 Pink
     Mini White 5 5 Black
   `,
   frameStackData: `

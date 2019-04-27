@@ -5,12 +5,12 @@ function serFrame(list) {
   if (!loopPart) {
     return serFrame_(nonLoopPart)
   } else {
-    return `${serFrame_(nonLoopPart)} <LOOP> ${serFrame_(loopPart)}`
+    return `${serFrame_(loopPart)} <LOOP> ${serFrame_(nonLoopPart)}`
   }
 }
 function serFrame_(list) {
   // assert list has no loops
-  if (list === null) return "\\0"
+  if (list === null) return "<null>"
   return `${serFrame_(list.parent)} | ${innerRoom(list).name}`
 }
 
