@@ -291,11 +291,11 @@ function maybeChangeViewFrameStack(e, pos) {
   if (e.button !== 0) return false
   if (!pos) {
     if (!devmode) return false
-    if (viewFrameStack.parent()) {
-      viewFrameStack = viewFrameStack.parent()
+    if (viewFrameStack.parent) {
+      viewFrameStack = viewFrameStack.parent
       if (storedActor === player) {
-        assert(player.frameStack.parent())
-        player.frameStack = player.frameStack.parent()
+        assert(player.frameStack.parent)
+        player.frameStack = player.frameStack.parent
       }
       return true
     }

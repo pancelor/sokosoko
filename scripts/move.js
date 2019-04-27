@@ -247,19 +247,19 @@ function maybeTeleOut_(that, dir) {
 
   // teleport
   let fs = that.frameStack
-  let mini = fs.mini()
+  let mini = fs.data
   // START SELF-TELE BULLSHIT
   let depth = 0
   while (that === mini) {
     depth += 1
     console.warn("teleporting out of... myself?")
-    fs = fs.parent()
-    mini = fs.mini()
+    fs = fs.parent
+    mini = fs.data
   }
   assert(mini)
   // END SELF-TELEBULLSHIT
   that.setPos(mini.pos)
-  that.setFrameStack(fs.parent())
+  that.setFrameStack(fs.parent)
 
   // that has now teleported; try to move
   if (maybePushableUpdate(that, dir)) {
@@ -295,11 +295,11 @@ function maybeTeleOut_(that, dir) {
 
       // HACK: assume the player directly pushed `that` from within the same
       // frameStack, not from afar using, idk a box stick
-      assert(player.frameStack.mini() === that)
+      assert(player.frameStack.data === that)
       let pfs = player.frameStack
       let sent2 = getSafeSentinel()
       while (sent2()) {
-        pfs = pfs.parent()
+        pfs = pfs.parent
         assert(pfs)
         if (!pfs || pfs === that.frameStack) break
       }
@@ -321,9 +321,9 @@ function maybeTeleOut_(that, dir) {
       let minisToStack = []
       let sent3 = getSafeSentinel()
       while (sent3()) {
-        minisToStack.push(pfs.mini())
-        if (pfs.mini() === that) break
-        pfs = pfs.parent()
+        minisToStack.push(pfs.data)
+        if (pfs.data === that) break
+        pfs = pfs.parent
       }
 
       let loopFs = cons(that, null) // gonna edit `parent` later

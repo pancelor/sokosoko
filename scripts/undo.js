@@ -49,8 +49,10 @@ function EndEpoch() {
 
 function propEqual(p1, p2) {
   // TODO: hacky
-  if (p1 && [MapPos, RoomPos, Frame].includes(p1.constructor)) {
+  if (p1 && [MapPos, RoomPos].includes(p1.constructor)) {
     return p1.equals(p2)
+  } else if (p1 && p1.data) { // TODO find better test for framestacks?
+    return equals(p1, p2)
   } else {
     return p1 === p2
   }

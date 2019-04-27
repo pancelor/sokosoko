@@ -267,13 +267,13 @@ async function DrawMinis(ctxMap) {
   }
   // draw highlight if we're zoomed out
   let pfs = player.frameStack
-  if (viewFrameStack.length() < pfs.length()) {
-    while (viewFrameStack.length() + 1 < pfs.length()) {
-      assert(pfs.mini() && pfs.parent())
-      pfs = pfs.parent()
+  if (length(viewFrameStack) < length(pfs)) {
+    while (length(viewFrameStack) + 1 < length(pfs)) {
+      assert(pfs.data && pfs.parent)
+      pfs = pfs.parent
     }
-    assert(viewFrameStack.length() + 1  === pfs.length())
-    const m = pfs.mini()
+    assert(length(viewFrameStack) + 1  === length(pfs))
+    const m = pfs.data
     const dest = m.pos.scale(tileSize)
     ctxWith(ctxMap, {strokeStyle: 'white', globalAlpha: '0.85', lineWidth: 4}, () => {
       ctxMap.strokeRect(dest.x, dest.y, tileSize, tileSize)
@@ -285,13 +285,12 @@ let viewFrameStack
 async function DrawView(ctx) {
   const screenshotMap = await createImageBitmap(canvasMap)
   const innerFrame = viewFrameStack
-  const outerFrame = viewFrameStack.parent()
 
   ctxWith(ctx, {fillStyle: 'white'}, cls)
 
   // draw outer border
-  if (outerFrame) {
-    const mini = innerFrame.mini()
+  if (viewFrameStack.parent) {
+    const mini = innerFrame.data
     assert(mini)
     assert(viewOffset().equals(4, 4)) // for (8,8): 2->3, 0.5->1
     const outerW = 2*tileSize
@@ -326,7 +325,7 @@ async function DrawView(ctx) {
   )
 
   // draw gray if we're zoomed in
-  if (!viewFrameStack.equals(player.frameStack)) {
+  if (!equals(viewFrameStack, player.frameStack)) {
     ctxWith(ctx, {fillStyle: 'white', globalAlpha: "0.35"}, cls)
   }
 }
@@ -337,7 +336,7 @@ function DrawMisc(ctxView) {
   const dest = viewOffset().scale(tileSize)
 
   // draw solid player if we're zoomed in
-  if (viewFrameStack.equals(player.frameStack) && !player.dead) {
+  if (equals(viewFrameStack, player.frameStack) && !player.dead) {
     drawImgMap(ctxView, lookupActorImg(player), player.pos.roomPos().add(viewOffset())) // v hacky
   }
 
