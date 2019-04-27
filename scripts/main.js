@@ -226,7 +226,7 @@ function translateMouseFromView(e) {
   let x = Math.floor(e.offsetX / tileSize)
   let y = Math.floor(e.offsetY / tileSize)
   let {x: dx, y: dy} = viewOffset().scale(-1)
-  const room = viewFrameStack.data.innerRoom
+  const room = innerRoom(viewFrameStack)
   const roomPos = new RoomPos(room, x+dx, y+dy)
   if (!roomPos.inbounds()) { return { e, pos: null } }
 

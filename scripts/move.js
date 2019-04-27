@@ -242,7 +242,7 @@ function maybeTeleOut_(that, dir) {
     that.setFrameStack(oldFrameStack)
   })
 
-  const outPos = that.frameStack.data.innerRoom.openings()[dir] // the logic near here can be simplified/sped up; prolly doesn't matter tho
+  const outPos = innerRoom(that.frameStack).openings()[dir] // the logic near here can be simplified/sped up; prolly doesn't matter tho
   if (!outPos || !outPos.addDir(dir).equals(that.pos)) return r(false)
 
   // teleport
@@ -373,7 +373,7 @@ function maybeTeleIn_(that, dir) {
     //   can assume that the turn is over now, since this chain of movement
     //   finished successfully?
     if (that.constructor === Mini) {
-      const targetRoom = oldFrameStack.data.innerRoom
+      const targetRoom = innerRoom(oldFrameStack)
       const newParent = insertAll(
         player.frameStack.parent,
         m=>m.innerRoom === targetRoom,

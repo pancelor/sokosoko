@@ -133,8 +133,6 @@ class RoomPos extends BasePos {
   }
 }
 
-let baseRoom
-
 class Room {
   constructor(name, begin, end) {
     this.name = name
@@ -284,13 +282,12 @@ async function DrawMinis(ctxMap) {
 let viewFrameStack
 async function DrawView(ctx) {
   const screenshotMap = await createImageBitmap(canvasMap)
-  const innerFrame = viewFrameStack
 
   ctxWith(ctx, {fillStyle: 'white'}, cls)
 
   // draw outer border
   if (viewFrameStack.parent) {
-    const mini = innerFrame.data
+    const mini = viewFrameStack.data
     assert(mini)
     assert(viewOffset().equals(4, 4)) // for (8,8): 2->3, 0.5->1
     const outerW = 2*tileSize
@@ -317,7 +314,7 @@ async function DrawView(ctx) {
   // draw inner room
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
-  const src = innerFrame.data.innerRoom.mapCorner().scale(tileSize)
+  const src = innerRoom(viewFrameStack).mapCorner().scale(tileSize)
   const dest = viewOffset().scale(tileSize)
   ctx.drawImage(screenshotMap,
     src.x, src.y, innerW, innerH,

@@ -11,10 +11,19 @@ function serFrame(list) {
 function serFrame_(list) {
   // assert list has no loops
   if (list === null) return "\\0"
-  const room = list.data
-  return `${serFrame_(list.parent)} | ${room.innerRoom.name}`
+  return `${serFrame_(list.parent)} | ${innerRoom(list).name}`
 }
 
+function innerRoom(node) {
+  const { data } = node
+  if (data.constructor === Room) {
+    assert(!node.parent)
+    return data
+  } else {
+    assert(data && data.constructor === Mini)
+    return data.innerRoom
+  }
+}
 
 function cons(data, list) {
   return { data, parent: list }

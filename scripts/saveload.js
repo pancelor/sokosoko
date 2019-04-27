@@ -178,14 +178,17 @@ function importFrameStack(frameStackData) {
     assert(mini)
     if (!stack) {
       // first time through the loop
-      baseRoom = mini.pos.room()
+      const room = mini.pos.room()
+      assert(room)
+      stack = cons(room, stack)
     }
     stack = cons(mini, stack)
   }
   if (!stack) {
     // frameStackData was empty; default to a white room
     room = Room.findName("White")
-    assert(baseRoom)
+    assert(room)
+    stack = cons(room, stack)
   }
   player = allActors(Player)[0] // hacky; dup
   assert(player)
@@ -257,14 +260,14 @@ function exportFrameStackString() {
   const lines = []
   lines.push("  frameStackData: `")
   let frame = player.frameStack
-  while (frame.parent()) {
-    let tag = frame.mini().tag
+  while (frame.parent) {
+    let tag = frame.data.tag
     if (tag === undefined) {
       tag = randName(10)
-      frame.mini().tag = tag
+      frame.data.tag = tag
     }
     lines.splice(1, 0, `    ${tag}`)
-    frame = frame.parent()
+    frame = frame.parent
   }
   lines.push("  `,")
   return lines.join("\n")
