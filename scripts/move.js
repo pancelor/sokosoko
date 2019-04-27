@@ -314,24 +314,24 @@ function maybeTeleOut_(that, dir) {
     if (that.constructor === Mini && includes(player.frameStack, that)) {
       // todo: make the framestack self-loop
       // for now though; die
-      PlayAndRecordSound(sndRip)
-      player.die()
+      // PlayAndRecordSound(sndRip)
+      // player.die()
 
-      // let pfs = player.frameStack
-      // let minisToStack = []
-      // let sent3 = getSafeSentinel()
-      // while (sent3()) {
-      //   minisToStack.push(pfs.data)
-      //   if (pfs.data === that) break
-      //   pfs = pfs.parent
-      // }
+      let pfs = player.frameStack
+      let minisToStack = []
+      let sent3 = getSafeSentinel()
+      while (sent3()) {
+        minisToStack.push(pfs.data)
+        if (pfs.data === that) break
+        pfs = pfs.parent
+      }
 
-      // let loopFs = cons(that, null) // gonna edit `parent` later
-      // for (const m of minisToStack.reverse()) {
-      //   loopFs = cons(m, loopFs)
-      // }
-      // makeLoop(loopFs)
-      // player.setFrameStack(loopFs)
+      let loopFs = cons(that, null) // gonna edit `parent` later
+      for (const m of minisToStack.reverse()) {
+        loopFs = cons(m, loopFs)
+      }
+      makeLoop(loopFs)
+      player.setFrameStack(loopFs)
     }
 
     return r(true)
@@ -341,6 +341,12 @@ function maybeTeleOut_(that, dir) {
 }
 // const maybeTeleOut = pushableCached(tracer.tracify(maybeTeleOut_), cullInfinite)
 const maybeTeleOut = tracer.tracify(maybeTeleOut_)
+
+
+function xxTesting() {
+  // riptest2
+  play("030000003332", 0)
+}
 
 // * if we're standing on a mini,
 //   * (remember, we've already optimistically moved)

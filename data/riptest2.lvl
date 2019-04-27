@@ -1,0 +1,122 @@
+levelData.push({
+  name: 'riptest2',
+  tileData: `
+    room @White
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    ....x..x
+    x...x..x
+    xxxxx..x
+    xxxxxxxx
+
+    room @Orange
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Yellow
+    xx.xxxxx
+    x......x
+    .......x
+    xxx....x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Blue
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Purple
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Pink
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Brown
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Black
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+  `,
+  actorData: `
+    Player Red 0 4
+    Mini Yellow 1 2 Red
+    Mini Orange 1 1 Orange
+    Mini Green 1 1 Green
+    Mini Blue 1 1 Blue
+    Mini Purple 1 1 Purple
+    Mini Pink 1 1 Pink
+    Mini Brown 1 1 Brown
+    Mini Black 1 1 Black
+    Mini White 3 2 Red @VBMTZYWHOF
+    Mini Red 3 5 Yellow
+    Mini White 3 6 Pink
+    Mini White 5 5 Black
+  `,
+  frameStackData: `
+    VBMTZYWHOF
+  `,
+})
