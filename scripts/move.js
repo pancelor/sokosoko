@@ -248,66 +248,36 @@ function maybeTeleOut_(that, dir) {
   // teleport
   let fs = that.frameStack
   let mini = fs.data
-  // START SELF-TELE BULLSHIT
-  let depth = 0
-  while (that === mini) {
-    assert(0)
-    depth += 1
-    console.warn("teleporting out of... myself?")
-    fs = fs.parent
-    mini = fs.data
+  if (mini.constructor === Room) {
+    // we've somehow reached the edge of the topmost room
+    // (this _is_ possible; e.g. in dup1)
+    return r(false)
   }
-  assert(mini)
-  // END SELF-TELEBULLSHIT
+  if (that === mini) {
+    console.warn("teleporting out of... myself?")
+
+    spaceRipped = true
+
+    let pfs = player.frameStack
+    let nonLoopPart = [that.innerRoom] // create a new frame base
+    let sent0 = getSafeSentinel()
+    while (sent0()) {
+      const { data } = pfs
+      if (data === mini) break
+      nonLoopPart.push(data)
+      pfs = pfs.parent
+    }
+
+    nonLoopPart = fromArray(nonLoopPart)
+    player.setFrameStack(nonLoopPart)
+
+    return r(true)
+  }
   that.setPos(mini.pos)
   that.setFrameStack(fs.parent)
 
   // that has now teleported; try to move
   if (maybePushableUpdate(that, dir)) {
-    // RE-START SELF-TELE BULLSHIT
-    if (depth) {
-      assert(0)
-      assert(that.constructor === Mini)
-      PlayAndRecordSound(sndDuplicate)
-      const clones = [that]
-      let nextMini = that
-      let sent = getSafeSentinel(100)
-      const lifter = { frameStack: that.frameStack } // hack
-      while (sent()) {
-        nextMini = Actor.clone(nextMini)
-        if (lifted(lifter, nextMini, () => {
-          const res = !maybePushableUpdate(nextMini, dir)
-          lifter.frameStack = nextMini.frameStack // store lifter state for next mini
-          return res
-        })) {
-          nextMini.dead = true
-          break
-        }
-        nextMini.dead = true
-        nextMini.setDead(false) // make undo work to re-kill nextMini
-        clones.push(nextMini)
-      }
-      let newInnardMini
-      if (depth - 1 < clones.length) {
-        newInnardMini = clones[depth - 1]
-      } else {
-        newInnardMini = back(clones)
-      }
-
-      // HACK: assume the player directly pushed `that` from within the same
-      // frameStack, not from afar using, idk a box stick
-      assert(player.frameStack.data === that)
-      let pfs = player.frameStack
-      let sent2 = getSafeSentinel()
-      while (sent2()) {
-        pfs = pfs.parent
-        assert(pfs)
-        if (!pfs || pfs === that.frameStack) break
-      }
-      player.setFrameStack(cons(newInnardMini, pfs))
-    }
-    // RE-END SELF-TELE BULLSHIT
-
     // If we're a mini and we teleported out, update the player's framestack
     // We should maybe update _everyone's_ framestack, but I think we
     //   can assume that the turn is over now, since this chain of movement

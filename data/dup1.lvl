@@ -45,20 +45,30 @@ levelData.push({
     xxx.xxxx
     x......x
     x......x
-    x......x
+    .......x
     x......x
     x......x
     x......x
     xxxxxxxx
 
     room @Yellow
+    xxxx.xxx
+    xx.....x
+    x.......
+    x......x
+    x......x
+    x.....xx
+    xxxxx..x
+    xxxxxxxx
+
+    room @Orange
     xxxxxx.x
     xx.....x
-    x...x...
-    x...x.xx
-    x...x.xx
-    x...x.xx
-    xxxxx..x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxx...
     xxxxxxxx
   `,
   actorData: `
@@ -66,15 +76,21 @@ levelData.push({
     Player White 6 4
     Mini Red 3 3 Red
     Mini Blue 3 3 Green
-    Crate Yellow 2 3 0
-    Mini Yellow 3 5 Red
-    Mini Yellow 1 5 Red
-    Mini Yellow 2 5 Red
     Crate Green 4 4 0
     Mini Green 2 2 Blue
     Mini White 6 6 Red
     Mini White 4 6 Blue
     Crate Red 4 2 0
+    Mini White 2 6 Purple
+    Mini Purple 3 3 Yellow
+    Mini Purple 3 4 Orange
+    Mini Yellow 4 4 Purple
+    Crate Orange 6 5 0
+    Crate Orange 6 4 0
+    Crate Orange 6 3 0
+    Crate Orange 6 2 0
+    Crate Orange 6 1 0
+    Crate Orange 6 0 0
   `,
   frameStackData: `
   `,
