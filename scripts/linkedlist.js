@@ -16,7 +16,7 @@ function append(list, data) {
   const [loop, par] = loopProtection(list, () => {
     return append(list.parent, data)
   })
-  if (loop) throw new Error("Can't append to a loop")
+  if (loop) throw new Error("cannot call 'append' on a loop")
   return cons(list.data, par)
 }
 
@@ -25,7 +25,7 @@ function concat(listA, listB) {
   const [loop, par] = loopProtection(listA, () => {
     return concat(listA.parent, listB)
   })
-  if (loop) throw new Error("Can't concat to a loop")
+  if (loop) throw new Error("cannot call 'concat' on a loop")
   return cons(listA.data, par)
 }
 
@@ -36,6 +36,28 @@ function length(list) {
   })
   if (loop) return Infinity
   return 1 + par
+}
+
+function insertAll(list, pred, data) {
+  // e.g.:
+  //   const list = cons(2, cons(3, cons(4, cons(3, null))))
+  //   insertAll(list, x=>x===3, 100)
+  // -> cons(2, cons(3, cons(100, cons(4, cons(3, cons(100, null))))))
+  // if (list === null) return null
+  const {nonLoopPart, loopPart} = splitOnLoop(list)
+  return concat(
+    insertAll_(nonLoopPart, pred, data),
+    makeLoop(insertAll_(loopPart, pred, data)))
+}
+
+function insertAll_(list, pred, data) {
+  // assert list has no loops
+  if (list === null) return null
+  let par = insertAll_(list.parent, pred, data)
+  if (pred(list.data)) {
+    par = cons(data, par)
+  }
+  return cons(list.data, par)
 }
 
 function lshow(node) {
@@ -53,6 +75,15 @@ function equals(listA, listB, cmp=(a,b)=>a===b) {
   const {nonLoopPart: nlB, loopPart: lB} = splitOnLoop(listB)
   return equals_(nlA, nlB, cmp) && equals_(lA, lB, cmp)
 }
+
+// function reduce(list, cb) {
+//   if (list === null) return null
+//   const [loop, par] = loopProtection(list, () => {
+//     return reduce(list.parent, cb)
+//   })
+//   if (loop) throw new Error("cannot call 'reduce' on a loop")
+//   return cb()
+// }
 
 function equals_(listA, listB, cmp=(a,b)=>a===b) {
   // assert neither listA nor listB has a loop
@@ -186,8 +217,8 @@ RegisterTest("linkedlist", () => {
   const loop = makeLoop(concat(l1, null))
   assert(equals(l1, l2)) // didnt mutate l1
   assertEqual(lshow(loop), "(cons 2 (cons 4 (cons 7 <loop->2>)))")
-  expectError(() => append(loop, 5), "Can't append to a loop")
-  expectError(() => concat(loop, null), "Can't concat to a loop")
+  expectError(() => append(loop, 5), "cannot call 'append' on a loop")
+  expectError(() => concat(loop, null), "cannot call 'concat' on a loop")
   assertEqual(length(loop), Infinity)
   assert(!equals(loop, l1))
   assert(!equals(loop, null))
@@ -262,4 +293,25 @@ RegisterTest("linkedlist", () => {
   // assert(equals(
   //   actual,
   //   expected))
+})
+RegisterTest("linkedlist insertAll", () => {
+  const list = cons(2, cons(3, cons(4, cons(3, null))))
+  const backup = concat(list, null)
+  const actual = insertAll(list, x=>x===3, 100)
+  const expected = cons(2, cons(3, cons(100, cons(4, cons(3, cons(100, null))))))
+  assert(equals(actual, expected))
+
+  assert(equals(
+    insertAll(null, ()=>true, 100),
+    null))
+  assert(equals(
+    insertAll(list, ()=>false, 100),
+    list))
+  assert(equals(list, backup))
+})
+RegisterTest("linkedlist insertAll on loop", () => {
+  const loop = cons(1, cons(3, makeLoop(cons(3, cons(4, null)))))
+  const actual = insertAll(loop, x=>x===3, 100)
+  const expected = cons(1, cons(3, cons(100, makeLoop(cons(3, cons(100, cons(4, null)))))))
+  assert(equals(actual, expected))
 })

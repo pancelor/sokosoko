@@ -325,7 +325,7 @@ function maybeTeleOut_(that, dir) {
         pfs = pfs.parent()
       }
 
-      const top = new Frame(that, null) // gonna edit `parent` later
+      const top = new Frame(that, {ll: null}) // gonna edit `parent` later
       let loopFs = top
       for (const m of minisToStack.reverse()) {
         loopFs = new Frame(m, loopFs)

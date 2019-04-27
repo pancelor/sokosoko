@@ -290,8 +290,7 @@ function maybeChangeViewFrameStack(e, pos) {
   // zoom out on border-click
   if (e.button !== 0) return false
   if (!pos) {
-    const allowedToZoomOut = devmode || (viewFrameStack.length() > player.frameStack.length())
-    if (!allowedToZoomOut) return false
+    if (!devmode) return false
     if (viewFrameStack.parent()) {
       viewFrameStack = viewFrameStack.parent()
       if (storedActor === player) {
