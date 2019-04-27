@@ -405,11 +405,11 @@ function maybeTeleIn_(that, dir) {
     // We should maybe update _everyone's_ frameStack, but I think we
     //   can assume that the turn is over now, since this chain of movement
     //   finished successfully?
-    if (false && that.constructor === Mini) {
+    if (that.constructor === Mini) {
       const targetRoom = innerRoom(oldFrameStack)
       const newParent = insertAll(
         player.frameStack.parent,
-        m=>m.innerRoom === targetRoom,
+        m=>innerRoom({data: m}) === targetRoom,
         mini)
       const newFs = cons(player.frameStack.data, newParent)
       player.setFrameStack(newFs)
