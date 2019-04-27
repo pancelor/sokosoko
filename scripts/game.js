@@ -327,6 +327,7 @@ async function DrawView(ctx) {
   }
 }
 
+let spaceRipped = false
 function DrawMisc(ctxView) {
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
@@ -361,6 +362,11 @@ function DrawMisc(ctxView) {
   if (devmode) {
     if (CanGoBack()) ctxView.drawImage(imgArrowLeft, 0, canvasView.height - tileSize)
     if (CanContinue()) ctxView.drawImage(imgArrowRight, canvasView.width - tileSize, canvasView.height - tileSize)
+  }
+
+  // temp: draw ripped indicator
+  if (devmode && spaceRipped) {
+    ctxView.drawImage(imgMiniPlaceholder, 0, 0)
   }
 }
 

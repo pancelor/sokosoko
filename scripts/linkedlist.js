@@ -20,7 +20,8 @@ function innerRoom(node) {
     assert(!node.parent)
     return data
   } else {
-    assert(data && data.constructor === Mini)
+    assert(data)
+    assert(data.constructor === Mini)
     return data.innerRoom
   }
 }
@@ -46,7 +47,7 @@ function loopProtection(node, cb) {
 
 function includes(list, target) {
   if (list === null) return false
-  if (list.data === target) return true
+  if (list.data === target) return list
   const [loop, par] = loopProtection(list, () => {
     return includes(list.parent, target)
   })
@@ -78,6 +79,15 @@ function length(list) {
   })
   if (loop) return Infinity
   return 1 + par
+}
+
+function fromArray(arr, rev=false) {
+  let res = null
+  for (let i = 0; i < arr.length; ++i) {
+    const data = arr[rev ? arr.length - 1 - i : i]
+    res = cons(data, res)
+  }
+  return res
 }
 
 function insertAll(list, pred, data) {
@@ -357,4 +367,35 @@ RegisterTest("linkedlist insertAll on loop", () => {
   const actual = insertAll(loop, x=>x===3, 100)
   const expected = cons(100, cons(3, cons(1, cons(100, cons(3, makeLoop(cons(100, cons(3, cons(4, null)))))))))
   assert(equals(actual, expected))
+})
+RegisterTest("linkedlist includes", () => {
+  assert(!includes(null, 3), false)
+  assert(!includes(cons(1, null), 3), false)
+  assert(includes(cons(3, null), 3))
+
+  assert(equals(
+    includes(cons(1, cons(3, cons(5, null))), 3),
+    cons(3, cons(5, null))))
+
+  const loop = cons(1, cons(3, makeLoop(cons(4, cons(5, null)))))
+  assert(equals(
+    includes(loop, 4),
+    makeLoop(cons(4, cons(5, null)))))
+  assert(equals(
+    includes(loop, 5),
+    makeLoop(cons(5, cons(4, null)))))
+})
+RegisterTest("linkedlist fromArray", () => {
+  assert(equals(
+    fromArray([]),
+    null))
+  assert(equals(
+    fromArray([1]),
+    cons(1, null)))
+  assert(equals(
+    fromArray([1, 2, 3]),
+    cons(3, cons(2, cons(1, null)))))
+  assert(equals(
+    fromArray([1, 2, 3], true),
+    cons(1, cons(2, cons(3, null)))))
 })

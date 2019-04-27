@@ -312,27 +312,29 @@ function maybeTeleOut_(that, dir) {
     // We should maybe update _everyone's_ framestack, but I think we
     //   can assume that the turn is over now, since this chain of movement
     //   finished successfully?
-    if (that.constructor === Mini && includes(player.frameStack, that)) {
-      // todo: make the framestack self-loop
-      // for now though; die
-      PlayAndRecordSound(sndRip)
-      player.die()
+    if (that.constructor === Mini) {
+      const higherFs = includes(player.frameStack, that)
+      if (higherFs) {
+        // todo: make the framestack self-loop
+        // for now though; die
 
-      // let pfs = player.frameStack
-      // let minisToStack = []
-      // let sent3 = getSafeSentinel()
-      // while (sent3()) {
-      //   minisToStack.push(pfs.data)
-      //   if (pfs.data === that) break
-      //   pfs = pfs.parent
-      // }
+        spaceRipped = true
 
-      // let loopFs = cons(that, null) // gonna edit `parent` later
-      // for (const m of minisToStack.reverse()) {
-      //   loopFs = cons(m, loopFs)
-      // }
-      // makeLoop(loopFs)
-      // player.setFrameStack(loopFs)
+        const nonLoopPart = cons(player.frameStack.data, null) // TODO make this work frd; loop up from pfs until .data === `mini`, i think?
+
+        let pfs = player.frameStack.parent
+        let minisToStack = []
+        let sent3 = getSafeSentinel()
+        while (sent3()) {
+          minisToStack.push(pfs.data)
+          if (equals(pfs, higherFs)) break
+          pfs = pfs.parent
+        }
+
+        const loopPart = fromArray(minisToStack, true)
+        player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
+        let x = 1
+      }
     }
 
     return r(true)
