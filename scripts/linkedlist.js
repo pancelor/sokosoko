@@ -70,6 +70,17 @@ function lshow(node) {
   return `(cons ${node.data} ${par})`
 }
 
+function serFrame(list) {
+  const {nonLoopPart, loopPart} = splitOnLoop(list)
+  return `${serFrame_(nonLoopPart)} : ${serFrame_(loopPart)}`
+}
+
+function serFrame_(list) {
+  // assert list has no loops
+  if (list === null) return "null"
+  return `(cons ${list.data} ${serFrame_(list.parent)})`
+}
+
 function equals(listA, listB, cmp=(a,b)=>a===b) {
   const {nonLoopPart: nlA, loopPart: lA} = splitOnLoop(listA)
   const {nonLoopPart: nlB, loopPart: lB} = splitOnLoop(listB)

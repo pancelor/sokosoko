@@ -178,15 +178,14 @@ function importFrameStack(frameStackData) {
     assert(mini)
     if (!stack) {
       // first time through the loop
-      stack = new FrameBase(mini.pos.room())
+      baseRoom = mini.pos.room()
     }
-    stack = new Frame(mini, stack)
+    stack = cons(mini, stack)
   }
   if (!stack) {
     // frameStackData was empty; default to a white room
-    const room = Room.findName("White")
-    assert(room)
-    stack = new FrameBase(room)
+    room = Room.findName("White")
+    assert(baseRoom)
   }
   player = allActors(Player)[0] // hacky; dup
   assert(player)

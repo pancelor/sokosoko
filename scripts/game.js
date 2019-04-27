@@ -133,97 +133,7 @@ class RoomPos extends BasePos {
   }
 }
 
-class FrameBase {
-  constructor(innerRoom_) {
-    assert(innerRoom_)
-    this.ll = null
-    this.innerRoom_ = innerRoom_
-  }
-  serialize() {
-    return `${this.constructor.name} ${this.innerRoom_.name}`
-  }
-  str() {
-    return `<base; ${this.innerRoom_.name}>`
-  }
-
-  innerRoom() {
-    return this.innerRoom_
-  }
-  mini() {
-    return this.mini_
-  }
-  parent() {
-    return this.parent_
-  }
-
-  hasMini(mini) {
-    return false
-  }
-
-  length() {
-    return length(this.ll)
-  }
-
-  equals(other) {
-    if (other.constructor !== this.constructor) { return false }
-    return (this.innerRoom_ === other.innerRoom_)
-  }
-}
-
-class Frame {
-  constructor(mini, parent) {
-    this.ll = cons(mini, parent.ll)
-    this.parent_ = parent
-  }
-  serialize() {
-    return this.loopProtection(()=> `${this.constructor.name} ${this.mini().id} ${this.parent().serialize()}`)
-  }
-  str() {
-    return this.loopProtection(()=> `${this.parent().str()} | ${this.innerRoom().name}`)
-  }
-
-  mini() {
-    return this.ll.data
-  }
-  parent() {
-    return this.parent_
-  }
-
-  innerRoom() {
-    return this.mini().innerRoom
-  }
-
-  loopProtection(cb) {
-    const name = randName(10)
-    assert(!this[name], "inifinte loop in frameStack")
-    this[name] = true
-    const res = cb()
-    delete this[name]
-    return res
-  }
-
-  hasMini(mini) {
-    // whether the given mini is in this frameStack
-    return this.loopProtection(() => this.mini() === mini || this.parent().hasMini(mini))
-  }
-
-  length() {
-    return this.loopProtection(() => 1 + this.parent().length())
-  }
-
-  equals(other) {
-    if (other.constructor !== Frame) { return false }
-    if (this.mini() !== other.mini()) { return false }
-
-    const p1 = this.parent()
-    const p2 = other.parent()
-    if (p1 === null) {
-      return (p2 === null)
-    } else {
-      return this.loopProtection(()=>p1.equals(p2))
-    }
-  }
-}
+let baseRoom
 
 class Room {
   constructor(name, begin, end) {
@@ -408,7 +318,7 @@ async function DrawView(ctx) {
   // draw inner room
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
-  const src = innerFrame.innerRoom().mapCorner().scale(tileSize)
+  const src = innerFrame.data.innerRoom.mapCorner().scale(tileSize)
   const dest = viewOffset().scale(tileSize)
   ctx.drawImage(screenshotMap,
     src.x, src.y, innerW, innerH,

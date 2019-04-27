@@ -242,7 +242,7 @@ function maybeTeleOut_(that, dir) {
     that.setFrameStack(oldFrameStack)
   })
 
-  const outPos = that.frameStack.innerRoom().openings()[dir] // the logic near here can be simplified/sped up; prolly doesn't matter tho
+  const outPos = that.frameStack.data.innerRoom.openings()[dir] // the logic near here can be simplified/sped up; prolly doesn't matter tho
   if (!outPos || !outPos.addDir(dir).equals(that.pos)) return r(false)
 
   // teleport
@@ -263,6 +263,7 @@ function maybeTeleOut_(that, dir) {
 
   // that has now teleported; try to move
   if (maybePushableUpdate(that, dir)) {
+    assert(0)
     // RE-START SELF-TELE BULLSHIT
     if (depth) {
       assert(that.constructor === Mini)
@@ -302,7 +303,7 @@ function maybeTeleOut_(that, dir) {
         assert(pfs)
         if (!pfs || pfs === that.frameStack) break
       }
-      player.setFrameStack(new Frame(newInnardMini, pfs))
+      player.setFrameStack(cons(newInnardMini, pfs))
     }
     // RE-END SELF-TELE BULLSHIT
 
@@ -325,12 +326,11 @@ function maybeTeleOut_(that, dir) {
         pfs = pfs.parent()
       }
 
-      const top = new Frame(that, {ll: null}) // gonna edit `parent` later
-      let loopFs = top
+      let loopFs = cons(that, null) // gonna edit `parent` later
       for (const m of minisToStack.reverse()) {
-        loopFs = new Frame(m, loopFs)
+        loopFs = cons(m, loopFs)
       }
-      top.parent_ = loopFs
+      makeLoop(loopFs)
       player.setFrameStack(loopFs)
     }
 
@@ -363,7 +363,7 @@ function maybeTeleIn_(that, dir) {
   if (!op) return r(false)
 
   that.setPos(op.addDir(oppDir(dir)))
-  that.setFrameStack(new Frame(mini, that.frameStack))
+  that.setFrameStack(cons(mini, that.frameStack))
 
   // `that` has now teleported to an oob-location
   // next to the mini; try to move into the mini
@@ -372,22 +372,15 @@ function maybeTeleIn_(that, dir) {
     // We should maybe update _everyone's_ framestack, but I think we
     //   can assume that the turn is over now, since this chain of movement
     //   finished successfully?
-    if (that.constructor === Mini && player.frameStack.hasMini(that)) {
-      // hack hack hack hack yikes this is gross
-      function insertFrame(this_, mini_, targetParent) {
-        if (this_.constructor === FrameBase) return this_
-        assert(targetParent.constructor === Mini)
-        const newParent_ = insertFrame(this_.parent(), mini_, targetParent)
-        return this_.loopProtection(() => {
-          if (this_.innerRoom() === targetParent.innerRoom) {
-            return new Frame(mini_, new Frame(this_.mini(), newParent_))
-          } else {
-            return new Frame(this_.mini(), newParent_)
-          }
-        })
-      }
-      const newParent = insertFrame(player.frameStack.parent(), mini, oldFrameStack.mini())
-      const newFs = new Frame(player.frameStack.mini(), newParent)
+    if (false && that.constructor === Mini) {
+      // TODO rm false
+      assert(0) // i think insertAll might need to change which side it inserts on
+      const targetRoom = oldFrameStack.data.innerRoom
+      const newParent = insertAll(
+        player.frameStack.parent,
+        m=>m.innerRoom === targetRoom,
+        mini)
+      const newFs = cons(player.frameStack.data, newParent)
       player.setFrameStack(newFs)
     }
     return r(true)

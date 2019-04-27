@@ -226,7 +226,7 @@ function translateMouseFromView(e) {
   let x = Math.floor(e.offsetX / tileSize)
   let y = Math.floor(e.offsetY / tileSize)
   let {x: dx, y: dy} = viewOffset().scale(-1)
-  const room = viewFrameStack.innerRoom()
+  const room = viewFrameStack.data.innerRoom
   const roomPos = new RoomPos(room, x+dx, y+dy)
   if (!roomPos.inbounds()) { return { e, pos: null } }
 
@@ -303,11 +303,12 @@ function maybeChangeViewFrameStack(e, pos) {
   }
   if (devmode && editingTiles) return false
   // zoom in on mini-click
+  assert(0)
   const mini = findActor(Mini, pos)
   if (mini) {
-    viewFrameStack = new Frame(mini, viewFrameStack)
+    viewFrameStack = cons(mini, viewFrameStack)
     if (storedActor === player) {
-      player.frameStack = new Frame(mini, player.frameStack)
+      player.frameStack = cons(mini, player.frameStack)
     }
     return true
   }
