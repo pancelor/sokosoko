@@ -71,7 +71,7 @@ class Tracer {
   }
 }
 const tracer = new Tracer()
-tracer.toggle()
+// tracer.toggle()
 
 function arrEqual(a1, a2) {
   assert(a1.length === a2.length)
@@ -401,11 +401,11 @@ function maybeTeleIn_(that, dir) {
   // `that` has now teleported to an oob-location
   // next to the mini; try to move into the mini
   if (maybePushableUpdate(that, dir)) {
-    // If we're a mini and we teleported in, update the player's framestack
-    // We should maybe update _everyone's_ framestack, but I think we
+    // If we're a mini and we teleported in, update the player's frameStack
+    // We should maybe update _everyone's_ frameStack, but I think we
     //   can assume that the turn is over now, since this chain of movement
     //   finished successfully?
-    if (that.constructor === Mini) {
+    if (false && that.constructor === Mini) {
       const targetRoom = innerRoom(oldFrameStack)
       const newParent = insertAll(
         player.frameStack.parent,
