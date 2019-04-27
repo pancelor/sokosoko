@@ -315,25 +315,29 @@ function maybeTeleOut_(that, dir) {
     if (that.constructor === Mini) {
       const higherFs = includes(player.frameStack, that)
       if (higherFs) {
-        // todo: make the framestack self-loop
-        // for now though; die
-
         spaceRipped = true
 
-        const nonLoopPart = cons(player.frameStack.data, null) // TODO make this work frd; loop up from pfs until .data === `mini`, i think?
-
-        let pfs = player.frameStack.parent
-        let minisToStack = []
+        let pfs = player.frameStack
+        let nonLoopPart = []
         let sent3 = getSafeSentinel()
         while (sent3()) {
-          minisToStack.push(pfs.data)
-          if (equals(pfs, higherFs)) break
+          const { data } = pfs
+          nonLoopPart.push(data)
+          if (data === mini) break
           pfs = pfs.parent
         }
 
-        const loopPart = fromArray(minisToStack, true)
+        let loopPart = []
+        let sent4 = getSafeSentinel()
+        while (sent4()) {
+          pfs = pfs.parent
+          loopPart.push(pfs.data)
+          if (equals(pfs, higherFs)) break
+        }
+
+        nonLoopPart = fromArray(nonLoopPart, true)
+        loopPart = fromArray(loopPart, true)
         player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
-        let x = 1
       }
     }
 
