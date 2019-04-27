@@ -311,27 +311,27 @@ function maybeTeleOut_(that, dir) {
     // We should maybe update _everyone's_ framestack, but I think we
     //   can assume that the turn is over now, since this chain of movement
     //   finished successfully?
-    if (that.constructor === Mini && player.frameStack.hasMini(that)) {
+    if (that.constructor === Mini && includes(player.frameStack, that)) {
       // todo: make the framestack self-loop
       // for now though; die
-      // PlayAndRecordSound(sndRip)
-      // player.die()
+      PlayAndRecordSound(sndRip)
+      player.die()
 
-      let pfs = player.frameStack
-      let minisToStack = []
-      let sent3 = getSafeSentinel()
-      while (sent3()) {
-        minisToStack.push(pfs.data)
-        if (pfs.data === that) break
-        pfs = pfs.parent
-      }
+      // let pfs = player.frameStack
+      // let minisToStack = []
+      // let sent3 = getSafeSentinel()
+      // while (sent3()) {
+      //   minisToStack.push(pfs.data)
+      //   if (pfs.data === that) break
+      //   pfs = pfs.parent
+      // }
 
-      let loopFs = cons(that, null) // gonna edit `parent` later
-      for (const m of minisToStack.reverse()) {
-        loopFs = cons(m, loopFs)
-      }
-      makeLoop(loopFs)
-      player.setFrameStack(loopFs)
+      // let loopFs = cons(that, null) // gonna edit `parent` later
+      // for (const m of minisToStack.reverse()) {
+      //   loopFs = cons(m, loopFs)
+      // }
+      // makeLoop(loopFs)
+      // player.setFrameStack(loopFs)
     }
 
     return r(true)

@@ -25,6 +25,12 @@ function innerRoom(node) {
   }
 }
 
+//
+//
+// everything below here knows nothing about what data is; it could be anything
+//
+//
+
 function cons(data, list) {
   return { data, parent: list }
 }
@@ -36,6 +42,15 @@ function loopProtection(node, cb) {
   node.iting = false
 
   return [false, res]
+}
+
+function includes(list, target) {
+  if (list === null) return false
+  if (list.data === target) return true
+  const [loop, par] = loopProtection(list, () => {
+    return includes(list.parent, target)
+  })
+  return false
 }
 
 function append(list, data) {
