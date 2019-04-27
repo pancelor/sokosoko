@@ -372,9 +372,7 @@ function maybeTeleIn_(that, dir) {
     // We should maybe update _everyone's_ framestack, but I think we
     //   can assume that the turn is over now, since this chain of movement
     //   finished successfully?
-    if (false && that.constructor === Mini) {
-      // TODO rm false
-      assert(0) // i think insertAll might need to change which side it inserts on
+    if (that.constructor === Mini) {
       const targetRoom = oldFrameStack.data.innerRoom
       const newParent = insertAll(
         player.frameStack.parent,

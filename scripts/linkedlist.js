@@ -1,3 +1,21 @@
+// these two are pretty much the only functions that know that data is a mini;
+// everything else is an abstract linked list with loop support
+function serFrame(list) {
+  const {nonLoopPart, loopPart} = splitOnLoop(list)
+  if (!loopPart) {
+    return serFrame_(nonLoopPart)
+  } else {
+    return `${serFrame_(nonLoopPart)} <LOOP> ${serFrame_(loopPart)}`
+  }
+}
+function serFrame_(list) {
+  // assert list has no loops
+  if (list === null) return "\\0"
+  const room = list.data
+  return `${serFrame_(list.parent)} | ${room.innerRoom.name}`
+}
+
+
 function cons(data, list) {
   return { data, parent: list }
 }
@@ -42,7 +60,7 @@ function insertAll(list, pred, data) {
   // e.g.:
   //   const list = cons(2, cons(3, cons(4, cons(3, null))))
   //   insertAll(list, x=>x===3, 100)
-  // -> cons(2, cons(3, cons(100, cons(4, cons(3, cons(100, null))))))
+  // -> cons(2, cons(100, cons(3, cons(4, cons(100, cons(3, null))))))
   // if (list === null) return null
   const {nonLoopPart, loopPart} = splitOnLoop(list)
   return concat(
@@ -54,10 +72,11 @@ function insertAll_(list, pred, data) {
   // assert list has no loops
   if (list === null) return null
   let par = insertAll_(list.parent, pred, data)
+  let res = cons(list.data, par)
   if (pred(list.data)) {
-    par = cons(data, par)
+    res = cons(data, res)
   }
-  return cons(list.data, par)
+  return res
 }
 
 function lshow(node) {
@@ -68,17 +87,6 @@ function lshow(node) {
   })
   if (loop) return `<loop->${node.data}>`
   return `(cons ${node.data} ${par})`
-}
-
-function serFrame(list) {
-  const {nonLoopPart, loopPart} = splitOnLoop(list)
-  return `${serFrame_(nonLoopPart)} : ${serFrame_(loopPart)}`
-}
-
-function serFrame_(list) {
-  // assert list has no loops
-  if (list === null) return "null"
-  return `(cons ${list.data} ${serFrame_(list.parent)})`
 }
 
 function equals(listA, listB, cmp=(a,b)=>a===b) {
@@ -309,7 +317,7 @@ RegisterTest("linkedlist insertAll", () => {
   const list = cons(2, cons(3, cons(4, cons(3, null))))
   const backup = concat(list, null)
   const actual = insertAll(list, x=>x===3, 100)
-  const expected = cons(2, cons(3, cons(100, cons(4, cons(3, cons(100, null))))))
+  const expected = cons(2, cons(100, cons(3, cons(4, cons(100, cons(3, null))))))
   assert(equals(actual, expected))
 
   assert(equals(
@@ -321,8 +329,8 @@ RegisterTest("linkedlist insertAll", () => {
   assert(equals(list, backup))
 })
 RegisterTest("linkedlist insertAll on loop", () => {
-  const loop = cons(1, cons(3, makeLoop(cons(3, cons(4, null)))))
+  const loop = cons(3, cons(1, cons(3, makeLoop(cons(3, cons(4, null))))))
   const actual = insertAll(loop, x=>x===3, 100)
-  const expected = cons(1, cons(3, cons(100, makeLoop(cons(3, cons(100, cons(4, null)))))))
+  const expected = cons(100, cons(3, cons(1, cons(100, cons(3, makeLoop(cons(100, cons(3, cons(4, null)))))))))
   assert(equals(actual, expected))
 })
