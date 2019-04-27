@@ -71,7 +71,7 @@ class Tracer {
   }
 }
 const tracer = new Tracer()
-// tracer.toggle()
+tracer.toggle()
 
 function arrEqual(a1, a2) {
   assert(a1.length === a2.length)
@@ -406,12 +406,10 @@ function maybeTeleIn_(that, dir) {
     //   can assume that the turn is over now, since this chain of movement
     //   finished successfully?
     if (that.constructor === Mini) {
-      const targetRoom = innerRoom(oldFrameStack)
-      const newParent = insertAll(
-        player.frameStack.parent,
-        m=>innerRoom({data: m}) === targetRoom,
+      const newFs = insertAll(
+        player.frameStack,
+        m=>m===that,
         mini)
-      const newFs = cons(player.frameStack.data, newParent)
       player.setFrameStack(newFs)
     }
     return r(true)

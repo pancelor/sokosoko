@@ -94,7 +94,7 @@ function insertAll(list, pred, data) {
   // e.g.:
   //   const list = cons(2, cons(3, cons(4, cons(3, null))))
   //   insertAll(list, x=>x===3, 100)
-  // -> cons(2, cons(100, cons(3, cons(4, cons(100, cons(3, null))))))
+  // -> cons(2, cons(3, cons(100, cons(4, cons(3, cons(100, null))))))
   // if (list === null) return null
   const {nonLoopPart, loopPart} = splitOnLoop(list)
   return concat(
@@ -106,11 +106,10 @@ function insertAll_(list, pred, data) {
   // assert list has no loops
   if (list === null) return null
   let par = insertAll_(list.parent, pred, data)
-  let res = cons(list.data, par)
   if (pred(list.data)) {
-    res = cons(data, res)
+    par = cons(data, par)
   }
-  return res
+  return cons(list.data, par)
 }
 
 function lshow(node) {
@@ -351,7 +350,7 @@ RegisterTest("linkedlist insertAll", () => {
   const list = cons(2, cons(3, cons(4, cons(3, null))))
   const backup = concat(list, null)
   const actual = insertAll(list, x=>x===3, 100)
-  const expected = cons(2, cons(100, cons(3, cons(4, cons(100, cons(3, null))))))
+  const expected = cons(2, cons(3, cons(100, cons(4, cons(3, cons(100, null))))))
   assert(equals(actual, expected))
 
   assert(equals(
@@ -365,7 +364,7 @@ RegisterTest("linkedlist insertAll", () => {
 RegisterTest("linkedlist insertAll on loop", () => {
   const loop = cons(3, cons(1, cons(3, makeLoop(cons(3, cons(4, null))))))
   const actual = insertAll(loop, x=>x===3, 100)
-  const expected = cons(100, cons(3, cons(1, cons(100, cons(3, makeLoop(cons(100, cons(3, cons(4, null)))))))))
+  const expected = cons(3, cons(100, cons(1, cons(3, cons(100, makeLoop(cons(3, cons(100, cons(4, null)))))))))
   assert(equals(actual, expected))
 })
 RegisterTest("linkedlist includes", () => {
