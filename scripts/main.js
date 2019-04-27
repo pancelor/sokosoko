@@ -303,7 +303,6 @@ function maybeChangeViewFrameStack(e, pos) {
   }
   if (devmode && editingTiles) return false
   // zoom in on mini-click
-  assert(0)
   const mini = findActor(Mini, pos)
   if (mini) {
     viewFrameStack = cons(mini, viewFrameStack)

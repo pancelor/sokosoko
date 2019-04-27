@@ -263,9 +263,9 @@ function maybeTeleOut_(that, dir) {
 
   // that has now teleported; try to move
   if (maybePushableUpdate(that, dir)) {
-    assert(0)
     // RE-START SELF-TELE BULLSHIT
     if (depth) {
+      assert(0)
       assert(that.constructor === Mini)
       PlayAndRecordSound(sndDuplicate)
       const clones = [that]
