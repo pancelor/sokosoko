@@ -98,8 +98,8 @@ levelData.push({
     x......x
     x......x
     x......x
-    x......x
-    xxxxxxxx
+    .......x
+    xxxxxx.x
   `,
   actorData: `
     Player Red 0 4
@@ -110,11 +110,16 @@ levelData.push({
     Mini Purple 1 1 Purple
     Mini Pink 1 1 Pink
     Mini Brown 1 1 Brown
-    Mini Black 1 1 Black
     Mini White 3 2 Red @VBMTZYWHOF
     Mini Red 3 4 Yellow
     Mini Yellow 2 2 Pink
-    Mini White 5 5 Black
+    Mini Red 4 4 Black
+    Crate Black 0 6 0
+    Crate Black 1 6 0
+    Crate Black 2 6 0
+    Crate Black 3 6 0
+    Crate Black 4 6 0
+    Crate Black 5 6 0
   `,
   frameStackData: `
     VBMTZYWHOF
