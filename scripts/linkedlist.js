@@ -50,7 +50,7 @@ function includes(list, target) {
   const [loop, par] = loopProtection(list, () => {
     return includes(list.parent, target)
   })
-  return false
+  return par
 }
 
 function append(list, data) {
