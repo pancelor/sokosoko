@@ -270,6 +270,7 @@ function maybeTeleOut_(that, dir) {
 
     nonLoopPart = fromArray(nonLoopPart)
     player.setFrameStack(nonLoopPart)
+    console.log("selftele: pfs", serFrame(player.frameStack));
 
     return r(true)
   }
@@ -285,6 +286,8 @@ function maybeTeleOut_(that, dir) {
     if (that.constructor === Mini) {
       const higherFs = includes(player.frameStack, that)
       if (higherFs) {
+        console.log("teleout: hFs ", serFrame(higherFs));
+        console.log("teleout: pfs1", serFrame(player.frameStack));
         spaceRipped = true
 
         let pfs = player.frameStack
@@ -308,6 +311,7 @@ function maybeTeleOut_(that, dir) {
         nonLoopPart = fromArray(nonLoopPart, true)
         loopPart = fromArray(loopPart, true)
         player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
+        console.log("teleout: pfs2", serFrame(player.frameStack));
       }
     }
 
@@ -376,11 +380,13 @@ function maybeTeleIn_(that, dir) {
     //   can assume that the turn is over now, since this chain of movement
     //   finished successfully?
     if (that.constructor === Mini) {
+      console.log("telein: pfs1", serFrame(player.frameStack));
       const newFs = insertAll(
         player.frameStack,
         m=>m===that,
         mini)
       player.setFrameStack(newFs)
+      console.log("telein: pfs2", serFrame(player.frameStack));
     }
     return r(true)
   }
