@@ -292,8 +292,6 @@ function maybeTeleOut_(that, dir) {
   if (that.constructor === Mini) {
     const higherFs = includes(player.frameStack, that)
     if (higherFs) {
-      console.log("teleout: hFs ", serFrame(higherFs));
-      console.log("teleout: pfs1", serFrame(player.frameStack));
       spaceRipped = true
 
       let pfs = player.frameStack
@@ -317,7 +315,6 @@ function maybeTeleOut_(that, dir) {
       nonLoopPart = fromArray(nonLoopPart, true)
       loopPart = fromArray(loopPart, true)
       player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
-      console.log("teleout: pfs2", serFrame(player.frameStack));
     }
   }
 
@@ -331,32 +328,6 @@ function maybeTeleOut_(that, dir) {
 }
 // const maybeTeleOut = pushableCached(tracer.tracify(maybeTeleOut_), cullInfinite)
 const maybeTeleOut = tracer.tracify(maybeTeleOut_)
-
-
-function xxTesting() {
-  reset("riptest2")
-  play("0000103330111122", 0)
-  setTimeout(() => {
-    const that = findActor(Mini, new RoomPos(Room.findName("Red"), 1, 4));
-    console.log("pfs", xx(player.frameStack))
-    console.log("pfs.p", xx(player.frameStack.parent))
-    console.log("pfs.p.p", xx(player.frameStack.parent.parent))
-    console.log("pfs.p.p.p", xx(player.frameStack.parent.parent.parent))
-    console.log("pfs.p.p.p.p", xx(player.frameStack.parent.parent.parent.parent))
-    console.log("-----");
-    player.frameStack.parent.parent.parent = player.frameStack.parent
-    player.frameStack.parent.parent.data = that
-    console.log("pfs", xx(player.frameStack))
-    console.log("pfs.p", xx(player.frameStack.parent))
-    console.log("pfs.p.p", xx(player.frameStack.parent.parent))
-    console.log("pfs.p.p.p", xx(player.frameStack.parent.parent.parent))
-    console.log("pfs.p.p.p.p", xx(player.frameStack.parent.parent.parent.parent))
-  }, 1000)
-}
-
-function xx(node) {
-  return `${innerRoom(node).name} ${node.data.pos && node.data.pos.roomPos().str()}`
-}
 
 // * if we're standing on a mini,
 //   * (remember, we've already optimistically moved)
@@ -394,13 +365,11 @@ function maybeTeleIn_(that, dir) {
   // If we're a mini and we teleported in, update the player's frameStack
   // TODO: ...We should maybe update _everyone's_ frameStack?
   if (that.constructor === Mini) {
-    console.log("telein: pfs1", serFrame(player.frameStack));
     const newFs = insertAll(
       player.frameStack,
       m=>m===that,
       mini)
     player.setFrameStack(newFs)
-    console.log("telein: pfs2", serFrame(player.frameStack));
   }
 
   //
