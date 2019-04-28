@@ -5,12 +5,12 @@ function serFrame(list) {
   if (!loopPart) {
     return serFrame_(nonLoopPart)
   } else {
-    return `${serFrame_(loopPart)} <LOOP> ${serFrame_(nonLoopPart)}`
+    return `${serFrame_(loopPart)} ***LOOP*** ${serFrame_(nonLoopPart)}`
   }
 }
 function serFrame_(list) {
   // assert list has no loops
-  if (list === null) return "<null>"
+  if (list === null) return ""
   const color = innerRoom(list).name
   const id = list.data.id || "-"
 

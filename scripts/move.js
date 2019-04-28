@@ -303,15 +303,22 @@ function maybeTeleOut_(that, dir) {
         pfs = pfs.parent
       }
 
-      const splitNode = find(pfs, m=>(innerRoom({data: m}) === mini.innerRoom && m !== mini))
+      const loopNode = find(pfs, m=>(innerRoom({data: m}) === mini.innerRoom && m !== mini))
 
-      if (splitNode) {
+      if (loopNode) {
+        // we've branched off into a looped sub-universe
+
+        let lastThat = (pfs.data === that)
         pfs = pfs.parent // not sure exactly why i need this; probably has to do with fucky loop conditions. but it works! so don't touch it!!!!!
 
         let loopPart = []
         let sent4 = getSafeSentinel()
-        while (sent4() && pfs !== splitNode) {
-          loopPart.push(pfs.data)
+        while (sent4() && pfs !== loopNode) {
+          if (!(lastThat && pfs.data === mini)) {
+            // skip minis we just pushed `that` out of
+            loopPart.push(pfs.data)
+          }
+          lastThat = (pfs.data === that)
           pfs = pfs.parent
         }
 
@@ -319,9 +326,31 @@ function maybeTeleOut_(that, dir) {
         loopPart = fromArray(loopPart, true)
         player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
       } else {
-        // need to edit out yellow in ballon; in general, when
-        //    innerRoom({data: m}) === mini.innerRoom && m ___===___ mini
-        // is true, edit out the next parent
+        // need to edit out yellow in BALLOON.lvl cheese; in general, when
+        //    node.data === mini
+        // is true, edit out node
+
+        const split = splitOnLoop(pfs)
+        nonLoopPart = split.nonLoopPart
+        let loopPart = split.loopPart
+
+        function edit(ll) {
+          const res = []
+          let lastThat = (pfs.data === that)
+          let sent5 = getSafeSentinel()
+          while (sent5() && ll) {
+            if (!(lastThat && ll.data === mini)) {
+              // skip minis we just pushed `that` out of
+              res.push(ll.data)
+            }
+            lastThat = (ll.data === that)
+            ll = ll.parent
+          }
+          return res
+        }
+        nonLoopPart = fromArray(edit(nonLoopPart), true)
+        loopPart = fromArray(edit(loopPart), true)
+        player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
       }
     }
   }
