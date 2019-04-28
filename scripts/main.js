@@ -162,8 +162,6 @@ function lockScroll(cb) {
   scrollTo(x,y)
 }
 
-// this isn't good enough for user experience
-// let viewFocused
 function registerMouseListeners() {
   mousepos = new MapPos(0, 0)
   canvasView.addEventListener("contextmenu", (e) => {
@@ -174,8 +172,6 @@ function registerMouseListeners() {
     e.preventDefault()
     return false
   })
-  // canvasView.addEventListener("focus", () => { viewFocused = true })
-  // canvasView.addEventListener("blur", () => { viewFocused = false })
 
   canvasMap.addEventListener("mousedown", (e) => {
     mouseClick(translateMouseFromMap(e))
@@ -187,8 +183,6 @@ function registerMouseListeners() {
     return false
   })
   canvasView.addEventListener("mousedown", (e) => {
-    // if (!viewFocused) return
-
     mouseClick(translateMouseFromView(e))
     Raf()
 
@@ -198,18 +192,14 @@ function registerMouseListeners() {
   })
   canvasMap.addEventListener("mousemove", (e) => {
     mouseMove(translateMouseFromMap(e))
-    if (devmode) {
-      Raf()
-    }
+    if (devmode) Raf()
 
     e.preventDefault()
     return false
   })
   canvasView.addEventListener("mousemove", (e) => {
     mouseMove(translateMouseFromView(e))
-    if (devmode) {
-      Raf()
-    }
+    if (devmode) Raf()
 
     e.preventDefault()
     return false
@@ -248,6 +238,9 @@ function mouseMove({e, pos}) {
 
   mousepos = pos
   if (devmode) {
+    let a = findActor(null, pos)
+    if (a) actorIdOutput.innerText = `getActorId(${a.id})\n${a.serialize()}`
+
     const LMB = e.buttons & (1<<0)
     const RMB = e.buttons & (1<<1)
     if (editingTiles) {
