@@ -235,25 +235,35 @@ const maybePushableUpdate = pushableCached(tracer.tracify(maybePushableUpdate_),
 function maybeTeleOut_(that, dir) {
   assert(that.frameStack)
 
+  //
+  // prep
+  //
+
   const oldPos = that.pos
   const oldFrameStack = that.frameStack
+  const oldPFS = player.frameStack
   const r = buildRet(that, ()=>that.playTeleOutSound(), () => {
     that.setPos(oldPos)
     that.setFrameStack(oldFrameStack)
+    player.setFrameStack(oldPFS)
   })
 
   const outPos = innerRoom(that.frameStack).openings()[dir] // the logic near here can be simplified/sped up; prolly doesn't matter tho
   if (!outPos || !outPos.addDir(dir).equals(that.pos)) return r(false)
 
+  //
   // teleport
+  //
+
   let fs = that.frameStack
   let mini = fs.data
   if (mini.constructor === Room) {
     // we've somehow reached the edge of the topmost room
-    // (this _is_ possible; e.g. in dup1)
+    // (this _is_ possible; e.g. in dup1.lvl)
     return r(false)
   }
   if (that === mini) {
+    // TODO: can i merge this with the below frameStack edits?
     console.warn("teleporting out of... myself?")
 
     spaceRipped = true
@@ -277,46 +287,45 @@ function maybeTeleOut_(that, dir) {
   that.setPos(mini.pos)
   that.setFrameStack(fs.parent)
 
-  // that has now teleported; try to move
-  if (maybePushableUpdate(that, dir)) {
-    // If we're a mini and we teleported out, update the player's framestack
-    // We should maybe update _everyone's_ framestack, but I think we
-    //   can assume that the turn is over now, since this chain of movement
-    //   finished successfully?
-    if (that.constructor === Mini) {
-      const higherFs = includes(player.frameStack, that)
-      if (higherFs) {
-        console.log("teleout: hFs ", serFrame(higherFs));
-        console.log("teleout: pfs1", serFrame(player.frameStack));
-        spaceRipped = true
+  // If we're a mini and we teleported out, edit the player's framestack
+  // TODO: ...We should maybe update _everyone's_ frameStack?
+  if (that.constructor === Mini) {
+    const higherFs = includes(player.frameStack, that)
+    if (higherFs) {
+      console.log("teleout: hFs ", serFrame(higherFs));
+      console.log("teleout: pfs1", serFrame(player.frameStack));
+      spaceRipped = true
 
-        let pfs = player.frameStack
-        let nonLoopPart = []
-        let sent3 = getSafeSentinel()
-        while (sent3()) {
-          const { data } = pfs
-          nonLoopPart.push(data)
-          if (data === mini) break
-          pfs = pfs.parent
-        }
-
-        let loopPart = []
-        let sent4 = getSafeSentinel()
-        while (sent4()) {
-          pfs = pfs.parent
-          loopPart.push(pfs.data)
-          if (equals(pfs, higherFs)) break
-        }
-
-        nonLoopPart = fromArray(nonLoopPart, true)
-        loopPart = fromArray(loopPart, true)
-        player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
-        console.log("teleout: pfs2", serFrame(player.frameStack));
+      let pfs = player.frameStack
+      let nonLoopPart = []
+      let sent3 = getSafeSentinel()
+      while (sent3()) {
+        const { data } = pfs
+        nonLoopPart.push(data)
+        if (data === mini) break
+        pfs = pfs.parent
       }
-    }
 
-    return r(true)
+      let loopPart = []
+      let sent4 = getSafeSentinel()
+      while (sent4()) {
+        pfs = pfs.parent
+        loopPart.push(pfs.data)
+        if (equals(pfs, higherFs)) break
+      }
+
+      nonLoopPart = fromArray(nonLoopPart, true)
+      loopPart = fromArray(loopPart, true)
+      player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
+      console.log("teleout: pfs2", serFrame(player.frameStack));
+    }
   }
+
+  //
+  // try to move
+  //
+
+  if (maybePushableUpdate(that, dir)) return r(true)
 
   return r(false)
 }
@@ -357,11 +366,17 @@ function xx(node) {
 function maybeTeleIn_(that, dir) {
   assert(that.frameStack)
 
+  //
+  // prep
+  //
+
   const oldPos = that.pos
   const oldFrameStack = that.frameStack
+  const oldPFS = player.frameStack
   const r = buildRet(that, ()=>that.playTeleInSound(), () => {
     that.setPos(oldPos)
     that.setFrameStack(oldFrameStack)
+    player.setFrameStack(oldPFS)
   })
 
   const mini = findActorUnderMe(Mini, that)
@@ -369,27 +384,33 @@ function maybeTeleIn_(that, dir) {
   const op = mini.innerRoom.openings()[oppDir(dir)]
   if (!op) return r(false)
 
+  //
+  // teleport
+  //
+
   that.setPos(op.addDir(oppDir(dir)))
   that.setFrameStack(cons(mini, that.frameStack))
 
+  // If we're a mini and we teleported in, update the player's frameStack
+  // TODO: ...We should maybe update _everyone's_ frameStack?
+  if (that.constructor === Mini) {
+    console.log("telein: pfs1", serFrame(player.frameStack));
+    const newFs = insertAll(
+      player.frameStack,
+      m=>m===that,
+      mini)
+    player.setFrameStack(newFs)
+    console.log("telein: pfs2", serFrame(player.frameStack));
+  }
+
+  //
+  // try to move
+  //
+
   // `that` has now teleported to an oob-location
   // next to the mini; try to move into the mini
-  if (maybePushableUpdate(that, dir)) {
-    // If we're a mini and we teleported in, update the player's frameStack
-    // We should maybe update _everyone's_ frameStack, but I think we
-    //   can assume that the turn is over now, since this chain of movement
-    //   finished successfully?
-    if (that.constructor === Mini) {
-      console.log("telein: pfs1", serFrame(player.frameStack));
-      const newFs = insertAll(
-        player.frameStack,
-        m=>m===that,
-        mini)
-      player.setFrameStack(newFs)
-      console.log("telein: pfs2", serFrame(player.frameStack));
-    }
-    return r(true)
-  }
+  if (maybePushableUpdate(that, dir)) return r(true)
+
   return r(false)
 }
 // const maybeTeleIn = pushableCached(tracer.tracify(maybeTeleIn_), cullInfinite)
