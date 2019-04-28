@@ -574,6 +574,19 @@ function reserializeLevel(name) {
   SaveLevel(name)
 }
 
+function colorSwap(...cols) {
+  function next(col) {
+    let i = cols.indexOf(col)
+    if (i === -1) return null
+    i = saneMod(i + 1, cols.length)
+    return cols[i]
+  }
+  for (const room of rooms) {
+    const newCol = next(room.name)
+    if (newCol) room.name = newCol
+  }
+}
+
 //
 // misc
 //
