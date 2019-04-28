@@ -271,8 +271,6 @@ function maybeTeleOut_(that, dir) {
     // TODO: can i merge this with the below frameStack edits?
     console.warn("teleporting out of... myself?")
 
-    spaceRipped = true
-
     let pfs = player.frameStack
     let nonLoopPart = [that.innerRoom] // create a new frame base
     let sent0 = getSafeSentinel()
@@ -296,22 +294,19 @@ function maybeTeleOut_(that, dir) {
   if (that.constructor === Mini) {
     const higherFs = find(player.frameStack, m=>m===that)
     if (higherFs) {
-      spaceRipped = true
-
       let pfs = player.frameStack
       let nonLoopPart = []
       let sent3 = getSafeSentinel()
       while (sent3()) {
-        const { data } = pfs
-        nonLoopPart.push(data)
-        if (data === mini) break
+        nonLoopPart.push(pfs.data)
+        if (pfs.data === mini) break
         pfs = pfs.parent
       }
 
       const splitNode = find(pfs, m=>(innerRoom({data: m}) === mini.innerRoom && m !== mini))
 
       if (splitNode) {
-        pfs = pfs.parent // not sure exactly why i need this; probably has to do with fucky loop conditions. but it works! so don't touch it!!
+        pfs = pfs.parent // not sure exactly why i need this; probably has to do with fucky loop conditions. but it works! so don't touch it!!!!!
 
         let loopPart = []
         let sent4 = getSafeSentinel()
@@ -323,6 +318,10 @@ function maybeTeleOut_(that, dir) {
         nonLoopPart = fromArray(nonLoopPart, true)
         loopPart = fromArray(loopPart, true)
         player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
+      } else {
+        // need to edit out yellow in ballon; in general, when
+        //    innerRoom({data: m}) === mini.innerRoom && m ___===___ mini
+        // is true, edit out the next parent
       }
     }
   }
