@@ -3,7 +3,7 @@ levelData.push({
   tileData: `
     room @White
     xxxxxxxx
-    x...x.xx
+    x......x
     x...x..x
     x...x..x
     x......x
@@ -68,13 +68,13 @@ levelData.push({
     xxxxx.xx
     xxxxx...
     ......xx
-    xxxxxxxx
+    xxxxx.xx
     xxxxxxxx
 
     room @Pink
-    xxxxxxxx
-    xxxxxxxx
-    xxxxxxxx
+    xx.xxxxx
+    xx.xxxxx
+    xx.xxxxx
     x....x..
     ...x...x
     xxxxxxxx
@@ -115,7 +115,7 @@ levelData.push({
     Crate White 6 6 1
     Mini Pink 1 3 Orange
     Crate Yellow 2 4 0
-    Mini White 2 2 Yellow
+    Mini White 4 1 Yellow
     Crate Orange 6 4 0
     Crate Orange 7 4 0
     Mini White 4 5 Red
@@ -132,6 +132,10 @@ levelData.push({
     Mini Brown 2 1 Brown
     Crate Brown 2 2 0
     Mini White 2 5 Brown
+    Mini Orange 5 6 Pink
+    Crate Pink 2 2 0
+    Crate Pink 2 1 0
+    Crate Pink 2 0 0
   `,
   frameStackData: `
   `,
