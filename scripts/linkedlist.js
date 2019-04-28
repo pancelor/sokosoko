@@ -11,7 +11,10 @@ function serFrame(list) {
 function serFrame_(list) {
   // assert list has no loops
   if (list === null) return "<null>"
-  return `${serFrame_(list.parent)} | ${innerRoom(list).name}`
+  const color = innerRoom(list).name
+  const id = list.data.id || "-"
+
+  return `${serFrame_(list.parent)} | ${color}#${id}`
 }
 
 function innerRoom(node) {

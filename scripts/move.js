@@ -285,7 +285,6 @@ function maybeTeleOut_(that, dir) {
 
     nonLoopPart = fromArray(nonLoopPart)
     player.setFrameStack(nonLoopPart)
-    console.log("selftele: pfs", serFrame(player.frameStack));
 
     return r(true)
   }
