@@ -319,9 +319,11 @@ function getSafeSentinel(max=100) {
   let i = 0
   return () => {
     i += 1
-    const b = i < max
-    if (!b) console.warn("loop sentinel triggered!")
-    return b
+    if (i < max) {
+      return true
+    } else {
+      throw new Error("loop sentinel triggered!")
+    }
   }
 }
 
