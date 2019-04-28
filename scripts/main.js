@@ -62,7 +62,7 @@ function registerKeyListeners() {
     } else if (e.code === "BracketRight") {
       maybeLoadNextLevel()
     } else if (e.code === "Space") {
-      if (checkWin()) {
+      if (player.won) {
         maybeLoadNextLevel()
         Raf()
         return

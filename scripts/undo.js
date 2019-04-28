@@ -208,7 +208,6 @@ function epochToString(e, join=true) {
 }
 
 function Undo() {
-  if (checkWin()) { return }
   if (historyCursor <= 0) { return }
   historyCursor -= 1
   const e = gameHistory[historyCursor]
@@ -230,7 +229,6 @@ function Undo() {
 }
 
 function Redo() {
-  if (checkWin()) { return }
   if (historyCursor >= gameHistory.length) { return }
   const e = gameHistory[historyCursor]
   historyCursor += 1

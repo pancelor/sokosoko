@@ -194,17 +194,15 @@ class Room {
 
 
 let player
-let gotBonus
 function InitGame() {
   // note: tiles/actors have already been loaded
   viewFrameStack = player.frameStack
-  gotBonus = false
   InitHistory()
   actors.forEach(a=>a.onGameInit())
 }
 
 function Update(dir) {
-  if (checkWin() || player.dead) { return false }
+  if (player.won || player.dead) return false
 
   StartEpoch()
   const res = player.update(dir)
@@ -215,18 +213,14 @@ function Update(dir) {
   return res
 }
 
-function tempLogEvents(events) {
-  for (const {id, before, after} of events.half1) {
-    const allKeys = [...Object.keys(before), ...Object.keys(before)]
-    if (allKeys.includes("frameStack")) {
-      console.log(epochToString(events))
-    }
-  }
-}
-
-function checkWin() {
-  return findActor(Flag, player.pos)
-}
+// function tempLogEvents(events) {
+//   for (const {id, before, after} of events.half1) {
+//     const allKeys = [...Object.keys(before), ...Object.keys(before)]
+//     if (allKeys.includes("frameStack")) {
+//       console.log(epochToString(events))
+//     }
+//   }
+// }
 
 function maybeFakeWin() {
   const a = findActor(FakeFlag, player.pos)
@@ -343,9 +337,9 @@ function DrawMisc(ctxView) {
   })
 
   // draw "you win!"
-  if (checkWin()) {
+  if (player.won) {
     const lines = ["You win!"]
-    if (gotBonus) lines.push("very good")
+    if (player.gotBonus) lines.push("very good")
     if (CanContinue()) lines.push("[space] to continue")
     drawMessage(ctxView, lines)
   }
@@ -491,15 +485,24 @@ class Actor {
 }
 
 class Player extends Actor {
-  setFrameStack(f) {
-    const before = this.frameStack
+  onGameInit() {
+    this.won = false
+    this.gotBonus = false
+  }
+
+  set(prop, f) {
+    const before = this[prop]
     const after = f
     RecordChange({
       id: this.id,
-      before: { frameStack: before },
-      after: { frameStack: after },
+      before: { [prop]: before },
+      after: { [prop]: after },
     })
-    this.frameStack = after
+    this[prop] = after
+  }
+
+  setFrameStack(f) {
+    return this.set("frameStack", f)
   }
 
   playMoveSound() {
@@ -518,7 +521,8 @@ class Player extends Actor {
     resetPushableCache()
     const success = maybePushableUpdate(this, dir)
     maybeFakeWin()
-    if (checkWin()) {
+    if (findActor(Flag, player.pos)) {
+      this.set("won", true)
       PlayAndRecordSound(sndWin)
     }
     return success
@@ -597,12 +601,13 @@ class Crate extends Actor {
   }
 
   maybeCollect() {
-    if (!this.special) return
-    if (!findActor(Flag, this.pos)) return
+    if (!this.special) return false
+    if (!findActor(Flag, this.pos)) return false
 
     this.setDead(true)
     PlayAndRecordSound(sndBonus)
-    gotBonus = true
+    player.set("gotBonus", true)
+    return true
   }
 }
 
