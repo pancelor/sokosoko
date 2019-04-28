@@ -12,6 +12,11 @@
 //   Just redesign the level so that the openings align - like
 //   what you did by adding the orange room to DOLPHIN
 
+// Running tally of times this seal has been disregarded and the result was good:
+//   |
+// Running tally of times this seal has been disregarded and the result was bad:
+//
+
 class Tracer {
   static indent_str = "  "
   constructor(silent) {
