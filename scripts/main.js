@@ -245,9 +245,9 @@ function mouseMove({e, pos}) {
     const RMB = e.buttons & (1<<1)
     if (editingTiles) {
       if (LMB && !RMB) {
-        setTileWall(pos)
+        setTile(pos, 1)
       } else if (RMB && !LMB) {
-        setTileFloor(pos)
+        setTile(pos, 0)
       }
     }
   }
@@ -342,9 +342,9 @@ function _devmodeMouseClick(e, pos) {
   if (!pos) return
   if (editingTiles) {
     if (e.button === 0) {
-      setTileWall(pos)
+      setTile(pos, 1)
     } else if (e.button === 2) {
-      setTileFloor(pos)
+      setTile(pos, 0)
     }
   } else {
     // assert we're editing actors

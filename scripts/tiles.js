@@ -34,6 +34,13 @@ function tilesDim() {
   }
 }
 
+function tileImg(pos) {
+  const solid = getTile(pos)
+  const room = pos.room()
+  if (!room) return imgInternalWall
+  return document.getElementById(`img${room.name}${solid ? "Wall" : "Floor"}`)
+}
+
 function DrawTiles(ctxMap, ctxMini) {
   const {w, h} = tilesDim()
   for (let y = 0; y < h; y++) {
@@ -48,13 +55,6 @@ function DrawTiles(ctxMap, ctxMini) {
       })
     }
   }
-}
-
-function GetTileColor(p) {
-  assert(0)
-  // const name = getTile(p)
-  // assert(name)
-  // return document.getElementById(name).dataset.color
 }
 
 function GetRoomColors(room) { // todo room.tileColors()
@@ -73,25 +73,11 @@ function getTile(pos) {
   }
 }
 
-function setTile(pos, name) {
+function setTile(pos, solid) {
   const mp = pos.mapPos()
   if (mp.inbounds()) {
-    tiles[mp.y][mp.x] = name
+    tiles[mp.y][mp.x] = !!solid
   }
-}
-
-function setTileWall(p) {
-  let name = getTile(p)
-  assert(name)
-  name = name.replace("Floor", "Wall")
-  setTile(p, name)
-}
-
-function setTileFloor(p) {
-  let name = getTile(p)
-  assert(name)
-  name = name.replace("Wall", "Floor")
-  setTile(p, name)
 }
 
 function SaveLevel(name) {

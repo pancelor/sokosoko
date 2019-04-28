@@ -61,14 +61,6 @@ function deserTile(code) {
   return solid
 }
 
-function tileImg(pos) {
-  const { x, y } = pos.mapPos()
-  const solid = tiles[y][x]
-  const room = pos.room()
-  if (!room) return imgInternalWall
-  return document.getElementById(`img${room.name}${solid ? "Wall" : "Floor"}`)
-}
-
 function importTiles(tileData) {
   // imports `tileData` into the global var `tiles`
 
