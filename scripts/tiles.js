@@ -8,17 +8,11 @@ function FitCanvasesToTiles() {
   canvasMini.height = h*miniTileSize
 }
 
-function solid(tileName) {
-  if (tileName === null) { return false }
-  return !!tileName.match(/^img\w+Wall$/)
-}
-
 function CanMoveToTile(p) {
   const rp = p.roomPos()
   if (rp.oob) { return false }
   if (!rp.inbounds()) { return false }
-  if (solid(getTile(p))) { return false }
-  return true
+  return !getTile(p)
 }
 
 function inbounds_(x, y, w, h) {
@@ -40,21 +34,15 @@ function tilesDim() {
   }
 }
 
-function lookupTileImg(name) {
-  return document.getElementById(name)
-}
-function lookupTileImgMini(name) {
-  return document.getElementById(`${name}-mini`)
-}
 function DrawTiles(ctxMap, ctxMini) {
   const {w, h} = tilesDim()
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
-      const name = tiles[y][x]
-      const img = document.getElementById(name)
-      drawImgMap(ctxMap, img, new MapPos(x, y))
+      const p = new MapPos(x, y)
+      const img = tileImg(p)
+      drawImgMap(ctxMap, img, p)
 
-      const fillStyle = document.getElementById(name).dataset.color
+      const fillStyle = img.dataset.color
       ctxWith(ctxMini, {fillStyle}, () => {
         ctxMini.fillRect(x*miniTileSize, y*miniTileSize, miniTileSize, miniTileSize)
       })

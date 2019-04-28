@@ -50,17 +50,23 @@ function preloadData(name) {
   return { tileData, actorData, frameStackData }
 }
 
-function serTile(name) {
-  const match = name.match(/^img\w+((?<floor>Floor)|(?<wall>Wall))$/)
-  assert(match)
-  assert(xor(match.groups.floor, match.groups.wall)) // exactly one is true
-  return match.groups.wall ? 'x' : '.'
+function serTile(solid) {
+  assert(solid === true || solid === false) // TODO rm
+  return solid ? 'x' : '.'
 }
 
-function deserTile(code, tag) { // todo: make this type: isWall(code)->bool
+function deserTile(code) {
   assert(code === 'x' || code === '.')
-  const isWall = code === 'x'
-  return `img${tag}${isWall ? "Wall" : "Floor"}`
+  const solid = (code === 'x')
+  return solid
+}
+
+function tileImg(pos) {
+  const { x, y } = pos.mapPos()
+  const solid = tiles[y][x]
+  const room = pos.room()
+  if (!room) return imgInternalWall
+  return document.getElementById(`img${room.name}${solid ? "Wall" : "Floor"}`)
 }
 
 function importTiles(tileData) {
@@ -99,9 +105,9 @@ function importTiles(tileData) {
       assertEqual(line.length, 8)
       const row = []
       for (let code of line) {
-        const name = deserTile(code, room.name)
-        assert(name)
-        row.push(name)
+        const solid = deserTile(code)
+        assert(solid === true || solid === false) // TODO rm
+        row.push(solid)
       }
       tiles.push(row)
       nextLine()
@@ -113,7 +119,7 @@ function importTiles(tileData) {
     // hack: add a row of solid tiles in between each level
     // to keep the pushableUpdate code simple
     const row = []
-    for (let i = 0; i < 8; i += 1) row.push("imgInternalWall")
+    for (let i = 0; i < 8; i += 1) row.push(true)
     tiles.push(row)
   }
 }
@@ -220,8 +226,9 @@ function exportRoomString(room) {
   lines.push(`    room @${room.name}`)
   for (let rr = room.begin; rr < room.end; rr += 1) {
     const chars = ["    "]
-    for (let imgName of tiles[rr]) {
-      chars.push(serTile(imgName))
+    for (let solid of tiles[rr]) {
+      assert(solid === true || solid === false) // TODO rm
+      chars.push(serTile(solid))
     }
     lines.push(chars.join(''))
   }

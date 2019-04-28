@@ -165,24 +165,24 @@ class Room {
     for (let rr = this.begin; rr < this.end; rr += 1) {
       const y = rr - this.begin
       if (rr === this.begin) {
-        const ix = tiles[rr].findIndex(name=>!solid(name))
+        const ix = tiles[rr].findIndex(solid=>!solid)
         if (ix !== -1) {
           // assertEqual(openings[1], null) // doesn't really work...
           openings[1] = new RoomPos(this, ix, y).mapPos()
         }
       }
       if (rr + 1 === this.end) {
-        const ix = tiles[rr].findIndex(name=>!solid(name))
+        const ix = tiles[rr].findIndex(solid=>!solid)
         if (ix !== -1) {
           // assertEqual(openings[3], null) // doesn't really work...
           openings[3] = new RoomPos(this, ix, y).mapPos()
         }
       }
-      if (!solid(tiles[rr][0])) {
+      if (!tiles[rr][0]) {
         // assertEqual(openings[2], null) // doesn't really work...
         openings[2] = new RoomPos(this, 0, y).mapPos()
       }
-      if (!solid(tiles[rr][lastColumn])) {
+      if (!tiles[rr][lastColumn]) {
         // assertEqual(openings[0], null) // doesn't really work...
         openings[0] = new RoomPos(this, lastColumn, y).mapPos()
       }
