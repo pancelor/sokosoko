@@ -294,7 +294,7 @@ function maybeTeleOut_(that, dir) {
   // If we're a mini and we teleported out, edit the player's framestack
   // TODO: ...We should maybe update _everyone's_ frameStack?
   if (that.constructor === Mini) {
-    const higherFs = includes(player.frameStack, that)
+    const higherFs = find(player.frameStack, m=>m===that)
     if (higherFs) {
       spaceRipped = true
 
@@ -308,17 +308,22 @@ function maybeTeleOut_(that, dir) {
         pfs = pfs.parent
       }
 
-      let loopPart = []
-      let sent4 = getSafeSentinel()
-      while (sent4()) {
-        pfs = pfs.parent
-        loopPart.push(pfs.data)
-        if (equals(pfs, higherFs)) break
-      }
+      const splitNode = find(pfs, m=>(innerRoom({data: m}) === mini.innerRoom && m !== mini))
 
-      nonLoopPart = fromArray(nonLoopPart, true)
-      loopPart = fromArray(loopPart, true)
-      player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
+      if (splitNode) {
+        pfs = pfs.parent // not sure exactly why i need this; probably has to do with fucky loop conditions. but it works! so don't touch it!!
+
+        let loopPart = []
+        let sent4 = getSafeSentinel()
+        while (sent4() && pfs !== splitNode) {
+          loopPart.push(pfs.data)
+          pfs = pfs.parent
+        }
+
+        nonLoopPart = fromArray(nonLoopPart, true)
+        loopPart = fromArray(loopPart, true)
+        player.setFrameStack(concat(nonLoopPart, makeLoop(loopPart)))
+      }
     }
   }
 

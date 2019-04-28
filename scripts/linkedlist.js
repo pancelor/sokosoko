@@ -48,11 +48,11 @@ function loopProtection(node, cb) {
   return [false, res]
 }
 
-function includes(list, target) {
-  if (list === null) return false
-  if (list.data === target) return list
+function find(list, cb) {
+  if (list === null) return null
+  if (cb(list.data)) return list
   const [loop, par] = loopProtection(list, () => {
-    return includes(list.parent, target)
+    return find(list.parent, cb)
   })
   return par
 }
@@ -370,9 +370,11 @@ RegisterTest("linkedlist insertAll on loop", () => {
   const expected = cons(3, cons(100, cons(1, cons(3, cons(100, makeLoop(cons(3, cons(100, cons(4, null)))))))))
   assert(equals(actual, expected))
 })
-RegisterTest("linkedlist includes", () => {
-  assert(!includes(null, 3), false)
-  assert(!includes(cons(1, null), 3), false)
+RegisterTest("linkedlist find", () => {
+  const includes = (list, target) => find(list, m=>m===target)
+
+  assert(!includes(null, 3))
+  assert(!includes(cons(1, null), 3))
   assert(includes(cons(3, null), 3))
 
   assert(equals(
