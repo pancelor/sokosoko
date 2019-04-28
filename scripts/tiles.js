@@ -42,6 +42,12 @@ function tileImg(pos) {
 }
 
 function DrawTiles(ctxMap, ctxMini) {
+  if (mapTileCache && miniTileCache) {
+    ctxMap.drawImage(mapTileCache, 0, 0)
+    ctxMini.drawImage(miniTileCache, 0, 0)
+    return
+  }
+  console.warn("redrawing tiles")
   const {w, h} = tilesDim()
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
@@ -57,11 +63,17 @@ function DrawTiles(ctxMap, ctxMini) {
   }
 }
 
-function GetRoomColors(room) { // todo room.tileColors()
-  return {
-    Wall: document.getElementById(`img${room.name}Wall`).dataset.color,
-    Floor: document.getElementById(`img${room.name}Floor`).dataset.color,
-  }
+let mapTileCache;
+let miniTileCache;
+function ResetTileCache(cb) {
+  mapTileCache = null
+  miniTileCache = null
+  DrawTiles(canvasMap.getContext('2d'), canvasMini.getContext('2d'), true)
+  screenshotTiles() // NOTE: this is async but we're just gonna let it finish whenever
+}
+async function screenshotTiles() {
+  mapTileCache = await createImageBitmap(canvasMap)
+  miniTileCache = await createImageBitmap(canvasMini)
 }
 
 function getTile(pos) {
@@ -77,6 +89,11 @@ function setTile(pos, solid) {
   const mp = pos.mapPos()
   if (mp.inbounds()) {
     tiles[mp.y][mp.x] = !!solid
+
+    // setTile only happens in development so doing this everytime is fine
+    // Even in normal non-devmode it's pretty much fine
+    assert(devmode)
+    ResetTileCache()
   }
 }
 

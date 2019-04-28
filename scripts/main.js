@@ -238,8 +238,10 @@ function mouseMove({e, pos}) {
 
   mousepos = pos
   if (devmode) {
-    let a = findActor(null, pos)
-    if (a) actorIdOutput.innerText = `getActorId(${a.id})\n${a.serialize()}`
+    if (debugIds) {
+      let a = findActor(null, pos)
+      if (a) actorIdOutput.innerText = `getActorId(${a.id})\n${a.serialize()}`
+    }
 
     const LMB = e.buttons & (1<<0)
     const RMB = e.buttons & (1<<1)

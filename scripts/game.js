@@ -195,6 +195,7 @@ class Room {
 
 let player
 function InitGame() {
+  ResetTileCache()
   // note: tiles/actors have already been loaded
   viewFrameStack = player.frameStack
   InitHistory()
@@ -246,16 +247,16 @@ async function DrawMinis(ctxMap) {
       src.x, src.y, pixSize, pixSize,
       dest.x, dest.y, pixSize, pixSize,
     )
-    // if (devmode) {
-    //   // print mini id above the mini
-    //   ctxWith(ctxMap, {
-    //     font: `10px Consolas`,
-    //     fillStyle: "black",
-    //     textAlign: "center",
-    //   }, () => {
-    //     ctxMap.fillText(m.id, m.pos.x*tileSize, m.pos.y*tileSize)
-    //   })
-    // }
+    if (debugIds) {
+      // print mini id above the mini
+      ctxWith(ctxMap, {
+        font: `10px Consolas`,
+        fillStyle: "black",
+        textAlign: "center",
+      }, () => {
+        ctxMap.fillText(m.id, m.pos.x*tileSize, m.pos.y*tileSize)
+      })
+    }
   }
   // draw highlight if we're zoomed out
   let pfs = player.frameStack

@@ -531,6 +531,8 @@ function devmodeOff() {
   mapOff()
 }
 
+let debugIds = false
+
 function mapOn() {
   canvasMap.style.display = null
   canvasMini.style.display = null
