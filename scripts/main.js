@@ -118,17 +118,13 @@ function registerKeyListeners() {
       return false
     }
 
-    if (e.ctrlKey || e.metaKey) {
-      // don't preventDefault on keyboard shortcuts
-      return false
-    }
-    if (e.code === "Tab") {
-      // let user tab out to level code input
-      return
-    }
+    // don't preventDefault on keyboard shortcuts
+    if (e.ctrlKey || e.metaKey) return false
+    // let user tab out to level code input
+    if (e.code === "Tab") return false
 
     e.preventDefault()
-    if (e.repeat) { return false }
+    if (e.repeat) return false
 
     onKeyDown(e)
     return false
