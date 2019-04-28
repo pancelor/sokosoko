@@ -88,12 +88,15 @@ function getTile(pos) {
 function setTile(pos, solid) {
   const mp = pos.mapPos()
   if (mp.inbounds()) {
-    tiles[mp.y][mp.x] = !!solid
-
-    // setTile only happens in development so doing this everytime is fine
-    // Even in normal non-devmode it's pretty much fine
-    assert(devmode)
-    ResetTileCache()
+    const new_ = !!solid
+    const old = tiles[mp.y][mp.x]
+    tiles[mp.y][mp.x] = new_
+    if (old !== new_) {
+      // setTile only happens in development so doing this everytime is fine
+      // Even in normal non-devmode it's pretty much fine
+      assert(devmode)
+      ResetTileCache()
+    }
   }
 }
 
