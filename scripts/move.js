@@ -273,6 +273,7 @@ function maybeTeleOut_(that, dir) {
   if (that === mini) {
     // TODO: can i merge this with the below frameStack edits?
     console.warn("teleporting out of... myself?")
+    PlayAndRecordSound(sndRip)
 
     let pfs = player.frameStack
     let nonLoopPart = [that.innerRoom] // create a new frame base
