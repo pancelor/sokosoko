@@ -1,0 +1,127 @@
+levelData.push({
+  name: 'popcorn',
+  tileData: `
+    room @White
+    xxxx.xxx
+    x.x....x
+    x.x....x
+    x.x....x
+    x.x....x
+    x.x....x
+    x.x....x
+    xxxx.xxx
+
+    room @Red
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxx.xxxx
+
+    room @Orange
+    xxxx.xxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x....xxx
+    x....x.x
+    xxxx.xxx
+
+    room @Yellow
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Blue
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Purple
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Pink
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Brown
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Black
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    .......x
+    x......x
+    x......x
+    xxxxxxxx
+  `,
+  actorData: `
+    Flag White 1 1
+    Player Black 3 5
+    Crate White 1 2 0
+    Mini Red 1 1 Red
+    Mini Orange 1 1 Orange
+    Mini Yellow 1 1 Yellow
+    Mini Green 1 1 Green
+    Mini Blue 1 1 Blue
+    Mini Purple 1 1 Purple
+    Mini Pink 1 1 Pink
+    Mini Brown 1 1 Brown
+    Mini Red 3 5 Black
+    Mini Red 2 3 White @LHQVTRHCUS
+    Mini Black 4 3 Red
+    Mini Red 4 3 Orange
+    Mini White 6 4 Black @DWKMIWILGK
+    Mini Orange 6 6 White
+  `,
+  frameStackData: `
+    LHQVTRHCUS
+    DWKMIWILGK
+  `,
+})
