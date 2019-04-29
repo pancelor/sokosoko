@@ -1,15 +1,15 @@
 levelData.push({
   name: 'roots',
   tileData: `
-    room @Purple
-    xxxx.xxx
-    x.xx.xxx
-    xxx..xxx
-    xxx..x.x
-    xxx..x.x
-    xxxx.x.x
-    xxxx.xxx
-    xxxx.xxx
+    room @Orange
+    xxxxxxxx
+    xxxxxxxx
+    xxxx..xx
+    xxxx..xx
+    .x....xx
+    xx....xx
+    xxxxxxxx
+    xxxxxxxx
 
     room @Red
     xxxxxxxx
@@ -17,7 +17,7 @@ levelData.push({
     x..x.x.x
     xx.x.x..
     ...x.x.x
-    x.xx.xxx
+    x.xx.x.x
     x....xxx
     xxxxxxxx
 
@@ -34,8 +34,8 @@ levelData.push({
     room @Yellow
     xxxxxxxx
     xxxxxxxx
-    xx....xx
-    xx....xx
+    xxxx..xx
+    xxxx..xx
     .x....xx
     xx....xx
     xxxxxxxx
@@ -51,11 +51,11 @@ levelData.push({
     x......x
     x.xxxxxx
 
-    room @Orange
+    room @Purple
     xxxxxxxx
     xxxxxxxx
-    xx....xx
-    xx....xx
+    xxxx..xx
+    xxxx..xx
     .x....xx
     xx....xx
     xxxxxxxx
@@ -83,12 +83,12 @@ levelData.push({
 
     room @Brown
     xxxxxxxx
-    xxxxxxxx
-    xx....xx
-    xx....xx
-    .x....xx
-    xx....xx
-    xxxxxxxx
+    xx.....x
+    xxxxxx.x
+    x...xxxx
+    ..x.x...
+    xxx...xx
+    x.xxxxxx
     xxxxxxxx
 
     room @Black
@@ -104,11 +104,9 @@ levelData.push({
   actorData: `
     Player Yellow 0 4
     Crate Black 5 7 0
-    Mini Green 3 2 White
     Mini Green 6 1 Yellow
     Mini Red 2 3 Green @PYQFOBKSEO
     Mini Green 3 5 Brown
-    Mini Green 6 6 Orange
     Mini Blue 4 3 Black
     Mini White 6 2 Red
     Mini Pink 3 6 Red @asds
@@ -122,22 +120,28 @@ levelData.push({
     Crate Black 5 5 0
     Crate Black 5 6 0
     Mini Blue 1 2 Pink @sggasd
-    Mini Red 6 4 Green @OWHFXHPKSX
+    Mini Red 6 5 Green
     Crate Green 2 2 0
-    Mini Green 2 5 White
     Mini Green 5 1 Brown
     Mini Green 5 6 Yellow @EDJGSYDHXO
     Crate White 0 4 0
     Crate White 1 4 0
     Crate White 2 4 0
-    Mini Pink 5 6 Orange
+    Mini Pink 5 6 Purple
     Flag Red 2 1
     Mini Red 1 5 White
-    Mini Red 4 5 White
-    Mini White 2 1 Red @asljhd
-    Mini Orange 4 4 White
+    Mini Red 4 4 White
+    Mini Brown 5 1 Red @asljhd
+    Mini Brown 1 6 Brown @OWHFXHPKSX
+    Mini Red 5 1 Brown
+    Mini Green 2 5 Orange
+    Mini Green 3 2 Orange
+    Mini Red 3 6 Brown
+    Crate Green 4 1 0
+    Mini Purple 4 4 Purple
   `,
   frameStackData: `
+    OWHFXHPKSX
     asljhd
     PYQFOBKSEO
     EDJGSYDHXO
