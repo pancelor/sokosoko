@@ -266,8 +266,7 @@ function maybeTeleOut_(that, dir) {
     // we've somehow reached the edge of the topmost room
     // (this _is_ possible; e.g. in dup1.lvl)
     PlayAndRecordSound(sndRip)
-    player.die()
-    player.setPos(outPos) // avoid the error message "oop the game broke!"
+    that.die()
 
     return r(true)
   }
