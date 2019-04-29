@@ -15,8 +15,8 @@ levelData.push({
     xxxxxxxx
     x.xxxxxx
     x..x...x
-    xx.x.x..
-    ...x.x.x
+    xx.x.x.x
+    ...x.x..
     x.xx.x.x
     x....xxx
     xxxxxxxx
@@ -26,10 +26,10 @@ levelData.push({
     x...x..x
     x.xxx..x
     xxxxx..x
-    xxxxx.xx
-    xxxxx.xx
-    x.xxx.xx
-    xxxxx.xx
+    xxxxx..x
+    xxxxx..x
+    x.xxxx.x
+    xxxxxx.x
 
     room @Yellow
     xxxxxxxx
@@ -108,7 +108,7 @@ levelData.push({
     Mini Red 2 3 Green @PYQFOBKSEO
     Mini Green 3 5 Brown
     Mini Blue 4 3 Black
-    Mini White 6 2 Red
+    Mini White 6 3 Red
     Mini Pink 3 6 Red @asds
     Mini Black 1 3 Blue
     Mini Black 6 4 Blue
