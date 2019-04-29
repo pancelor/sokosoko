@@ -265,7 +265,11 @@ function maybeTeleOut_(that, dir) {
   if (mini.constructor === Room) {
     // we've somehow reached the edge of the topmost room
     // (this _is_ possible; e.g. in dup1.lvl)
-    return r(false)
+    PlayAndRecordSound(sndRip)
+    player.die()
+    player.setPos(outPos) // avoid the error message "oop the game broke!"
+
+    return r(true)
   }
   if (that === mini) {
     // TODO: can i merge this with the below frameStack edits?
@@ -292,8 +296,6 @@ function maybeTeleOut_(that, dir) {
   // If we're a mini and we teleported out, edit the player's framestack
   // TODO: ...We should maybe update _everyone's_ frameStack?
   if (that.constructor === Mini) {
-    //TODO
-    debugIds=1
     const higherFs = find(player.frameStack, ll=>ll.data===that)
     if (higherFs) {
       let pfs = player.frameStack

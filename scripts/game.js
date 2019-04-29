@@ -282,7 +282,7 @@ let viewFrameStack
 async function DrawView(ctx) {
   const screenshotMap = await createImageBitmap(canvasMap)
 
-  ctxWith(ctx, {fillStyle: 'white'}, cls)
+  ctxWith(ctx, {fillStyle: 'black'}, cls)
 
   // draw outer border
   if (viewFrameStack.parent) {
