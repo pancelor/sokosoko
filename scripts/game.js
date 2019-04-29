@@ -536,7 +536,7 @@ class Player extends Actor {
       this.set("won", true)
       PlayAndRecordSound(sndWin)
     }
-    if (isFrameStackContradiction()) recordingStop()
+    if (isFrameStackContradiction() && !devmode) recordingStop()
     return success
   }
 }

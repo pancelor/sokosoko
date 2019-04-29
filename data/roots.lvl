@@ -3,62 +3,62 @@ levelData.push({
   tileData: `
     room @White
     xxxx.xxx
-    x.x..xxx
+    x.xx.xxx
     xxx..xxx
-    xx...x.x
-    xx...x.x
-    xx...x.x
-    xxx..xxx
+    xxx..x.x
+    xxx..x.x
+    xxxx.x.x
+    xxxx.xxx
     xxxx.xxx
 
     room @Red
     xxxxxxxx
-    xx.xx..x
+    xxxxx..x
     xxxxxxxx
-    ...x....
-    xx...xxx
-    xx.x.xxx
-    xx...xxx
+    xx.xx...
+    .......x
+    x.xxx.xx
+    x.....xx
     xxxxxxxx
 
     room @Orange
-    xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    xxxxxxxx
+    xxxxx.xx
+    xxxxx.xx
+    xxxxx.xx
+    xxxx..xx
+    .....xxx
+    xxxx..xx
+    xxxxx.xx
+    xxxxx.xx
 
     room @Yellow
     xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
+    xxxxxxxx
+    xx....xx
+    xx....xx
+    .x....xx
+    xx....xx
+    xxxxxxxx
     xxxxxxxx
 
     room @Green
-    xxxxxxxx
+    xxx.xxxx
     x......x
+    x...xxxx
+    xxxxx.xx
+    xxxxx.xx
+    x...x.xx
     x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    xxxxxxxx
+    xxxx.xxx
 
     room @Purple
     xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
+    xxxxxxxx
+    xx....xx
+    xx....xx
+    .x....xx
+    xx....xx
+    xxxxxxxx
     xxxxxxxx
 
     room @Blue
@@ -83,12 +83,12 @@ levelData.push({
 
     room @Brown
     xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
+    xxxxxxxx
+    xx....xx
+    xx....xx
+    .x....xx
+    xx....xx
+    xxxxxxxx
     xxxxxxxx
 
     room @Black
@@ -102,31 +102,40 @@ levelData.push({
     xxxxx.xx
   `,
   actorData: `
-    Flag Pink 5 3
-    Player Red 1 3
-    Crate Blue 4 5 0
-    Mini Orange 1 1 Orange
-    Mini Yellow 1 1 Yellow
-    Mini Green 1 1 Green
-    Mini Red 6 3 Pink
-    Mini Brown 1 1 Brown
-    Mini Purple 1 1 Purple
+    Flag Green 5 3
+    Player Red 0 4
+    Crate Black 5 7 0
+    Mini Green 3 2 Orange
+    Mini Green 6 1 Yellow
+    Mini Red 2 3 Green
+    Mini Green 3 5 Brown
+    Mini Green 6 6 Purple
     Mini Blue 4 3 Black
-    Mini Red 2 5 White @LHQVTRHCUS
-    Mini White 4 4 Red
-    Mini Red 4 5 White
+    Mini Red 1 5 White @LHQVTRHCUS
+    Mini White 4 3 Red
+    Mini Red 5 5 White
     Mini Pink 2 6 Red @asds
     Mini Black 1 3 Blue
     Mini Black 6 4 Blue
-    Crate Blue 0 5 0
     Crate Blue 1 5 0
     Crate Blue 2 5 0
     Crate Blue 3 5 0
+    Crate Blue 4 5 0
+    Crate Blue 0 5 0
     Crate Black 5 5 0
     Crate Black 5 6 0
-    Crate Black 5 7 0
-    Mini Red 2 1 Black
+    Mini Red 3 4 Black
     Mini Blue 1 2 Pink @sggasd
+    Mini Red 6 4 Green @OWHFXHPKSX
+    Crate Green 2 2 0
+    Mini Green 2 5 Orange
+    Mini Green 5 1 Brown
+    Mini Green 5 6 Yellow
+    Crate Orange 0 4 0
+    Crate Orange 1 4 0
+    Crate Orange 2 4 0
+    Crate Orange 3 4 0
+    Mini White 4 6 Orange
   `,
   frameStackData: `
     sggasd
