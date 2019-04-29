@@ -12,14 +12,14 @@ levelData.push({
     xxxx.xxx
 
     room @Red
-    xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    xxxxx.xx
+    xxxx.xxx
+    x.x..x.x
+    x.x.xxxx
+    xxx..x.x
+    xxxx.xxx
+    xxx.....
+    x.x..xxx
+    xxx.xxxx
 
     room @Orange
     xxxx.xxx
@@ -32,14 +32,14 @@ levelData.push({
     xxxx.xxx
 
     room @Yellow
-    xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    xxxxxxxx
+    xxxxx.xx
+    x...x.xx
+    x.xxx.xx
+    x.xxx.xx
+    xxx.....
+    xxxx.xxx
+    xxxx.xxx
+    xxxx.xxx
 
     room @Green
     xxxxxxxx
@@ -55,9 +55,9 @@ levelData.push({
     xxxxxxxx
     x......x
     x......x
-    x......x
-    x......x
-    x......x
+    xx.....x
+    .x.....x
+    xx.....x
     x......x
     xxxxxxxx
 
@@ -93,32 +93,42 @@ levelData.push({
 
     room @Black
     xxxxxxxx
-    x..xx.xx
-    xxxxxxxx
-    xxx.....
+    x.x.....
     xxx...xx
-    ......xx
-    xxxxxxxx
+    .......x
+    x.xxxxxx
+    x.....xx
+    xxxx.xxx
     xxxxxxxx
   `,
   actorData: `
-    Flag White 1 1
+    Flag Black 4 6
     Player Orange 4 3
-    Crate White 1 2 0
-    Mini Black 5 1 Orange @KWXCMPZHZF
-    Mini Yellow 1 1 Yellow
+    Crate Yellow 5 3 0
+    Mini Black 1 1 Orange @KWXCMPZHZF
+    Mini Red 3 1 Yellow
     Mini Green 1 1 Green
-    Mini Blue 1 1 Blue
+    Mini Black 6 3 Blue
     Mini Purple 1 1 Purple
     Mini Pink 1 1 Pink
     Mini Brown 1 1 Brown
-    Mini Red 4 5 Black
-    Mini Red 3 4 White @LHQVTRHCUS
-    Mini Red 1 1 Red @AAHYJZNVTX
+    Mini Yellow 3 4 Red @AAHYJZNVTX
     Mini White 4 4 Black @DWKMIWILGK
     Mini Orange 2 3 White @LCQWGKAMRK
     Mini Orange 6 3 White
-    Mini Black 4 4 Orange
+    Mini Black 4 2 Orange
+    Crate Yellow 5 2 0
+    Crate Yellow 5 1 0
+    Crate Yellow 5 0 0
+    Crate Yellow 5 4 0
+    Mini Red 4 6 Yellow
+    Crate Red 5 5 0
+    Crate Red 6 5 0
+    Crate Red 7 5 0
+    Mini Orange 4 6 Red
+    Crate Orange 4 7 0
+    Mini Black 1 4 Red
+    Mini Black 4 5 Blue
   `,
   frameStackData: `
     KWXCMPZHZF
