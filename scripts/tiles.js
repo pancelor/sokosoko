@@ -47,7 +47,7 @@ function DrawTiles(ctxMap, ctxMini) {
     ctxMini.drawImage(miniTileCache, 0, 0)
     return
   }
-  console.warn("redrawing tiles")
+  console.log("redrawing tiles")
   const {w, h} = tilesDim()
   for (let y = 0; y < h; y++) {
     for (let x = 0; x < w; x++) {
