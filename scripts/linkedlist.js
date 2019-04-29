@@ -49,8 +49,9 @@ function loopProtection(node, cb) {
 }
 
 function find(list, cb) {
+  // NOTE: cb is called on list, not on list.data
   if (list === null) return null
-  if (cb(list.data)) return list
+  if (cb(list)) return list
   const [loop, par] = loopProtection(list, () => {
     return find(list.parent, cb)
   })
@@ -371,7 +372,7 @@ RegisterTest("linkedlist insertAll on loop", () => {
   assert(equals(actual, expected))
 })
 RegisterTest("linkedlist find", () => {
-  const includes = (list, target) => find(list, m=>m===target)
+  const includes = (list, target) => find(list, ll=>ll.data===target)
 
   assert(!includes(null, 3))
   assert(!includes(cons(1, null), 3))

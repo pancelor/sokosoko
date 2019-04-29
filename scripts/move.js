@@ -292,7 +292,9 @@ function maybeTeleOut_(that, dir) {
   // If we're a mini and we teleported out, edit the player's framestack
   // TODO: ...We should maybe update _everyone's_ frameStack?
   if (that.constructor === Mini) {
-    const higherFs = find(player.frameStack, m=>m===that)
+    //TODO
+    debugIds=1
+    const higherFs = find(player.frameStack, ll=>ll.data===that)
     if (higherFs) {
       let pfs = player.frameStack
       let nonLoopPart = []
@@ -303,7 +305,14 @@ function maybeTeleOut_(that, dir) {
         pfs = pfs.parent
       }
 
-      const loopNode = find(pfs, m=>(innerRoom({data: m}) === mini.innerRoom && m !== mini))
+      const loopNode = find(pfs, ll=>{
+        if (!ll.parent) return false
+        return (
+          ll.data === that // `that` is on the stack
+          && innerRoom(ll.parent) === mini.innerRoom // `that` (further up the stack) is in the same room as it is here in `mini`
+          && ll.parent.data !== mini // BUT that's parent (further up the stack) is different from mini
+        )
+      })
 
       if (loopNode) {
         // we've branched off into a looped sub-universe
@@ -313,11 +322,12 @@ function maybeTeleOut_(that, dir) {
 
         let loopPart = []
         let sent4 = getSafeSentinel()
-        while (sent4() && pfs !== loopNode) {
+        while (sent4()) {
           if (!(lastThat && pfs.data === mini)) {
             // skip minis we just pushed `that` out of
             loopPart.push(pfs.data)
           }
+          if (pfs === loopNode) break
           lastThat = (pfs.data === that)
           pfs = pfs.parent
         }

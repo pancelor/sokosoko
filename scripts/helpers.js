@@ -387,9 +387,6 @@ function listen(evName) {
 
 let keyHist = null
 function recordingCycle() {
-  // returns the new state of the recording
-  const wasOn = !!keyHist
-  assert(wasOn)
   recordingStop()
   recordingStart()
 }
@@ -400,10 +397,10 @@ function recordingStart() {
 }
 function recordingStop() {
   console.log("Recorded moves:");
+  assert(keyHist !== null)
   const str = keyHist.join('')
   console.log(str)
   recordingOutput.innerText = `Recorded Moves: ${str}`
-  keyHist = null
 }
 function RecordKeyHist(dir) {
   if (!keyHist) return
@@ -411,6 +408,11 @@ function RecordKeyHist(dir) {
 }
 
 function play(moves, dt=50) {
+  reset()
+  play_(moves, dt)
+}
+
+function play_(moves, dt=50) {
   let ix = 0
   const keyHistInterval = setInterval(() => {
     if (ix >= moves.length) {
@@ -502,7 +504,6 @@ const solutions = {
   },
 }
 function playSolution(name, dt=10) {
-  reset()
   const sols = solutions[currentLevelName]
   if (!sols) return
   const sol = sols[name]
@@ -514,7 +515,6 @@ const bonus = (dt=0) => playSolution("bonus", dt)
 const cheese = (dt=0) => playSolution("cheese", dt)
 
 const winTickTock = (dt=0) => {
-  reset()
   let redR = `011111000003322233300000`
   let redL = `222211100011222223333322`
   let brownU = `10${redR}${redR}${redR}${redR}112${redL}${redL}${redL}${redL}11111`

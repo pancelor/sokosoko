@@ -230,6 +230,10 @@ function maybeFakeWin() {
   return true
 }
 
+function isFrameStackContradiction() {
+  return innerRoom(player.frameStack) !== player.pos.room()
+}
+
 function destroyActor(a) { // hacky; don't use me
   const ix = actors.indexOf(a)
   actors.splice(ix, 1)
@@ -336,6 +340,12 @@ function DrawMisc(ctxView) {
   ctxWith(ctxView, {strokeStyle: "white", lineWidth: 7, globalAlpha: 0.4}, () => {
     ctxView.strokeRect(dest.x, dest.y, innerW, innerH)
   })
+
+  // draw error msg
+  if (isFrameStackContradiction()) {
+    const lines = ["oops the game broke!", "undo with z.", "tell @pancelor pls"]
+    drawMessage(ctxView, lines)
+  }
 
   // draw "you win!"
   if (player.won) {
@@ -526,6 +536,7 @@ class Player extends Actor {
       this.set("won", true)
       PlayAndRecordSound(sndWin)
     }
+    if (isFrameStackContradiction()) recordingStop()
     return success
   }
 }
