@@ -70,6 +70,7 @@ function ResetTileCache(cb) {
   miniTileCache = null
   DrawTiles(canvasMap.getContext('2d'), canvasMini.getContext('2d'), true)
   screenshotTiles() // NOTE: this is async but we're just gonna let it finish whenever
+  Raf()
 }
 async function screenshotTiles() {
   mapTileCache = await createImageBitmap(canvasMap)

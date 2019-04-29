@@ -584,17 +584,33 @@ function reserializeLevel(name) {
   SaveLevel(name)
 }
 
-function colorSwap(...cols) {
-  function next(col) {
-    let i = cols.indexOf(col)
-    if (i === -1) return null
-    i = saneMod(i + 1, cols.length)
-    return cols[i]
+function getUniqueRoomFromNamePrefix(prefix) {
+  prefix = prefix.toLowerCase()
+  let res = null
+  for (const r of rooms) {
+    if (r.name.toLowerCase().startsWith(prefix)) {
+      if (res) return null
+      res = r
+    }
   }
-  for (const room of rooms) {
-    const newCol = next(room.name)
-    if (newCol) room.name = newCol
+  return res
+}
+
+function swapColors(...cols) {
+  assert(cols.length > 0)
+  const rs = cols.map(c=>getUniqueRoomFromNamePrefix(c))
+  if (rs.some(r=>r===null)) {
+    console.log(`failed`)
+    return
   }
+  console.log(rs.map(r=>r.name));
+  const temp = rs[0].name
+  for (let i = 0; i < rs.length - 1; ++i) {
+    rs[i].name = rs[i + 1].name
+  }
+  rs[rs.length-1].name = temp
+  console.log(rs.map(r=>r.name));
+  ResetTileCache()
 }
 
 //
