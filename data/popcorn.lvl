@@ -19,7 +19,7 @@ levelData.push({
     x......x
     x......x
     x......x
-    xxx.xxxx
+    xxxxx.xx
 
     room @Orange
     xxxx.xxx
@@ -105,7 +105,6 @@ levelData.push({
     Flag White 1 1
     Player Black 3 5
     Crate White 1 2 0
-    Mini Red 1 1 Red
     Mini Orange 1 1 Orange
     Mini Yellow 1 1 Yellow
     Mini Green 1 1 Green
@@ -113,15 +112,15 @@ levelData.push({
     Mini Purple 1 1 Purple
     Mini Pink 1 1 Pink
     Mini Brown 1 1 Brown
-    Mini Red 3 5 Black
-    Mini Red 2 3 White @LHQVTRHCUS
+    Mini Red 4 5 Black
+    Mini Red 3 4 White @LHQVTRHCUS
     Mini Black 4 3 Red
-    Mini Red 4 3 Orange
+    Mini Red 2 4 Orange @EONFOPMQZB
     Mini White 6 4 Black @DWKMIWILGK
-    Mini Orange 6 6 White
+    Mini Orange 6 6 White @LCQWGKAMRK
   `,
   frameStackData: `
-    LHQVTRHCUS
+    LCQWGKAMRK
     DWKMIWILGK
   `,
 })
