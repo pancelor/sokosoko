@@ -223,8 +223,6 @@ let storedActor = null
 function mouseClick({e, pos}) {
   if (maybeGuiInteract(e)) return
   if (!devmode) return
-  maybeChangeViewFrameStack(e, pos) // do we want to let non-devmode users use this?
-
   _devmodeMouseClick(e, pos)
 }
 
@@ -278,10 +276,11 @@ function maybeGuiInteract(e) {
 }
 
 function maybeChangeViewFrameStack(e, pos) {
+  assert(devmode) // not necessary in general, but that's what i'm assuming for now
+
   // zoom out on border-click
   if (e.button !== 0) return false
   if (!pos) {
-    if (!devmode) return false
     if (viewFrameStack.parent) {
       viewFrameStack = viewFrameStack.parent
       if (storedActor === player) {
@@ -292,7 +291,9 @@ function maybeChangeViewFrameStack(e, pos) {
     }
     return false
   }
-  if (devmode && editingTiles) return false
+
+  if (editingTiles) return false
+
   // zoom in on mini-click
   const mini = findActor(Mini, pos)
   if (mini) {
@@ -337,6 +338,7 @@ function cycleStoredActor(scrollAmount) {
 
 let editingTiles = false
 function _devmodeMouseClick(e, pos) {
+  maybeChangeViewFrameStack(e, pos)
   if (!pos) return
   if (editingTiles) {
     if (e.button === 0) {
@@ -391,7 +393,7 @@ function drawDevmode(ctxMap) {
 
     // mark storedActor
     const { x, y } = storedActor.pos
-    ctxWith(ctxMap, {globalAlpha: 0.65, fillStyle: "white"}, ()=>{
+    ctxWith(ctxMap, {globalAlpha: 0.35, fillStyle: "white"}, ()=>{
       ctxMap.fillRect(x*tileSize, y*tileSize, tileSize, tileSize)
     })
 

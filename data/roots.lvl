@@ -13,8 +13,8 @@ levelData.push({
 
     room @Red
     xxxxxxxx
+    x.xxxxxx
     x..x...x
-    x..x.x.x
     xx.x.x..
     ...x.x.x
     x.xx.x.x
@@ -25,11 +25,11 @@ levelData.push({
     xxxxxx.x
     x...x..x
     x.xxx..x
-    xxx....x
-    ....xxxx
-    xxx..xxx
-    x.xx.xxx
-    xxxx.xxx
+    xxxxx..x
+    xxxxx.xx
+    xxxxx.xx
+    x.xxx.xx
+    xxxxx.xx
 
     room @Yellow
     xxxxxxxx
@@ -38,8 +38,8 @@ levelData.push({
     xxxx..xx
     .x....xx
     xx....xx
-    xxxxxxxx
-    xxxxxxxx
+    xxx.xxxx
+    xxx.xxxx
 
     room @Green
     x.xxxxxx
@@ -124,21 +124,19 @@ levelData.push({
     Crate Green 2 2 0
     Mini Green 5 1 Brown
     Mini Green 5 6 Yellow @EDJGSYDHXO
-    Crate White 0 4 0
-    Crate White 1 4 0
-    Crate White 2 4 0
     Mini Pink 5 6 Purple
-    Flag Red 2 1
+    Flag Yellow 4 4
     Mini Red 1 5 White
     Mini Red 4 4 White
     Mini Brown 5 1 Red @asljhd
     Mini Brown 1 6 Brown @OWHFXHPKSX
-    Mini Red 5 1 Brown
+    Mini Red 5 2 Brown
     Mini Green 2 5 Orange
     Mini Green 3 2 Orange
     Mini Red 3 6 Brown
     Crate Green 4 1 0
     Mini Purple 4 4 Purple
+    Mini Red 1 1 Yellow
   `,
   frameStackData: `
     OWHFXHPKSX
