@@ -342,7 +342,7 @@ function DrawMisc(ctxView) {
   })
 
   // draw error msg
-  if (isFrameStackContradiction()) {
+  if (isFrameStackContradiction() && !devmode) {
     const lines = ["oops the game broke!", "undo with z.", "tell @pancelor pls"]
     drawMessage(ctxView, lines)
   }
