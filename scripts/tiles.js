@@ -43,6 +43,7 @@ function tileImg(pos) {
 
 function DrawTiles(ctxMap, ctxMini) {
   if (mapTileCache && miniTileCache) {
+    ctxWith(ctxMap, {fillStyle: "black"}, cls)
     ctxMap.drawImage(mapTileCache, 0, 0)
     ctxMini.drawImage(miniTileCache, 0, 0)
     return
