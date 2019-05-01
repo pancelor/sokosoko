@@ -1,0 +1,57 @@
+levelData.push({
+  name: 'sadclown',
+  tileData: `
+    room @Orange
+    xx.xxxxx
+    x....x.x
+    x.x.xxxx
+    x.xxx..x
+    x..x...x
+    x....x.x
+    xxx....x
+    xxxxxxxx
+
+    room @Purple
+    xxxxxxxx
+    xx...xxx
+    xx.....x
+    x.......
+    x......x
+    x.....xx
+    xxx...xx
+    x.xxxxxx
+
+    room @Brown
+    xxxxxxxx
+    xxxxx..x
+    .......x
+    xxxxx..x
+    x...xx.x
+    x......x
+    x.x.x..x
+    xxx.xxxx
+  `,
+  actorData: `
+    Flag Brown 1 6
+    Player Orange 3 6
+    Mini Orange 6 3 Brown
+    Mini Brown 3 5 Purple @m2
+    Crate Orange 2 0 0
+    Mini Purple 2 4 Orange
+    Mini Purple 3 3 Orange
+    Mini Purple 4 4 Orange @SAIAZIUOZA
+    Mini Purple 2 2 Orange
+    Mini Orange 1 5 Purple
+    Crate Orange 2 1 0
+    Mini Purple 4 2 Orange
+    Mini Purple 3 5 Orange
+    Mini Purple 5 3 Orange
+    Mini Purple 5 5 Orange
+    Mini Orange 6 1 Brown @475659
+  `,
+  frameStackData: `
+    475659
+    m2
+    SAIAZIUOZA
+  `,
+})
