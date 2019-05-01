@@ -1,0 +1,131 @@
+levelData.push({
+  name: 'clownparty',
+  tileData: `
+    room @Orange
+    xx.xxxxx
+    x...xxxx
+    xxx.xxxx
+    x......x
+    x......x
+    xxx....x
+    xxxxxx.x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    x.......
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxx..x
+    xxxxxxxx
+
+    room @Yellow
+    xxxxxxxx
+    x.xx...x
+    xxx....x
+    .......x
+    xx.xxxxx
+    x..x...x
+    x....x.x
+    xxxxxxxx
+
+    room @Blue
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x.....xx
+    x.....x.
+    x.....xx
+    xxxxxxxx
+
+    room @Brown
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Purple
+    xxxxx.xx
+    x..xx.xx
+    x..xxxxx
+    xxxxxxxx
+    x...xxxx
+    xxxxxxxx
+    xx..xxxx
+    xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    xx...xxx
+    x.....xx
+    x.....xx
+    x.....xx
+    xx...xxx
+    xxxx.x.x
+    xxxx.xxx
+
+    room @White
+    xxxxxxxx
+    x....x.x
+    x....xxx
+    x......x
+    x......x
+    x.......
+    x......x
+    xxxxxxxx
+
+    room @Pink
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Black
+    xxxxx.xx
+    x...x.xx
+    xxxxx.xx
+    x...x.xx
+    xx.xx.xx
+    xx.x...x
+    xx.x.xxx
+    xx.xxxxx
+  `,
+  actorData: `
+    Flag Green 5 6
+    Player Orange 3 3
+    Mini Orange 3 5 Yellow
+    Mini Orange 2 1 Blue
+    Mini Brown 1 1 Brown
+    Mini Purple 1 1 Purple
+    Mini Yellow 5 2 Red
+    Mini Pink 1 1 Pink
+    Mini Green 1 4 Orange @m1
+    Mini Yellow 6 5 Orange
+    Mini White 2 5 Green @m2
+    Crate Green 6 6 1
+    Mini Black 2 1 Black
+    Mini White 6 1 White
+    Mini Green 4 3 Orange
+    Mini Green 3 2 Orange
+    Mini Green 2 3 Orange @SAIAZIUOZA
+    Mini Green 5 4 Orange
+    Mini Green 6 3 Orange
+    Mini Orange 1 4 White
+    Mini Orange 1 3 Green
+  `,
+  frameStackData: `
+    m2
+    SAIAZIUOZA
+  `,
+})
