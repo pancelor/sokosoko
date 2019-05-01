@@ -8,15 +8,15 @@ levelData.push({
     x..xxx.x
     x....x.x
     x......x
-    xxx....x
+    xxx...xx
     xxxxxxxx
 
     room @Green
     xxxxxxxx
-    xx....xx
-    x.....xx
-    x....xxx
-    x....x..
+    xx...x..
+    x......x
+    x......x
+    x......x
     x......x
     .......x
     xxxxxxxx
@@ -36,10 +36,10 @@ levelData.push({
     x......x
     x......x
     x......x
-    x.....xx
-    x.....x.
-    x..xxxxx
-    xxxx.xxx
+    x......x
+    x......x
+    x....xxx
+    xxxxxx.x
 
     room @Brown
     xxxxxxxx
@@ -52,14 +52,14 @@ levelData.push({
     xxxxxxxx
 
     room @Purple
-    xxxx.xxx
-    xx...xxx
-    xx....xx
-    x..xx...
-    x...xx.x
-    xx.xxx.x
-    ...xxx.x
-    xxxxxx.x
+    xxxxxxxx
+    x.x..xxx
+    xxx...xx
+    x.xxxxxx
+    x..xx..x
+    xxxx....
+    x..x..xx
+    xxxxx.xx
 
     room @Red
     xxxxxxxx
@@ -118,12 +118,10 @@ levelData.push({
     Mini Green 2 2 Orange
     Mini Orange 1 5 Green
     Mini Red 6 6 Red
-    Crate Brown 4 4 0
-    Crate Purple 4 0 0
-    Crate Purple 4 1 0
+    Crate Brown 3 4 0
     Crate Orange 4 1 0
     Mini Green 4 2 Orange
-    Mini Purple 3 4 Green
+    Mini Green 6 1 Purple
     Crate Green 0 6 0
     Crate Green 1 6 0
     Crate Green 2 6 0
@@ -135,6 +133,11 @@ levelData.push({
     Mini Pink 2 6 Black
     Mini Green 3 5 Orange
     Mini Brown 5 4 Green
+    Crate Green 6 5 0
+    Crate Green 6 3 0
+    Crate Purple 5 6 0
+    Mini Green 5 3 Orange
+    Crate Brown 2 4 0
   `,
   frameStackData: `
     m2
