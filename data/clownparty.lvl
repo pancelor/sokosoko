@@ -33,12 +33,12 @@ levelData.push({
 
     room @Blue
     xxxxxxxx
-    xxxxxx.x
-    x...xxxx
-    xxxxxxxx
+    xx.x...x
+    x..xxxxx
+    xxxxxx..
     x.....xx
-    x.....xx
-    x...xxxx
+    x......x
+    x......x
     xxxxxxxx
 
     room @Yellow
@@ -72,24 +72,24 @@ levelData.push({
     xxxx.xxx
 
     room @White
-    xxxxxxxx
-    x...xx.x
-    x....xxx
-    x.....xx
-    xx.....x
-    xx.....x
-    xxxx...x
-    xxxxxxxx
+    ........
+    ........
+    ........
+    ...xx...
+    .xx...x.
+    ....x...
+    ........
+    ........
 
     room @Green
     xxx.xxxx
-    xx.....x
-    xx..xxxx
-    xx..x..x
-    xxx.xx.x
-    xxx.x..x
-    ....x..x
-    xxx.xxxx
+    .x..x.xx
+    xx..x...
+    xx.xx.xx
+    x.xxx.xx
+    ..xx.xxx
+    x.x.x.x.
+    x.xxx.xx
 
     room @Black
     xxxxxxxx
@@ -106,11 +106,10 @@ levelData.push({
     Player Orange 3 6
     Mini Orange 6 3 Brown
     Mini Black 2 3 Blue @ajl
-    Mini Green 5 1 Green
+    Mini Blue 4 6 Green
     Mini Brown 3 5 Purple @m2
     Crate Orange 2 0 0
-    Mini Green 4 1 Black
-    Mini White 6 1 White
+    Mini Blue 1 2 White
     Mini Purple 2 4 Orange
     Mini Purple 3 3 Orange
     Mini Purple 4 4 Orange @SAIAZIUOZA
@@ -119,21 +118,53 @@ levelData.push({
     Mini Pink 6 6 Pink
     Crate Orange 2 1 0
     Mini Purple 4 2 Orange
-    Mini Green 3 1 Black
-    Mini Green 0 6 Black
-    Mini Green 1 6 Black
-    Mini Green 2 6 Black
+    Mini Black 5 1 Black
     Mini Purple 3 5 Orange
     Mini Purple 5 3 Orange
     Mini Purple 5 5 Orange
     Mini Red 5 5 Red
     Mini Blue 4 5 Brown @sakdjhg
     Crate Blue 2 5 1
-    Mini Blue 6 1 Yellow
+    Mini Blue 2 1 Yellow
     Mini Yellow 0 0 Blue
     Mini Yellow 7 7 Blue
     Mini Yellow 0 7 Blue
     Mini Yellow 7 0 Blue
+    Mini Blue 2 2 White
+    Mini Blue 4 1 White
+    Mini White 0 0 Blue
+    Mini White 0 1 Blue
+    Mini White 1 0 Blue
+    Mini White 2 0 Blue
+    Mini White 5 0 Blue
+    Mini White 6 0 Blue
+    Mini White 7 0 Blue
+    Mini White 4 0 Blue
+    Mini White 3 0 Blue
+    Mini White 7 1 Blue
+    Mini White 6 1 Blue
+    Mini White 1 1 Blue
+    Mini White 0 6 Blue
+    Mini White 1 6 Blue
+    Mini White 6 6 Blue
+    Mini White 7 6 Blue
+    Mini White 0 7 Blue
+    Mini White 1 7 Blue
+    Mini White 2 7 Blue
+    Mini White 3 7 Blue
+    Mini White 4 7 Blue
+    Mini White 5 7 Blue
+    Mini White 6 7 Blue
+    Mini White 7 7 Blue
+    Mini Blue 5 1 White
+    Mini Blue 6 1 White
+    Mini Blue 5 6 Green
+    Mini Blue 3 6 Green
+    Mini Blue 2 6 Green
+    Mini Blue 1 6 Green
+    Mini Blue 6 6 Green
+    Mini Blue 6 3 White
+    Mini Blue 7 3 White
   `,
   frameStackData: `
     ajl
