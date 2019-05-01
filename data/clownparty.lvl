@@ -2,34 +2,34 @@ levelData.push({
   name: 'clownparty',
   tileData: `
     room @Orange
-    xx.xxxxx
-    x...xxxx
-    xxx.xxxx
-    x......x
+    xxxx.xxx
+    x.....xx
+    x.xxxxxx
+    x..xxx.x
+    x....x.x
     x......x
     xxx....x
-    xxxxxx.x
-    xxxxxxxx
+    x.xxxxxx
 
     room @Green
     xxxxxxxx
+    xx....xx
+    x.....xx
+    x.....xx
     x.......
     x......x
-    x......x
-    x......x
-    x......x
-    xxxxx..x
+    .......x
     xxxxxxxx
 
     room @Yellow
     xxxxxxxx
     x.xx...x
     xxx....x
-    .......x
-    xx.xxxxx
-    x..x...x
-    x....x.x
+    x......x
     xxxxxxxx
+    x..x.xxx
+    x....xxx
+    xxxx.xxx
 
     room @Blue
     xxxxxxxx
@@ -38,28 +38,28 @@ levelData.push({
     x......x
     x.....xx
     x.....x.
-    x.....xx
-    xxxxxxxx
+    x..xxxxx
+    xxxx.xxx
 
     room @Brown
     xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+    .....xxx
+    xxxx....
+    xxxx.xxx
     xxxxxxxx
 
     room @Purple
-    xxxxx.xx
-    x..xx.xx
-    x..xxxxx
-    xxxxxxxx
-    x...xxxx
-    xxxxxxxx
-    xx..xxxx
-    xxxxxxxx
+    xxxx.xxx
+    xx...xxx
+    xx....xx
+    x..xx...
+    x...xx.x
+    xx.xxx.x
+    ...xxx.x
+    xxxxxx.x
 
     room @Red
     xxxxxxxx
@@ -73,23 +73,23 @@ levelData.push({
 
     room @White
     xxxxxxxx
-    x....x.x
+    x...xx.x
     x....xxx
-    x......x
-    x......x
-    x.......
-    x......x
+    x.....xx
+    xx.....x
+    xx.....x
+    xxxx...x
     xxxxxxxx
 
     room @Pink
-    xxxxxxxx
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    x......x
-    xxxxxxxx
+    xxx.xxxx
+    xx.....x
+    xx..xxxx
+    xx..x..x
+    xxx.xx.x
+    xxx.x..x
+    ....x..x
+    xxx.xxxx
 
     room @Black
     xxxxx.xx
@@ -102,27 +102,41 @@ levelData.push({
     xx.xxxxx
   `,
   actorData: `
-    Flag Green 5 6
-    Player Orange 3 3
-    Mini Orange 3 5 Yellow
-    Mini Orange 2 1 Blue
-    Mini Brown 1 1 Brown
-    Mini Purple 1 1 Purple
-    Mini Yellow 5 2 Red
-    Mini Pink 1 1 Pink
-    Mini Green 1 4 Orange @m1
-    Mini Yellow 6 5 Orange
+    Flag Yellow 1 6
+    Player Orange 2 5
+    Mini Orange 6 3 Yellow
+    Mini Yellow 4 6 Blue
+    Mini Orange 2 1 Brown
+    Mini Green 6 4 Purple
+    Mini Pink 5 1 Pink
+    Mini Green 5 3 Orange @m1
     Mini White 2 5 Green @m2
-    Crate Green 6 6 1
-    Mini Black 2 1 Black
+    Crate Orange 4 0 0
+    Mini Pink 4 1 Black
     Mini White 6 1 White
-    Mini Green 4 3 Orange
-    Mini Green 3 2 Orange
-    Mini Green 2 3 Orange @SAIAZIUOZA
-    Mini Green 5 4 Orange
-    Mini Green 6 3 Orange
-    Mini Orange 1 4 White
-    Mini Orange 1 3 Green
+    Mini Green 4 4 Orange
+    Mini Green 3 3 Orange
+    Mini Green 2 4 Orange @SAIAZIUOZA
+    Mini Green 2 2 Orange
+    Mini Orange 1 5 Green
+    Mini Red 6 6 Red
+    Mini Brown 4 6 Purple
+    Crate Brown 4 5 0
+    Crate Purple 4 0 0
+    Crate Purple 4 1 0
+    Crate Orange 4 1 0
+    Mini Green 4 2 Orange
+    Mini Purple 3 4 Green
+    Crate Green 0 6 0
+    Crate Green 1 6 0
+    Crate Green 2 6 0
+    Crate Green 3 6 0
+    Crate Green 4 6 0
+    Mini Pink 3 1 Black
+    Mini Pink 0 6 Black
+    Mini Pink 1 6 Black
+    Mini Pink 2 6 Black
+    Mini Green 3 5 Orange
   `,
   frameStackData: `
     m2
