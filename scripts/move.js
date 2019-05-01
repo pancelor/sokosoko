@@ -12,7 +12,9 @@
 //   Just redesign the level so that the openings align - like
 //   what you did by adding the orange room to DOLPHIN
 
-// Running tally of times this seal has been disregarded and the result was good:
+// Running tally of times this seal has been disregarded and the result was good and quick:
+//   |
+// Running tally of times this seal has been disregarded and the result was good and slow:
 //   |
 // Running tally of times this seal has been disregarded and the result was bad:
 //
@@ -86,61 +88,6 @@ function arrEqual(a1, a2) {
   return true
 }
 
-let pushCache = new Map()
-function resetPushableCache() {
-  pushCache = new Map()
-}
-function pushableCached(fxn, altFxn) {
-  const wrapped = (that, ...args) => {
-    let hashArgs = [that, that.pos.x, that.pos.y, ...args]
-    let entries = pushCache.get(fxn.name)
-    if (!entries) {
-      entries = []
-      pushCache.set(fxn.name, entries)
-    }
-    let foundMatch = false
-    for (const pastArgs of entries) {
-      assert(pastArgs.length === hashArgs.length)
-      if (arrEqual(hashArgs, pastArgs)) foundMatch = true
-    }
-    if (foundMatch) return altFxn(that, ...args)
-    entries.push([...hashArgs]) // need to do this _before_ calling fxn, b/c its recursive
-    return fxn(that, ...args)
-  }
-  Object.defineProperty(wrapped, "name", { value: fxn.name })
-  return wrapped
-}
-RegisterTest("pushCache", () => {
-  const divertedResults = []
-  function spy(that, x, y) { assert(that); const res = 10*x+y; divertedResults.push(res); return res }
-
-  let callCount = 0
-  function foo_(that, x, y) { assert(that); callCount += 1; return 10*x + y }
-  const foo = pushableCached(foo_, spy)
-
-  const that = {pos: {x:10, y:20}}
-  assertEqual(callCount, 0)
-  assertEqual(foo(that, 1, 2), 12)
-  assertEqual(divertedResults.length, 0)
-  assertEqual(callCount, 1)
-
-  assertEqual(foo(that, 3, 4), 34)
-  assertEqual(divertedResults.length, 0)
-  assertEqual(callCount, 2)
-
-  assertEqual(foo(that, 3, 4), 34)
-  assertEqual(divertedResults.length, 1)
-  assertEqual(callCount, 2) // didnt increment
-  assertEqual(divertedResults[0], 34) // routed to the alternate function
-
-  that.pos.x = 9
-  assertEqual(foo(that, 3, 4), 34)
-  assertEqual(divertedResults.length, 1) // didnt divert
-  assertEqual(callCount, 3) // incremented again
-
-  resetPushableCache()
-})
-
 function cullInfinite(that) {
   // console.log("gone:", that);
   assert(that)
@@ -193,7 +140,9 @@ function maybePushableUpdate_(that, dir) {
   })
   that.setPos(that.pos.addDir(dir)) // do this early; we'll undo it later if we need to
 
-  // if (that.pos.equals(new RoomPos(Room.findName("Orange"), 7, 4))) {
+  // if (that.pos.equals(Room.findName("Orange").relPos(7, 4))) {
+  // if (that.constructor.name === "Crate") {
+  // if (that.constructor.name === "Mini" && that.innerRoom.name === "Orange") {
   //   debugger;
   // }
 
@@ -229,9 +178,7 @@ function maybePushableUpdate_(that, dir) {
   assert(numIters === 0 || numIters === 1)
   return r(true)
 }
-// const maybePushableUpdate = tracer.tracify(maybePushableUpdate_)
-const maybePushableUpdate = pushableCached(tracer.tracify(maybePushableUpdate_), cullInfinite)
-// ^ this cullInfinite catches the dolphin tutorial
+const maybePushableUpdate = tracer.tracify(maybePushableUpdate_)
 
 // * if the position/direction we were just at was at a level opening,
 //   * (remember, we've already optimistically moved)
@@ -375,7 +322,6 @@ function maybeTeleOut_(that, dir) {
 
   return r(false)
 }
-// const maybeTeleOut = pushableCached(tracer.tracify(maybeTeleOut_), cullInfinite)
 const maybeTeleOut = tracer.tracify(maybeTeleOut_)
 
 // * if we're standing on a mini,
@@ -411,6 +357,12 @@ function maybeTeleIn_(that, dir) {
   that.setPos(op.addDir(oppDir(dir)))
   that.setFrameStack(cons(mini, that.frameStack))
 
+  if (that.pos.addDir(dir).equals(oldPos)) {
+    // catches dolphin tutorial
+    cullInfinite(that)
+    return r(true)
+  }
+
   // If we're a mini and we teleported in, update the player's frameStack
   // TODO: ...We should maybe update _everyone's_ frameStack?
   if (that.constructor === Mini) {
@@ -431,7 +383,6 @@ function maybeTeleIn_(that, dir) {
 
   return r(false)
 }
-// const maybeTeleIn = pushableCached(tracer.tracify(maybeTeleIn_), cullInfinite)
 const maybeTeleIn = tracer.tracify(maybeTeleIn_)
 
 // * try to tele the food into me
@@ -473,7 +424,6 @@ function maybeConsume_(that, food, dir) {
   }
   return r(true)
 }
-// const maybeConsume = tracer.tracify(pushableCached(maybeConsume_, cullInfinite))
 const maybeConsume = tracer.tracify(maybeConsume_)
 
 function lifted(lifter, target, cb) {

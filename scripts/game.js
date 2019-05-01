@@ -140,9 +140,14 @@ class Room {
     this.end = end
   }
 
+  relPos(x, y) {
+    assert(y !== undefined) // dunno if i should support this or not
+    return new RoomPos(this, x, y).mapPos()
+  }
+
   mapCorner() {
     // returns the top left corner of this room, as a MapPos
-    return new MapPos(0, this.begin)
+    return this.relPos(0, 0)
   }
 
   tileColors() {
@@ -519,7 +524,6 @@ class Player extends Actor {
   }
 
   update(dir) {
-    resetPushableCache()
     const success = maybePushableUpdate(this, dir)
     maybeFakeWin()
     if (findActor(Flag, player.pos)) {
