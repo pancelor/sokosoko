@@ -94,7 +94,7 @@ function importTiles(tileData) {
 
     nextLine()
     while (!eof && !roomHeader(line)) {
-      assertEqual(line.length, 8)
+      // if (line.length !== 8) console.warn("line wrong length?")
       const row = []
       for (let code of line) {
         const solid = deserTile(code)
@@ -111,7 +111,7 @@ function importTiles(tileData) {
     // hack: add a row of solid tiles in between each level
     // to keep the pushableUpdate code simple
     const row = []
-    for (let i = 0; i < 8; i += 1) row.push(true)
+    for (let i = 0; i < tiles[0].length; i += 1) row.push(true)
     tiles.push(row)
   }
 }

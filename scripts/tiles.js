@@ -10,17 +10,13 @@ function FitCanvasesToTiles() {
 
 function CanMoveToTile(p) {
   const rp = p.roomPos()
-  if (rp.oob) { return false }
-  if (!rp.inbounds()) { return false }
+  if (rp.oob) return false
+  if (!rp.inbounds()) return false
   return !getTile(p)
 }
 
 function inbounds_(x, y, w, h) {
-  if (x == null || y == null) { return false }
-  // if (dim === undefined) { // TODO did we need this at any calling site?
-  //   dim = tilesDim()
-  // }
-  // const {w, h} = dim
+  if (x == null || y == null) return false
 
   return 0 <= x && x < w && 0 <= y && y < h
 }
@@ -69,7 +65,7 @@ let miniTileCache;
 function ResetTileCache(cb) {
   mapTileCache = null
   miniTileCache = null
-  DrawTiles(canvasMap.getContext('2d'), canvasMini.getContext('2d'), true)
+  DrawTiles(canvasMap.getContext('2d'), canvasMini.getContext('2d'))
   screenshotTiles() // NOTE: this is async but we're just gonna let it finish whenever
   Raf()
 }

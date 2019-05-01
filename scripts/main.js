@@ -1,9 +1,22 @@
+const KeyDirMap = {
+  "KeyD": 0,
+  "ArrowRight": 0,
+  "KeyW": 1,
+  "ArrowUp": 1,
+  "KeyA": 2,
+  "ArrowLeft": 2,
+  "KeyS": 3,
+  "ArrowDown": 3,
+  "KeyZ": 4,
+  "KeyY": 5,
+}
+
 function registerLevelCodeListener() {
   levelCodeInput.addEventListener("keydown", (e) => {
     if (e.code === "Enter") {
       let name = levelCodeInput.value.toLowerCase()
-      if (!name) { name = "original" }
-      if (!loadLevel(name)) { levelCodeInput.value = "" }
+      if (!name) name = "original"
+      if (!loadLevel(name)) levelCodeInput.value = ""
     }
   })
 }
@@ -11,18 +24,6 @@ function registerLevelCodeListener() {
 function registerKeyListeners() {
   let heldDirs = []
   let holdTimeout
-  const keyDirMap = {
-    "KeyD": 0,
-    "ArrowRight": 0,
-    "KeyW": 1,
-    "ArrowUp": 1,
-    "KeyA": 2,
-    "ArrowLeft": 2,
-    "KeyS": 3,
-    "ArrowDown": 3,
-    "KeyZ": 4,
-    "KeyY": 5,
-  }
   const holdDelay = {
     // different delays per input type
     // each entry is [initialDelay, holdDelay]
@@ -33,16 +34,19 @@ function registerKeyListeners() {
     4: [300, 75], // undo / redo are different than normal directions
     5: [300, 75],
   }
-  function onKeyHold(wait=false) {
+  function gameOnKeyHold(wait=false) {
     const dir = back(heldDirs)
     if (dir === undefined) return
     ProcessInput(dir)
     clearTimeout(holdTimeout)
     if (!enableHeldButtons) return
-    holdTimeout = setTimeout(onKeyHold, holdDelay[dir][wait ? 0 : 1])
+    holdTimeout = setTimeout(gameOnKeyHold, holdDelay[dir][wait ? 0 : 1])
   }
-  function onKeyDown(e) {
-    if (e.code === "KeyR") {
+  function gameOnKeyDown(e) {
+    assert(gameState === GS_PLAYING)
+    if (e.code === "Escape") {
+      InitMenu(currentLevelName)
+    } else if (e.code === "KeyR") {
       if (devmode) return // too confusing; ctrl-r instead pls
       clearTimeout(holdTimeout)
       reset()
@@ -57,13 +61,9 @@ function registerKeyListeners() {
       editingTiles = false
       cycleStoredActor(usingStockActors ? (e.shiftKey ? -1 : 1) : 0)
       Raf()
-    } else if (e.code === "BracketLeft") {
-      maybeLoadPrevLevel()
-    } else if (e.code === "BracketRight") {
-      maybeLoadNextLevel()
-    } else if (e.code === "Space") {
+    } else if (e.code === "Space" || e.code === "Enter") {
       if (player.won) {
-        maybeLoadNextLevel()
+        InitMenu(currentLevelName)
         Raf()
         return
       }
@@ -77,29 +77,26 @@ function registerKeyListeners() {
         editingTiles = false
         Raf()
       }
-    } else {
-      const dir = keyDirMap[e.code]
-      if (dir === undefined) { return }
+   } else if (e.code in KeyDirMap) {
+     const dir = KeyDirMap[e.code]
 
-      if (!heldDirs.includes(dir)) {
-        heldDirs.push(dir)
-      }
+     if (!heldDirs.includes(dir)) heldDirs.push(dir)
 
-      onKeyHold(true)
-    }
+     gameOnKeyHold(true)
+   }
   }
-  function onKeyUp(e) {
-    const dir = keyDirMap[e.code]
-    if (dir === undefined) { return }
+  function gameOnKeyUp(e) {
+    const dir = KeyDirMap[e.code]
+    if (dir === undefined) return
     const keyWasCurrent = (dir === back(heldDirs))
     heldDirs = heldDirs.filter(d=>d!==dir)
     if (keyWasCurrent) {
-      onKeyHold(false) // do next held button on stack immediately
+      gameOnKeyHold(false) // do next held button on stack immediately
     }
   }
 
   function maybeSave(e) {
-    if ((e.ctrlKey || e.metaKey) && e.code === "KeyS") {
+    if (gameState === GS_PLAYING && (e.ctrlKey || e.metaKey) && e.code === "KeyS") {
       SaveLevel(levelCodeInput.value)
       return true
     } else {
@@ -126,19 +123,33 @@ function registerKeyListeners() {
     e.preventDefault()
     if (e.repeat) return false
 
-    onKeyDown(e)
+    if (gameState === GS_PLAYING) {
+      gameOnKeyDown(e)
+    } else if (gameState === GS_MENU) {
+      menuOnKeyDown(e)
+    } else {
+      assert(0, "bad gameState")
+    }
     return false
   })
   canvasView.addEventListener("keyup", e => {
     e.preventDefault()
-    if (e.repeat) { return false }
+    if (e.repeat) return false
 
-    onKeyUp(e)
+    if (gameState === GS_PLAYING) {
+      gameOnKeyUp(e)
+    } else if (gameState === GS_MENU) {
+      menuOnKeyUp(e)
+    } else {
+      assert(0, "bad gameState")
+    }
+
     return false
   })
 }
 
 function ProcessInput(code) {
+  assert(gameState === GS_PLAYING)
   assert([0,1,2,3,4,5].includes(code))
   let success
   if (code === 4) {
@@ -159,6 +170,30 @@ function lockScroll(cb) {
   scrollTo(x,y)
 }
 
+function gameOnMouseDown(e) {
+  assert(gameState === GS_PLAYING)
+  if (e.target === canvasView) {
+    mouseClick(translateMouseFromView(e))
+    Raf()
+    canvasView.focus()
+  } else if (e.target === canvasMap) {
+    mouseClick(translateMouseFromMap(e))
+    Raf()
+    lockScroll(()=>canvasView.focus())
+  }
+}
+
+function gameOnMouseMove(e) {
+  assert(gameState === GS_PLAYING)
+  if (e.target === canvasView) {
+    mouseMove(translateMouseFromView(e))
+    if (devmode) Raf()
+  } else if (e.target === canvasMap) {
+    mouseMove(translateMouseFromMap(e))
+    if (devmode) Raf()
+  }
+}
+
 function registerMouseListeners() {
   mousepos = new MapPos(0, 0)
   canvasView.addEventListener("contextmenu", (e) => {
@@ -171,32 +206,49 @@ function registerMouseListeners() {
   })
 
   canvasMap.addEventListener("mousedown", (e) => {
-    mouseClick(translateMouseFromMap(e))
-    Raf()
-
-    lockScroll(()=>canvasView.focus())
+    if (gameState === GS_PLAYING) {
+      gameOnMouseDown(e)
+    } else if (gameState === GS_MENU) {
+      menuOnMouseDown(e)
+    } else {
+      assert(0, "bad gameState")
+    }
 
     e.preventDefault()
     return false
   })
   canvasView.addEventListener("mousedown", (e) => {
-    mouseClick(translateMouseFromView(e))
-    Raf()
+    if (gameState === GS_PLAYING) {
+      gameOnMouseDown(e)
+    } else if (gameState === GS_MENU) {
+      menuOnMouseDown(e)
+    } else {
+      assert(0, "bad gameState")
+    }
 
-    canvasView.focus()
     e.preventDefault()
     return false
   })
   canvasMap.addEventListener("mousemove", (e) => {
-    mouseMove(translateMouseFromMap(e))
-    if (devmode) Raf()
+    if (gameState === GS_PLAYING) {
+      gameOnMouseMove(e)
+    } else if (gameState === GS_MENU) {
+      menuOnMouseMove(e)
+    } else {
+      assert(0, "bad gameState")
+    }
 
     e.preventDefault()
     return false
   })
   canvasView.addEventListener("mousemove", (e) => {
-    mouseMove(translateMouseFromView(e))
-    if (devmode) Raf()
+    if (gameState === GS_PLAYING) {
+      gameOnMouseMove(e)
+    } else if (gameState === GS_MENU) {
+      menuOnMouseMove(e)
+    } else {
+      assert(0, "bad gameState")
+    }
 
     e.preventDefault()
     return false
@@ -263,15 +315,6 @@ function maybeGuiInteract(e) {
   if (firstRow && lastCol && e.button === 0) {
     muteToggle()
     return true
-  }
-  if (devmode) {
-  // these are too confusing in the first 10 seconds of seeing the game
-    if (lastRow && firstCol && e.button === 0) {
-      return maybeLoadPrevLevel()
-    }
-    if (lastRow && lastCol && e.button === 0) {
-      return maybeLoadNextLevel()
-    }
   }
   return false
 }
@@ -414,12 +457,18 @@ async function redraw() {
   ctxMini.imageSmoothingEnabled = false
   const ctxView = canvasView.getContext('2d')
   ctxView.imageSmoothingEnabled = false
-  DrawTiles(ctxMap, ctxMini)
-  DrawActors(ctxMap, ctxMini)
-  await DrawMinis(ctxMap)
-  drawDevmode(ctxMap)
-  await DrawView(ctxView)
-  DrawMisc(ctxView)
+  if (gameState === GS_MENU) {
+    await DrawMenu(ctxMap, ctxMini, ctxView)
+  } else if (gameState === GS_PLAYING) {
+    DrawTiles(ctxMap, ctxMini)
+    DrawActors(ctxMap, ctxMini)
+    await DrawMinis(ctxMap)
+    drawDevmode(ctxMap)
+    await DrawView(ctxView)
+    DrawMisc(ctxView)
+  } else {
+    assert(0, "bad gameState")
+  }
 }
 
 function Raf() {
@@ -429,77 +478,21 @@ function Raf() {
 let currentLevelName
 function reset(name=null) {
   const success = loadLevel(name || currentLevelName)
+  if (!success) return
   recordingStart()
 }
 function loadLevel(name) {
-  if (!Import(name)) { return false }
+  if (name !== "menu") gameState = GS_PLAYING
+  if (!Import(name)) return false
   currentLevelName = name
   levelCodeInput.value = name.toUpperCase()
   if (devmode) window.location.hash = `#dev#${name}`
-  InitGame()
+  InitLevel()
   canvasView.focus()
   // scrollTo(0, 0)
 
   Raf()
   return true
-}
-
-// returns the next level name
-// defaults to the first level
-// returns null if targetName is the last level
-function nextLevelName(targetName) {
-  let found = false
-  for (const name of mainLevelNames) {
-    if (found) return name
-    if (name === targetName) found = true
-  }
-  if (found) {
-    return null
-  } else {
-    return mainLevelNames[0]
-  }
-}
-function CanContinue() {
-  if (!currentLevelName) return true // game start
-  if (!mainLevelNames.includes(currentLevelName)) return false
-  return nextLevelName(currentLevelName) !== null
-}
-function maybeLoadNextLevel() {
-  if (CanContinue()) {
-    reset(nextLevelName(currentLevelName))
-    return true
-  } else {
-    return false
-  }
-}
-
-// returns the prev level name
-// defaults to the last level
-// returns null if targetName is the first level
-function prevLevelName(targetName) {
-  let found = false
-  for (let i = mainLevelNames.length - 1; i >= 0; --i) {
-    const name = mainLevelNames[i]
-    if (found) return name
-    if (name === targetName) found = true
-  }
-  if (found) {
-    return null
-  } else {
-    return mainLevelNames[mainLevelNames.length - 1]
-  }
-}
-function CanGoBack() {
-  if (!mainLevelNames.includes(currentLevelName)) return false
-  return prevLevelName(currentLevelName) !== null
-}
-function maybeLoadPrevLevel() {
-  if (CanGoBack()) {
-    reset(prevLevelName(currentLevelName))
-    return true
-  } else {
-    return false
-  }
 }
 
 function devmodeInit() {
@@ -509,20 +502,7 @@ function devmodeInit() {
   if (dev) devmodeOn()
 }
 
-function editLevelList() {
-  function addListItem(parent, text) {
-    const child = document.createElement('li')
-    child.innerText = text
-    parent.appendChild(child)
-  }
-
-  for (const name of mainLevelNames) {
-    addListItem(mainLevelsList, name.toUpperCase())
-  }
-}
-
 function init() {
-  editLevelList()
   if (devmode) RunTests()
 
   // enable key listeners / focus on the canvases
@@ -535,7 +515,8 @@ function init() {
   registerLevelCodeListener()
   registerKeyListeners()
   registerMouseListeners()
-  maybeLoadNextLevel()
+  InitMenu()
+  canvasView.focus()
 
   devmodeInit()
 }

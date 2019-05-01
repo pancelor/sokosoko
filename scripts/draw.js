@@ -56,10 +56,29 @@ function drawCircle(ctx, p, r) {
   ctx.fill()
 }
 
+function drawLabel(ctx, msg) {
+  const W = ctx.canvas.width
+  const H = ctx.canvas.height
+  const lineHeight = 30
+  const msgHeight = lineHeight
+  const cx = W/2
+  const cy = H - msgHeight - lineHeight
+  ctxWith(ctx, {globalAlpha: 0.66, fillStyle: "black"}, () => {
+    fillRectCentered(ctx, cx, cy, W, msgHeight + 0.5*lineHeight)
+  })
+  ctxWith(ctx, {
+    font: `${lineHeight}px Consolas`,
+    fillStyle: "white",
+    textAlign: "center",
+  }, () => {
+    ctx.fillText(msg, cx, cy + lineHeight*0.25)
+  });
+}
+
 function drawMessage(ctx, lines, mainColor="white") {
   if (!Array.isArray(lines)) { lines = [lines] }
-  const W = ctx.canvas.width;
-  const H = ctx.canvas.height;
+  const W = ctx.canvas.width
+  const H = ctx.canvas.height
   const lineHeight = 30
   const msgHeight = lineHeight*lines.length
   ctxWith(ctx, {globalAlpha: 0.66, fillStyle: "black"}, () => {

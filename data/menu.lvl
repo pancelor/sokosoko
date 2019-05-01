@@ -1,0 +1,43 @@
+levelData.push({
+  name: 'menu',
+  tileData: `
+    room @White
+    xxxxxxxxxxxxxxxx
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    xxxxxxxxxxxxxxxx
+  `,
+  actorData: `
+    Player White 1 1
+    Stairs White 2 2 zero
+    Stairs White 3 2 one
+    Stairs White 4 2 two
+    Stairs White 5 2 original
+    Stairs White 5 4 tunnels
+    Stairs White 5 5 oldstomach
+    Stairs White 6 4 butterfly
+    Stairs White 6 5 balloon
+    Stairs White 5 7 flare
+    Stairs White 6 7 dolphin
+    Stairs White 5 9 bellyache
+    Stairs White 6 9 door
+    Stairs White 7 9 wack
+    Stairs White 10 7 porpoise
+    Stairs White 11 7 sadclown
+    Stairs White 11 9 clownparty
+  `,
+  frameStackData: `
+  `,
+})

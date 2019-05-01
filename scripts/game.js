@@ -45,7 +45,7 @@ class MapPos extends BasePos {
   }
 
   inbounds() {
-    const {w, h} = tilesDim()
+    const { w, h } = tilesDim()
     return inbounds_(this.x, this.y, w, h)
   }
 
@@ -115,9 +115,9 @@ class RoomPos extends BasePos {
     )
   }
 
-
   inbounds() {
-    return inbounds_(this.x, this.y, 8, 8)
+    const { begin, end } = this.room()
+    return inbounds_(this.x, this.y, tiles[0].length, end - begin)
   }
 
   roomPos() {
@@ -199,12 +199,12 @@ class Room {
 
 
 let player
-function InitGame() {
-  ResetTileCache()
+function InitLevel() {
   // note: tiles/actors have already been loaded
+  ResetTileCache()
   viewFrameStack = player.frameStack
   InitHistory()
-  actors.forEach(a=>a.onGameInit())
+  actors.forEach(a=>a.onLevelInit())
 }
 
 function Update(dir) {
@@ -346,7 +346,7 @@ function DrawMisc(ctxView) {
   if (player.won) {
     const lines = ["You win!"]
     if (player.gotBonus) lines.push("very good")
-    if (CanContinue()) lines.push("[space] to continue")
+    lines.push("[space] to continue")
     drawMessage(ctxView, lines)
   }
 
@@ -355,13 +355,12 @@ function DrawMisc(ctxView) {
     ctxView.strokeRect(0, 0, canvasView.width, canvasView.height)
   })
 
+  DrawGUI(ctxView)
+}
+
+function DrawGUI(ctxView) {
   // draw mute button
   ctxView.drawImage(gameMuted ? imgSoundOff : imgSoundOn, canvasView.width - tileSize, 0)
-  // these are too confusing in the first 10 seconds of seeing the game
-  if (devmode) {
-    if (CanGoBack()) ctxView.drawImage(imgArrowLeft, 0, canvasView.height - tileSize)
-    if (CanContinue()) ctxView.drawImage(imgArrowRight, canvasView.width - tileSize, canvasView.height - tileSize)
-  }
 }
 
 function DrawActors(ctxMap, ctxMini) {
@@ -387,6 +386,8 @@ function lookupActorImg(actor) {
     return imgFlag
   } else if (cst === FakeFlag) {
     return imgFlag
+  } else if (cst === Stairs) {
+    return imgCrate // TODO get unique img?
   } else {
     assert(0, `Don't know img for ${cst.name}`)
   }
@@ -403,6 +404,8 @@ function lookupActorImgMini(actor) {
     return imgFlagMini
   } else if (cst === FakeFlag) {
     return imgFlagMini
+  } else if (cst === Stairs) {
+    return imgCrateMini // TODO get unique img? this one doesn't matter actually)
   } else {
     assert(0, `Don't know img for ${cst.name}`)
   }
@@ -467,7 +470,7 @@ class Actor {
     this.dead = after
   }
 
-  onGameInit() {
+  onLevelInit() {
     // code that runs on game init
   }
 
@@ -491,7 +494,7 @@ class Actor {
 }
 
 class Player extends Actor {
-  onGameInit() {
+  onLevelInit() {
     this.won = false
     this.gotBonus = false
   }
@@ -617,7 +620,24 @@ class Crate extends Actor {
   }
 }
 
-const allActorTypes = [Player, FakeFlag, Flag, Mini, Crate]
+class Stairs extends Actor {
+  constructor(p, name) {
+    super(p)
+    this.name = name
+  }
+  serialize() {
+    const tag = this.tag ? ` @${this.tag}` : ""
+    return `${this.constructor.name} ${this.pos.roomPos().serialize()} ${this.name} ${tag}`
+  }
+  static deserialize(line) {
+    const [type, rName, rx, ry, name] = line.split(' ')
+    assertEqual(type, this.name)
+    const p = RoomPos.deserialize(rName, rx, ry)
+    return new (this)(p, name)
+  }
+}
+
+const allActorTypes = [Player, FakeFlag, Flag, Mini, Crate, Stairs]
 
 function allActors(csts) {
   // allActors() -> all actors

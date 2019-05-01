@@ -11,6 +11,7 @@
 
   <br>
 
+  <!-- keep this for now, for dev-ing non public levels -->
   <label for="levelCode">Enter level code:</label>
   <input type="text" name="levelCode" id="levelCodeInput">
 
@@ -33,12 +34,6 @@
       <li>R: restart</li>
       <li>M: toggle mute</li>
     </ul>
-    <h3>Level Codes</h3>
-    <ul id="mainLevelsList">
-      <!-- list is auto-generated in JS -->
-    </ul>
-    <h3>Suggested Level Order</h3>
-    <p>Play the first four (ZERO, ONE, TWO, and ORIGINAL) to learn the basic mechanics. After that, feel free to skip around. The remaining levels are listed roughly in order of increasing difficulty. I hope you like it! -pancelor</p>
   </div>
 
   <div id="spritesList" style="display:none">
@@ -79,6 +74,7 @@
   </div>
 
   <div style="display:none">
+    <img src="./data/selector.png" id="imgSelector">
     <img src="./data/sound-on.png" id="imgSoundOn">
     <img src="./data/sound-off.png" id="imgSoundOff">
     <img src="./data/arrow-left.png" id="imgArrowLeft">
@@ -101,6 +97,7 @@
   <!-- levels start -->
 
   <!-- main levels; edit sequence in config.dat -->
+  <script type="application/javascript" src="./data/menu.lvl"></script>
   <script type="application/javascript" src="./data/zero.lvl"></script>
   <script type="application/javascript" src="./data/one.lvl"></script>
   <script type="application/javascript" src="./data/two.lvl"></script>
@@ -165,6 +162,7 @@
   <script type="application/javascript" src="./scripts/draw.js"></script>
   <script type="application/javascript" src="./scripts/saveload.js"></script>
   <script type="application/javascript" src="./scripts/tiles.js"></script>
+  <script type="application/javascript" src="./scripts/menu.js"></script>
   <script type="application/javascript" src="./scripts/main.js"></script>
   <script type="application/javascript" src="./scripts/game.js"></script>
   <script type="application/javascript" src="./scripts/move.js"></script>
