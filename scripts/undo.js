@@ -208,7 +208,7 @@ function epochToString(e, join=true) {
 }
 
 function Undo() {
-  if (historyCursor <= 0) { return }
+  if (historyCursor <= 0) return false
   historyCursor -= 1
   const e = gameHistory[historyCursor]
 
@@ -226,10 +226,11 @@ function Undo() {
 
   viewFrameStack = player.frameStack
   Raf()
+  return true
 }
 
 function Redo() {
-  if (historyCursor >= gameHistory.length) { return }
+  if (historyCursor >= gameHistory.length) return false
   const e = gameHistory[historyCursor]
   historyCursor += 1
 
@@ -249,4 +250,5 @@ function Redo() {
 
   viewFrameStack = player.frameStack
   Raf()
+  return true
 }

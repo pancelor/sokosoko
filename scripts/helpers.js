@@ -396,11 +396,18 @@ function recordingStart() {
   keyHist = []
 }
 function recordingStop() {
-  console.log("Recorded moves:");
   assert(keyHist !== null)
   const str = keyHist.join('')
-  console.log(str)
   recordingOutput.innerText = `Recorded Moves: ${str}`
+  if (!devmode) return
+
+  console.log("Recorded moves:");
+  console.log(str)
+  const reduced = reduceWinstr(str)
+  if (str !== reduced) {
+    console.log("(reduced):");
+    console.log(reduced)
+  }
 }
 function RecordKeyHist(dir) {
   if (!keyHist) return
@@ -548,6 +555,36 @@ const winTickTock = (dt=0) => {
   console.log({length: sol.length});
   play(sol, dt)
 }
+
+function reduceWinstr(s) {
+  const res = []
+  const sent = getSafeSentinel()
+  while (sent()) {
+    const match = s.match(/^(.*)45(.*)$/)
+    if (!match) break
+    s = match[1] + match[2]
+  }
+  assert(s.indexOf('5') === -1, "invalid winstr (bad 5)")
+
+  const sent2 = getSafeSentinel()
+  while (sent2()) {
+    const match = s.match(/^(.*)[0123]4(.*)$/)
+    if (!match) break
+    s = match[1] + match[2]
+  }
+  assert(s.indexOf('4') === -1, "invalid winstr (bad  4)")
+
+  return s
+}
+RegisterTest("reduceWinstr", () => {
+  assertEqual(reduceWinstr(""), "")
+  assertEqual(reduceWinstr("012302"), "012302")
+  assertEqual(reduceWinstr("14"), "")
+  assertEqual(reduceWinstr("0142"), "02")
+  assertEqual(reduceWinstr("0452"), "02")
+  assertEqual(reduceWinstr("0444455552"), "02") // illegal winstr, but it's fine
+  assertEqual(reduceWinstr("00000044445555240450"), "00000000") // illegal winstr, but it's fine
+})
 
 let devmode = false
 function devmodeOn() {

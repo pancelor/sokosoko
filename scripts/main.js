@@ -140,14 +140,15 @@ function registerKeyListeners() {
 
 function ProcessInput(code) {
   assert([0,1,2,3,4,5].includes(code))
+  let success
   if (code === 4) {
-    Undo()
+    success = Undo()
   } else if (code === 5) {
-    Redo()
+    success = Redo()
   } else {
-    const res = Update(code) // code is dir
-    if (!res) return // skip recording key hist if update failed
+    success = Update(code) // code is dir
   }
+  if (!success) return // skip recording key hist if update failed
   RecordKeyHist(code)
 }
 
@@ -522,7 +523,7 @@ function editLevelList() {
 
 function init() {
   editLevelList()
-  RunTests()
+  if (devmode) RunTests()
 
   // enable key listeners / focus on the canvases
   // probably tabIndex = -1 makes more sense
