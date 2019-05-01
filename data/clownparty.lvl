@@ -3,8 +3,8 @@ levelData.push({
   tileData: `
     room @Red
     xx.xxxxx
-    x.....xx
-    x.x.x.xx
+    x......x
+    x.x.x..x
     x.....xx
     xx.x...x
     x....x.x
@@ -23,12 +23,12 @@ levelData.push({
 
     room @Brown
     xxxxxxxx
-    xxxxx..x
-    .......x
-    xxxxx..x
-    x...xx.x
+    xxx...xx
+    ....x..x
+    xx.....x
+    xxxxxx.x
+    x...x..x
     x......x
-    x.x.x..x
     xxx.xxxx
 
     room @Blue
@@ -107,12 +107,12 @@ levelData.push({
     Mini Red 6 4 Brown
     Mini Black 2 3 Blue @ajl
     Mini Blue 4 6 Green
-    Mini Brown 3 5 Purple @m2
+    Mini Brown 3 6 Purple @m2
     Crate Red 2 0 0
     Mini Blue 1 2 White
     Mini Purple 2 4 Red
     Mini Purple 3 3 Red
-    Mini Purple 4 6 Red @SAIAZIUOZA
+    Mini Purple 5 5 Red @SAIAZIUOZA
     Mini Purple 2 2 Red @71927
     Mini Red 1 5 Purple
     Mini Pink 2 2 Pink
@@ -121,7 +121,7 @@ levelData.push({
     Mini Black 5 1 Black
     Mini Purple 3 5 Red
     Mini Purple 5 3 Red
-    Mini Purple 5 5 Red
+    Mini Purple 4 6 Red
     Mini Blue 4 5 Brown @sakdjhg
     Crate Blue 2 5 1
     Mini Blue 2 1 Yellow
@@ -180,6 +180,6 @@ levelData.push({
     ajl
     sakdjhg
     m2
-    71927
+    SAIAZIUOZA
   `,
 })
