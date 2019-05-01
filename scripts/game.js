@@ -524,6 +524,7 @@ class Player extends Actor {
   }
 
   update(dir) {
+    resetPushableCache()
     const success = maybePushableUpdate(this, dir)
     maybeFakeWin()
     if (findActor(Flag, player.pos)) {

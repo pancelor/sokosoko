@@ -15,8 +15,8 @@ levelData.push({
     xxxx.xxx
     x.xx..xx
     xxxxx..x
-    xxxxx..x
-    x.xxxxxx
+    .xxxx..x
+    xxxxxxxx
     x.x.xxx.
     xxx.xxxx
     xxxxx.xx
@@ -59,8 +59,9 @@ levelData.push({
     Mini Blue 7 2 Orange
     Mini Blue 3 5 Purple
     Mini Green 7 5 Blue
-    Mini Yellow 0 4 Blue
     Mini Blue 6 4 Yellow
+    Mini Yellow 0 4 Green
+    Mini Green 0 3 Yellow
   `,
   frameStackData: `
     m44

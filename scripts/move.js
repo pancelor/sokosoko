@@ -13,9 +13,9 @@
 //   what you did by adding the orange room to DOLPHIN
 
 // Running tally of times this seal has been disregarded and the result was good and quick:
-//   |
+//
 // Running tally of times this seal has been disregarded and the result was good and slow:
-//   |
+//   ||
 // Running tally of times this seal has been disregarded and the result was bad:
 //
 
@@ -86,6 +86,34 @@ function arrEqual(a1, a2) {
     if (a1[i] !== a2[i]) return false
   }
   return true
+}
+
+let pushCache = new Map()
+function resetPushableCache() {
+  pushCache = new Map()
+}
+function pushableCached(fxn, altFxn) {
+  const wrapped = (that, ...args) => {
+    let hashArgs = [that, that.pos.x, that.pos.y, ...args]
+    let entries = pushCache.get(fxn.name)
+    if (!entries) {
+      entries = []
+      pushCache.set(fxn.name, entries)
+    }
+    for (const pastArgs of entries) {
+      assert(pastArgs.length === hashArgs.length)
+      if (arrEqual(hashArgs, pastArgs)) return altFxn(that, ...args)
+    }
+
+    entries.push(hashArgs) // need to do this _before_ calling fxn, b/c its recursive
+    const len = entries.length
+    const res = fxn(that, ...args)
+    assert(entries.length === len)
+    entries.splice(len-1, 1) // need to delete afterward to avoid that bug in clownparty
+    return res
+  }
+  Object.defineProperty(wrapped, "name", { value: fxn.name })
+  return wrapped
 }
 
 function cullInfinite(that) {
@@ -178,7 +206,8 @@ function maybePushableUpdate_(that, dir) {
   assert(numIters === 0 || numIters === 1)
   return r(true)
 }
-const maybePushableUpdate = tracer.tracify(maybePushableUpdate_)
+// const maybePushableUpdate = tracer.tracify(maybePushableUpdate_)
+const maybePushableUpdate = pushableCached(tracer.tracify(maybePushableUpdate_), cullInfinite)
 
 // * if the position/direction we were just at was at a level opening,
 //   * (remember, we've already optimistically moved)
@@ -356,12 +385,6 @@ function maybeTeleIn_(that, dir) {
 
   that.setPos(op.addDir(oppDir(dir)))
   that.setFrameStack(cons(mini, that.frameStack))
-
-  if (that.pos.addDir(dir).equals(oldPos)) {
-    // catches dolphin tutorial
-    cullInfinite(that)
-    return r(true)
-  }
 
   // If we're a mini and we teleported in, update the player's frameStack
   // TODO: ...We should maybe update _everyone's_ frameStack?
