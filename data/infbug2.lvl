@@ -4,9 +4,9 @@ levelData.push({
     room @Blue
     xxxxxx.x
     xxxxxxxx
-    x....x..
+    xx...x..
     xxxxxxxx
-    xxxx..xx
+    xxxx...x
     xx....xx
     xxxxxxxx
     xxxxxxxx
@@ -40,6 +40,16 @@ levelData.push({
     x....xxx
     x....xxx
     xxxxxxxx
+
+    room @Yellow
+    xxxxxxxx
+    xxxxxxxx
+    xxxxxxxx
+    xx...xxx
+    .x...xxx
+    xx...xxx
+    x....xxx
+    xxxxxxxx
   `,
   actorData: `
     Mini Blue 2 5 Blue
@@ -49,6 +59,8 @@ levelData.push({
     Mini Blue 7 2 Orange
     Mini Blue 3 5 Purple
     Mini Green 7 5 Blue
+    Mini Yellow 0 4 Blue
+    Mini Blue 6 4 Yellow
   `,
   frameStackData: `
     m44
