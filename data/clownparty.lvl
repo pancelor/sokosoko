@@ -42,14 +42,14 @@ levelData.push({
     xxxxxxxx
 
     room @Yellow
-    .xxxxxx.
-    xxxxxxxx
-    xxxxxxxx
-    x.xxxx.x
-    xxxxxxxx
-    x.xxxx.x
-    xx....xx
-    .xxxxxx.
+    ........
+    ........
+    ........
+    .x....x.
+    ........
+    .x....x.
+    ..xxxx..
+    ........
 
     room @Red
     xxxxxxxx
