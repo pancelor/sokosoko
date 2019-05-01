@@ -1,0 +1,125 @@
+levelData.push({
+  name: 'dollop',
+  tileData: `
+    room @White
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    xx.....x
+    xx.xx..x
+    xxxxx..x
+    x......x
+    .......x
+    x.....xx
+    xxxxxxxx
+
+    room @Orange
+    xxxx.xxx
+    x..xxx.x
+    x......x
+    x......x
+    xx.....x
+    xx.....x
+    xx.....x
+    xxxxxxxx
+
+    room @Pink
+    xxxx.xxx
+    x.x...xx
+    x.x...xx
+    x.x...xx
+    x.xxxxxx
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    ......xx
+    xx.....x
+    x......x
+    x......x
+    xx....xx
+    xxxx..xx
+    xxxxxxxx
+
+    room @Blue
+    xxxx.xxx
+    xx.x.xxx
+    xxxx.xxx
+    x.x.....
+    .....xxx
+    xxx.xxxx
+    xxx.xx.x
+    xxx.xxxx
+
+    room @Purple
+    xxxxxxxx
+    x..xxxxx
+    x..xxxxx
+    xxxxxxxx
+    xx...xxx
+    xx.x.xxx
+    xx...xxx
+    xx.xxxxx
+
+    room @Yellow
+    xxxxxxxx
+    xxxxx..x
+    xxxxx..x
+    x...xxxx
+    x.x.xxxx
+    ....xxxx
+    xxxxxxxx
+    xxxxxxxx
+
+    room @Brown
+    x.xxxxxx
+    x.xxx..x
+    x.x....x
+    x.x.xx.x
+    x...x..x
+    x...x..x
+    xx..x..x
+    xxxxxxxx
+
+    room @Black
+    xx.xxxxx
+    xxxxxx.x
+    xx...xxx
+    x......x
+    x......x
+    x......x
+    xx....xx
+    xxxxxxxx
+  `,
+  actorData: `
+    Flag Brown 5 6
+    Player Black 2 4
+    Mini Red 2 5 Pink
+    Mini White 1 4 White
+    Mini Black 3 6 Pink
+    Mini Red 3 1 Blue
+    Mini Red 4 5 Purple
+    Mini Red 3 4 Yellow
+    Mini White 5 5 Black @53084
+    Mini Brown 2 5 Green
+    Mini Pink 4 2 Brown
+    Mini Green 5 3 Red
+    Mini Green 1 1 Blue
+    Mini Brown 4 2 Blue
+    Mini Brown 1 1 Blue
+    Mini Brown 6 3 Black
+  `,
+  frameStackData: `
+    53084
+  `,
+})
