@@ -262,7 +262,7 @@ function exportFrameStackString() {
   while (frame.parent) {
     let tag = frame.data.tag
     if (tag === undefined) {
-      tag = randName(10)
+      tag = randInt(0, 100000)
       frame.data.tag = tag
     }
     lines.splice(1, 0, `    ${tag}`)
