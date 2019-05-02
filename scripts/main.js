@@ -34,18 +34,31 @@ function registerKeyListeners() {
     4: [300, 75], // undo / redo are different than normal directions
     5: [300, 75],
   }
-  function gameOnKeyHold(wait=false) {
+  function onKeyHold(wait=false) {
     const dir = back(heldDirs)
     if (dir === undefined) return
     ProcessInput(dir)
     clearTimeout(holdTimeout)
     if (!enableHeldButtons) return
-    holdTimeout = setTimeout(gameOnKeyHold, holdDelay[dir][wait ? 0 : 1])
+    holdTimeout = setTimeout(onKeyHold, holdDelay[dir][wait ? 0 : 1])
   }
   function gameOnKeyDown(e) {
     assert(gameState === GS_PLAYING)
     if (e.code === "Escape") {
-      InitMenu(currentLevelName)
+      if (devmode) {
+        if (editingTiles) {
+          editingTiles = false
+          Raf()
+        }
+      } else {
+        playSound(sndExit)
+        InitMenu(currentLevelName)
+      }
+    } else if (e.code === "KeyU") {
+      if (devmode) {
+        playSound(sndExit)
+        InitMenu(currentLevelName)
+      }
     } else if (e.code === "KeyR") {
       if (devmode) return // too confusing; ctrl-r instead pls
       clearTimeout(holdTimeout)
@@ -72,28 +85,9 @@ function registerKeyListeners() {
         storedActor = null
         Raf()
       }
-    } else if (e.code === "Escape") {
-      if (devmode && editingTiles) {
-        editingTiles = false
-        Raf()
-      }
-   } else if (e.code in KeyDirMap) {
-     const dir = KeyDirMap[e.code]
-
-     if (!heldDirs.includes(dir)) heldDirs.push(dir)
-
-     gameOnKeyHold(true)
-   }
-  }
-  function gameOnKeyUp(e) {
-    const dir = KeyDirMap[e.code]
-    if (dir === undefined) return
-    const keyWasCurrent = (dir === back(heldDirs))
-    heldDirs = heldDirs.filter(d=>d!==dir)
-    if (keyWasCurrent) {
-      gameOnKeyHold(false) // do next held button on stack immediately
     }
   }
+  function gameOnKeyUp(e) {}
 
   function maybeSave(e) {
     if (gameState === GS_PLAYING && (e.ctrlKey || e.metaKey) && e.code === "KeyS") {
@@ -123,20 +117,37 @@ function registerKeyListeners() {
     e.preventDefault()
     if (e.repeat) return false
 
-    if (gameState === GS_PLAYING) {
+
+    // delegate the input
+    if (e.code in KeyDirMap) {
+      const dir = KeyDirMap[e.code]
+      if (!heldDirs.includes(dir)) heldDirs.push(dir)
+      onKeyHold(true)
+    } else if (gameState === GS_PLAYING) {
       gameOnKeyDown(e)
     } else if (gameState === GS_MENU) {
       menuOnKeyDown(e)
     } else {
       assert(0, "bad gameState")
     }
+
+
     return false
   })
   canvasView.addEventListener("keyup", e => {
     e.preventDefault()
     if (e.repeat) return false
 
-    if (gameState === GS_PLAYING) {
+
+    // delegate the input
+    if (e.code in KeyDirMap) {
+      const dir = KeyDirMap[e.code]
+      const keyWasCurrent = (dir === back(heldDirs))
+      heldDirs = heldDirs.filter(d=>d!==dir)
+      if (keyWasCurrent) {
+        onKeyHold(false) // do next held button on stack immediately
+      }
+    } else if (gameState === GS_PLAYING) {
       gameOnKeyUp(e)
     } else if (gameState === GS_MENU) {
       menuOnKeyUp(e)
@@ -144,11 +155,22 @@ function registerKeyListeners() {
       assert(0, "bad gameState")
     }
 
+
     return false
   })
 }
 
 function ProcessInput(code) {
+  if (gameState === GS_PLAYING) {
+    processGameInput(code)
+  } else if (gameState === GS_MENU) {
+    processMenuInput(code)
+  } else {
+    assert(0, "bad gameState")
+  }
+}
+
+function processGameInput(code) {
   assert(gameState === GS_PLAYING)
   assert([0,1,2,3,4,5].includes(code))
   let success
