@@ -131,6 +131,8 @@ levelData.push({
     Mini Orange 4 1 Red
     Mini Brown 3 1 Red
     Mini Blue 4 6 Red
+    Mini Black 6 5 Red
+    Mini Orange 4 0 Red
   `,
   frameStackData: `
     m4
