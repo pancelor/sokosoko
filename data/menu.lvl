@@ -30,15 +30,15 @@ levelData.push({
     Stairs White 5 5 oldstomach
     Stairs White 6 4 butterfly
     Stairs White 6 5 balloon
-    Stairs White 5 7 bubbles
+    Stairs White 5 7 door
     Stairs White 6 7 dolphin
     Stairs White 5 9 bellyache
-    Stairs White 6 9 door
+    Stairs White 6 9 bubbles
     Stairs White 7 9 wack
-    Stairs White 10 7 porpoise
-    Stairs White 11 7 sadclown
-    Stairs White 11 9 clownparty
-    Stairs White 11 11 roots
+    Stairs White 10 8 porpoise
+    Stairs White 11 8 sadclown
+    Stairs White 11 10 clownparty
+    Stairs White 11 12 roots
   `,
   frameStackData: `
   `,

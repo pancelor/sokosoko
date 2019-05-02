@@ -593,6 +593,15 @@ RegisterTest("reduceWinstr", () => {
   assertEqual(reduceWinstr("00000044445555240450"), "00000000") // illegal winstr, but it's fine
 })
 
+async function screenshotMini(name) {
+  const room = getUniqueRoomFromNamePrefix(name)
+  if (!room) return
+  const src = new MapPos(0, room.begin * miniTileSize)
+  const ctx = canvasMini.getContext('2d')
+  const screenshot = ctx.getImageData(src.x, src.y, 8*miniTileSize, 8*miniTileSize)
+  downloadFile("screenshot", screenshot, "image/png")
+}
+
 let devmode = false
 function devmodeOn() {
   devmode = true
@@ -688,6 +697,9 @@ function downloadFile(name, contents, mime_type) {
   mime_type = mime_type || "text/plain";
 
   let blob = new Blob([contents], {type: mime_type});
+
+  // const url = window.URL.createObjectURL(blob);
+  // location.href = url
 
   let dlink = document.createElement('a');
   dlink.download = name;
