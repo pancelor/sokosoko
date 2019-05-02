@@ -5,10 +5,10 @@ levelData.push({
     xxx.xxxx
     xxx.xxxx
     xxx.xxxx
-    xxx.xxxx
     .x......
     xx.xxxxx
-    xx.xxxxx
+    xx.x.xxx
+    xx.xxx.x
     xx.xxxxx
 
     room @Purple
@@ -24,7 +24,7 @@ levelData.push({
     room @Green
     xxxxxxxx
     xxxxx..x
-    xx.....x
+    xx..x..x
     x....xxx
     x....x.x
     xx.x.xxx
@@ -45,30 +45,30 @@ levelData.push({
     xxx.xxxx
     xx.....x
     xx.xxx.x
-    xx.x...x
+    .x.x....
     xx.x.xxx
     x.....xx
     x.....xx
     xxx.xxxx
 
     room @White
-    xxx.xxxx
-    xxx.xx.x
-    xxx.xx.x
-    xxx.xxxx
-    xx...x.x
-    .x.x.xxx
-    xx...xxx
-    xxx.xxxx
+    xxxx.xxx
+    xxxx.x.x
+    x.xx.x.x
+    xxxx.xxx
+    xxx...xx
+    .xx.x.xx
+    xxx...xx
+    xxxx.xxx
 
     room @Red
     xxxxxxxx
-    xxx.x..x
-    xxxxxxxx
+    xxxxx..x
     x...xxxx
     ..x.....
     x...xxxx
     xxxxxxxx
+    xxxxx.xx
     xx.xxxxx
 
     room @Pink
@@ -84,9 +84,9 @@ levelData.push({
     room @Orange
     xxx.xxxx
     xxx.xxxx
+    xxx.xxxx
+    .xx..xx.
     xxx..xxx
-    xxx..xxx
-    .xxx.xx.
     xxxx.xxx
     xxxx.xxx
     xxxx.xxx
@@ -106,7 +106,7 @@ levelData.push({
     Player Pink 3 1
     Mini Brown 4 3 Blue @m1
     Mini Pink 5 2 White @m2
-    Mini Orange 4 2 Orange
+    Mini Orange 4 3 Orange
     Mini Green 3 4 Black
     Mini Blue 2 3 Purple
     Mini Blue 4 4 Green
@@ -115,12 +115,12 @@ levelData.push({
     Mini Purple 6 4 Red
     Mini Green 2 4 Red
     Mini Purple 5 3 Blue
-    Crate Black 6 4 1
-    Crate Black 3 4 0
+    Crate Black 6 3 1
+    Crate Black 3 3 0
     Crate Pink 1 2 0
     Mini Pink 1 6 Brown
     Crate Yellow 1 6 0
-    Crate Orange 4 5 0
+    Crate Orange 4 6 0
     Mini Purple 4 4 Orange
     Mini Green 4 4 Orange
     Mini Brown 4 2 Yellow @m5
