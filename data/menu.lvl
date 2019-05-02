@@ -23,8 +23,9 @@ levelData.push({
     Player White 1 1
     Stairs White 2 2 zero
     Stairs White 3 2 one
-    Stairs White 4 2 two
-    Stairs White 5 2 original
+    Stairs White 4 2 poke
+    Stairs White 5 2 passage
+    Stairs White 6 2 original
     Stairs White 5 4 tunnels
     Stairs White 5 5 oldstomach
     Stairs White 6 4 butterfly
