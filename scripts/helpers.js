@@ -596,10 +596,22 @@ RegisterTest("reduceWinstr", () => {
 async function screenshotMini(name) {
   const room = getUniqueRoomFromNamePrefix(name)
   if (!room) return
+
   const src = new MapPos(0, room.begin * miniTileSize)
-  const ctx = canvasMini.getContext('2d')
-  const screenshot = ctx.getImageData(src.x, src.y, 8*miniTileSize, 8*miniTileSize)
-  downloadFile("screenshot", screenshot, "image/png")
+  const w = 8*miniTileSize
+  const h = 8*miniTileSize
+
+  const newCanvas = document.createElement('canvas')
+  newCanvas.width = w
+  newCanvas.height = h
+  const newCtx = newCanvas.getContext('2d')
+  newCtx.imageSmoothingEnabled = false
+
+  newCtx.drawImage(canvasMini,
+    src.x, src.y, w, h,
+    0, 0, w, h)
+
+  newCanvas.toBlob(b=>downloadBlob(currentLevelName, b))
 }
 
 let devmode = false
@@ -694,10 +706,11 @@ function swapColors(...cols) {
 //
 
 function downloadFile(name, contents, mime_type) {
-  mime_type = mime_type || "text/plain";
+  const blob = new Blob([contents], mime_type || "text/plain")
+  return downloadBlob(name, blob)
+}
 
-  let blob = new Blob([contents], {type: mime_type});
-
+function downloadBlob(name, blob) {
   // const url = window.URL.createObjectURL(blob);
   // location.href = url
 

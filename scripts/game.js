@@ -322,7 +322,7 @@ async function DrawView(ctx) {
   )
 
   // draw gray if we're zoomed in
-  if (!equals(viewFrameStack, player.frameStack)) {
+  if (!equals(viewFrameStack, player.frameStack) && !showmode) {
     ctxWith(ctx, {fillStyle: 'white', globalAlpha: "0.35"}, cls)
   }
 }
@@ -358,7 +358,10 @@ function DrawMisc(ctxView) {
   DrawGUI(ctxView)
 }
 
+let showmode = false
 function DrawGUI(ctxView) {
+  if (showmode) return
+
   // draw mute button
   ctxView.drawImage(gameMuted ? imgSoundOff : imgSoundOn, canvasView.width - tileSize, 0)
 }
