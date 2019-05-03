@@ -56,7 +56,7 @@ function drawCircle(ctx, p, r) {
   ctx.fill()
 }
 
-function drawLabel(ctx, msg) {
+function drawLevelTitle(ctx, preview, msg) {
   const W = ctx.canvas.width
   const H = ctx.canvas.height
   const lineHeight = 30
@@ -71,7 +71,14 @@ function drawLabel(ctx, msg) {
     fillStyle: "white",
     textAlign: "center",
   }, () => {
+    const stats = ctx.measureText(msg)
     ctx.fillText(msg, cx, cy + lineHeight*0.25)
+
+    if (preview) {
+      const previewX = cx - preview.width - stats.width/2 - 10
+      const previewY = cy - preview.height/2
+      ctx.drawImage(preview, previewX, previewY)
+    }
   });
 }
 
