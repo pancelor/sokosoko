@@ -1,3 +1,16 @@
+// misc list of various nice-to-have functions that i'll probably forget about:
+// * swapColors()
+// * screenshotMini (only works through localhost)
+// * tracer.toggle()
+// * showmode=1
+// * serFrame(player.frameStack)
+// * getUniqueRoomFromNamePrefix()
+// * singleButtons()
+// * reserializeLevel()
+// * reserializeAllLevels() // broken?
+
+
+
 //
 // testing; used later in this file so it needs to be first
 //
@@ -712,6 +725,7 @@ function swapColors(...cols) {
 //
 
 function downloadFile(name, contents, mime_type) {
+  console.log({contents});
   const blob = new Blob([contents], mime_type || "text/plain")
   return downloadBlob(name, blob)
 }

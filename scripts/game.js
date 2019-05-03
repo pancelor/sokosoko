@@ -402,13 +402,13 @@ function lookupActorImgMini(actor) {
   } else if (cst === Crate) {
     return actor.special ? imgCrateSpecialMini : imgCrateMini
   } else if (cst === Mini) {
-    return imgMiniPlaceholder
+    return imgCrateMini // not legit but who cares
   } else if (cst === Flag) {
     return imgFlagMini
   } else if (cst === FakeFlag) {
     return imgFlagMini
   } else if (cst === Stairs) {
-    return imgMiniPlaceholder
+    return imgCrateMini // not legit but who cares
   } else {
     assert(0, `Don't know img for ${cst.name}`)
   }
