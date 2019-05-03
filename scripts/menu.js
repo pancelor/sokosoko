@@ -56,16 +56,17 @@ function maybeDrawTutorialBang(ctxMap) {
   // hacky hardcoded stuff here
   if (!isLocalStorageAvailable()) return
 
+  const unbeaten = n => !getProgress(n, "win")
   let s
-  if (!getProgress("zero")) s = findStairs("zero")
-  else if (!getProgress("one")) s = findStairs("one")
-  else if (!getProgress("poke")) s = findStairs("poke")
-  else if (!getProgress("passage")) s = findStairs("passage")
-  else if (!getProgress("original")) s = findStairs("original")
-  else if (!getProgress("slightly")) s = findStairs("slightly")
+  if (unbeaten("zero")) s = findStairs("zero")
+  else if (unbeaten("one")) s = findStairs("one")
+  else if (unbeaten("poke")) s = findStairs("poke")
+  else if (unbeaten("passage")) s = findStairs("passage")
+  else if (unbeaten("original")) s = findStairs("original")
+  else if (unbeaten("slightly")) s = findStairs("slightly")
   else return
   assert(s)
-  drawImgMap(ctxMap, imgBand, s.pos)
+  drawImgMap(ctxMap, imgArrowDown, s.pos.addDir(1))
 }
 
 async function DrawMenu(ctxMap, ctxMini, ctxView) {
