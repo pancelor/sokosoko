@@ -541,5 +541,6 @@ function init() {
   canvasView.focus()
 
   devmodeInit()
+  document.body.removeChild(loadingText)
 }
 window.onload = init
