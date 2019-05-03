@@ -725,8 +725,7 @@ function swapColors(...cols) {
 //
 
 function downloadFile(name, contents, mime_type) {
-  console.log({contents});
-  const blob = new Blob([contents], mime_type || "text/plain")
+  const blob = new Blob([contents], {type: mime_type || "text/plain"})
   return downloadBlob(name, blob)
 }
 
