@@ -609,6 +609,11 @@ RegisterTest("reduceWinstr", () => {
   assertEqual(reduceWinstr("00000044445555240450"), "00000000") // illegal winstr, but it's fine
 })
 
+function levelIsReady(name) {
+  const sol = solutions[name]
+  return sol && 'win' in sol && !('cheese' in sol)
+}
+
 async function autoScreenshotMini(name) {
   loadLevel(name)
   setTimeout(async () => {

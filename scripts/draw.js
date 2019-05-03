@@ -56,7 +56,7 @@ function drawCircle(ctx, p, r) {
   ctx.fill()
 }
 
-function drawLevelTitle(ctx, preview, msg) {
+function drawLevelLabel(ctx, title) {
   const W = ctx.canvas.width
   const H = ctx.canvas.height
   const lineHeight = 30
@@ -71,9 +71,13 @@ function drawLevelTitle(ctx, preview, msg) {
     fillStyle: "white",
     textAlign: "center",
   }, () => {
+    let msg = title.toUpperCase()
+    if (!levelIsReady(title)) msg += ' (WIP)'
+
     const stats = ctx.measureText(msg)
     ctx.fillText(msg, cx, cy + lineHeight*0.25)
 
+    const preview = document.getElementById(`${title}-preview`)
     if (preview) {
       const previewX = cx - preview.width - stats.width/2 - 10
       const previewY = cy - preview.height/2

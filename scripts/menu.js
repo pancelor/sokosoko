@@ -63,10 +63,7 @@ async function DrawMenu(ctxMap, ctxMini, ctxView) {
   )
 
   const level = getFocusedLevel()
-  if (level) {
-    const preview = document.getElementById(`${level}-preview`)
-    drawLevelTitle(ctxView, preview, level.toUpperCase())
-  }
+  if (level) drawLevelLabel(ctxView, level)
 
   DrawMisc(ctxView)
 }
