@@ -324,16 +324,18 @@ async function DrawView(ctx) {
       const mini2 = parent.data
       assert(mini2)
       for (const i of remaining) {
-        const dir = i === 1 ? 0 : i === 3 ? i = 1 : i === 4 ? 2 : i === 6 ? 3 : assert(0, "bad i")
+        const dir = i === 1 ? 0 : i === 3 ? 1 : i === 4 ? 2 : i === 6 ? 3 : assert(0, "bad i")
         const src = mini2.pos.addDir(dir).scale(tileSize)
-        let dest = new MapPos(0, 0).addDir(dir).scale(8)
-        const tempp = mini.pos.roomPos().scale(-1)
+
+        let dest = new MapPos(0, 0).addDir(dir)
+        dest = dest.scale(8)
+        const tempp = mini.pos.roomPos().scale(-1) // gotta temp this otherwise adding converts it into a mappos
         dest = dest.add(tempp.x, tempp.y) // yes, mini, not mini2
-        dest = dest.scale(tileSize)
-        dest = dest.add(viewOffset().scale(4)) // idk why this is 4 but it works...
+
+        const vo = viewOffset()
         ctx.drawImage(screenshotMap,
           src.x, src.y, tileSize, tileSize,
-          dest.x*8, dest.y*8, tileSize*8*8, tileSize*8*8
+          (vo.x + dest.x*8)*tileSize, (vo.y + dest.y*8)*tileSize, tileSize*8*8, tileSize*8*8
         )
       }
     }
@@ -413,7 +415,8 @@ function lookupActorImg(actor) {
     const name = actor.innerRoom.name
     return document.getElementById(`img${name}Floor`)
   } else if (cst === Flag) {
-    return imgFlag
+    return imgFlagDebug
+    // return imgFlag
   } else if (cst === FakeFlag) {
     return imgFlag
   } else if (cst === Stairs) {
