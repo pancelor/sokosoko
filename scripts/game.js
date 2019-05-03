@@ -397,7 +397,7 @@ function DrawMisc(ctxView) {
   DrawGUI(ctxView)
 
   // draw gray if we've lost window focus in
-  if (!gameHasWindowFocus) {
+  if (!gameHasWindowFocus && !showmode) {
     ctxWith(ctxView, {fillStyle: 'white', globalAlpha: "0.50"}, cls)
   }
 }

@@ -9,7 +9,6 @@ function InitMenu(levelName) {
   gameState = GS_MENU
   const success = loadLevel("menu")
   assert(success)
-  player.dead = true // need savedata to have a player so importFrameStack doesn't freak out
 
   menuSelectPos = new MapPos(2, 2)
   const stairs = actors.find(a=>a.constructor === Stairs && a.name === levelName)
