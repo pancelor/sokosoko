@@ -10,7 +10,10 @@ Still very much in-development
 
 option 1: play online at https://pancelor.github.io/sokosoko/
 
-option 2: `git clone` this repo; open index.html; play in browser
+option 2:
+* `git clone` this repo
+* run `./server.sh`
+* open browser to localhost:8000
 
 ## Credits / Inspirations
 

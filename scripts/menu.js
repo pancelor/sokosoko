@@ -26,6 +26,8 @@ function processMenuInput(dir) {
   if (!CanMoveToTile(pos)) return false
 
   menuSelectPos = pos
+  playSound(sndWalk)
+
   Raf()
   return true
 }
