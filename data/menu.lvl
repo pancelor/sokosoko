@@ -3,19 +3,19 @@ levelData.push({
   tileData: `
     room @White
     xxxxxxxxxxxxxxxx
-    x..........xxxxx
-    x..........xx.xx
-    x..........xx.xx
-    xxxxxxxx..xxxxxx
+    x...........xxxx
+    x...........x.xx
+    x...........x.xx
+    xxxxxxxx...xxxxx
     xxxxxxx.....xx.x
     xxxxxxx.....xx.x
     xxxxxxx.....xxxx
-    xxxxxxx.....x.xx
-    xx....x.....xxxx
+    xx....x.....x.xx
+    xx..........xxxx
     xx..........xx.x
     xx..........xxxx
-    xx..........xxxx
     xx....x.....xxxx
+    xxxxxxx.....xxxx
     xxxxxxx.....xxxx
     xxxxxxxxxxxxxxxx
     xxxxxxxxxxxxxxx.
@@ -26,21 +26,21 @@ levelData.push({
     Stairs White 3 2 one
     Stairs White 4 2 poke
     Stairs White 5 2 passage
-    Stairs White 6 2 original
-    Stairs White 8 2 slightly
+    Stairs White 7 2 original
+    Stairs White 9 2 slightly
     Stairs White 8 6 tunnels
-    Stairs White 8 7 oldstomach
+    Stairs White 9 8 oldstomach
     Stairs White 9 6 butterfly
-    Stairs White 9 7 balloon
-    Stairs White 8 9 door
-    Stairs White 9 9 dolphin
-    Stairs White 8 11 bellyache
-    Stairs White 9 11 bubbles
-    Stairs White 10 11 wack
-    Stairs White 4 10 porpoise
-    Stairs White 3 10 sadclown
-    Stairs White 3 12 clownparty
-    Stairs White 4 12 roots
+    Stairs White 10 6 balloon
+    Stairs White 8 8 door
+    Stairs White 10 8 dolphin
+    Stairs White 9 10 bellyache
+    Stairs White 10 10 bubbles
+    Stairs White 8 10 wack
+    Stairs White 4 9 porpoise
+    Stairs White 3 9 sadclown
+    Stairs White 3 11 clownparty
+    Stairs White 4 11 roots
   `,
   frameStackData: `
   `,
