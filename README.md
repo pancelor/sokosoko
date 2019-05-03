@@ -12,8 +12,13 @@ option 1: play online at https://pancelor.github.io/sokosoko/
 
 option 2:
 * `git clone` this repo
+
+option 2a:
+* open `index.html` in your browser
+
+option 2b: (avoid some CORS annoynaces)
 * run `./server.sh`
-* open browser to localhost:8000
+* open browser to `localhost:8080`
 
 ## Credits / Inspirations
 
