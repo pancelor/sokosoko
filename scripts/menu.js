@@ -26,7 +26,7 @@ function processMenuInput(dir) {
   if (![0,1,2,3].includes(dir)) return // ignore undo/redo
 
   const pos = menuSelectPos.addDir(dir)
-  if (!CanMoveToTile(pos)) return false
+  if (!pos.roomPos().inbounds()) return false
 
   menuSelectPos = pos
   playSound(sndWalk)
