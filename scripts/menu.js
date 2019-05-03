@@ -11,11 +11,15 @@ function InitMenu(levelName) {
   assert(success)
 
   menuSelectPos = new MapPos(2, 2)
-  const stairs = actors.find(a=>a.constructor === Stairs && a.name === levelName)
+  const stairs = findStairs(levelName)
   if (stairs) menuSelectPos = stairs.pos.mapPos()
 
   ResetTileCache()
   Raf()
+}
+
+function findStairs(levelName) {
+  return actors.find(a=>a.constructor === Stairs && a.name === levelName)
 }
 
 function processMenuInput(dir) {
@@ -48,10 +52,27 @@ function getFocusedLevel() {
   return stairs ? stairs.name : null
 }
 
+function maybeDrawTutorialBang(ctxMap) {
+  // hacky hardcoded stuff here
+  if (!isLocalStorageAvailable()) return
+
+  let s
+  if (!getProgress("zero")) s = findStairs("zero")
+  else if (!getProgress("one")) s = findStairs("one")
+  else if (!getProgress("poke")) s = findStairs("poke")
+  else if (!getProgress("passage")) s = findStairs("passage")
+  else if (!getProgress("original")) s = findStairs("original")
+  else if (!getProgress("slightly")) s = findStairs("slightly")
+  else return
+  assert(s)
+  drawImgMap(ctxMap, imgBand, s.pos)
+}
+
 async function DrawMenu(ctxMap, ctxMini, ctxView) {
   DrawTiles(ctxMap, ctxMini)
   DrawActors(ctxMap, ctxMini)
   drawDevmode(ctxMap)
+  maybeDrawTutorialBang(ctxMap)
   drawImgMap(ctxMap, imgSelector, menuSelectPos)
 
   const screenshotMap = await createImageBitmap(canvasMap)
@@ -87,6 +108,10 @@ function menuOnKeyDown(e) {
   }
 }
 
+
+function isLocalStorageAvailable(cb) {
+  return !!ignoreCorsErrors(() => window.localStorage)
+}
 
 function ignoreCorsErrors(cb) {
   try {
