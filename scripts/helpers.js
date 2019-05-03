@@ -6,6 +6,7 @@
 // * swapColors()
 // * screenshotMini (only works through localhost)
 // * autoScreenshotMini (only works through localhost)
+// * screenshot (only works through localhost)
 // * tracer.toggle()
 // * serFrame(player.frameStack)
 // * getUniqueRoomFromNamePrefix()
@@ -644,6 +645,17 @@ async function screenshotMini(name) {
     0, 0, w, h)
 
   newCanvas.toBlob(b=>downloadBlob(currentLevelName, b))
+}
+
+async function screenshot() {
+  const oldShowmode = showmode
+  showmode = 1
+  Raf()
+  setTimeout(() => {
+    canvasView.toBlob(b=>downloadBlob("screenshot", b))
+    showmode = oldShowmode // idk why you would care but hooray i restored it for you
+    Raf()
+  }, 25)
 }
 
 let devmode = false
