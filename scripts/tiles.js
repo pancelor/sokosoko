@@ -97,9 +97,3 @@ function setTile(pos, solid) {
     }
   }
 }
-
-function SaveLevel(name) {
-  name = name.toLowerCase()
-  if (name === "") name = "untitled"
-  downloadFile(`${name}.lvl`, Export(name))
-}

@@ -321,10 +321,10 @@ async function DrawView(ctx) {
     dest.x, dest.y, innerW, innerH
   )
 
-  // draw gray if we're zoomed in
-  if (!equals(viewFrameStack, player.frameStack) && !showmode) {
-    ctxWith(ctx, {fillStyle: 'white', globalAlpha: "0.35"}, cls)
-  }
+  // // draw gray if we're zoomed in
+  // if (!equals(viewFrameStack, player.frameStack) && !showmode) {
+  //   ctxWith(ctx, {fillStyle: 'white', globalAlpha: "0.35"}, cls)
+  // }
 }
 
 function DrawMisc(ctxView) {
@@ -390,7 +390,7 @@ function lookupActorImg(actor) {
   } else if (cst === FakeFlag) {
     return imgFlag
   } else if (cst === Stairs) {
-    return document.getElementById(`${actor.name}-preview`)
+    return document.getElementById(`${actor.name}-preview`) || imgCrate
   } else {
     assert(0, `Don't know img for ${cst.name}`)
   }

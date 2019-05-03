@@ -1,0 +1,135 @@
+levelData.push({
+  name: 'slightly',
+  tileData: `
+    room @White
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Pink
+    xxxxxx.x
+    xxxxxx.x
+    x...xx.x
+    ....x..x
+    x...x..x
+    xxxxx..x
+    xx..x.xx
+    xxxxx.xx
+
+    room @Red
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Orange
+    xxxxxxxx
+    xxxx..xx
+    xx.....x
+    xx.....x
+    xx....xx
+    xxx...xx
+    xxx.x.x.
+    xxxxx.xx
+
+    room @Yellow
+    xxxx.xxx
+    xx....xx
+    xx....xx
+    x...x.xx
+    ......xx
+    x....xxx
+    xxxxxx.x
+    xxxxxxxx
+
+    room @Black
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Blue
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Purple
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Brown
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxxxx.xx
+    xx.....x
+    xx.xx..x
+    xx..x..x
+    xx..xx.x
+    x......x
+    x...xx.x
+    xxxxxxxx
+  `,
+  actorData: `
+    Flag Pink 2 3
+    Player Green 6 6
+    Crate White 2 1 0
+    Mini Red 1 1 Red
+    Mini Black 1 1 Black
+    Mini Blue 1 1 Blue
+    Mini Purple 1 1 Purple
+    Mini Brown 1 1 Brown
+    Mini White 1 2 White
+    Mini Green 5 1 Pink
+    Mini White 1 3 Red
+    Mini Green 2 1 Orange
+    Mini Green 3 6 Yellow
+    Mini White 2 4 Black
+    Mini White 1 5 Blue
+    Mini White 2 5 Purple
+    Mini White 1 6 Brown
+    Mini White 4 4 Green @53084
+    Mini Orange 3 6 Green @17092
+    Mini Green 2 5 Yellow
+    Crate Yellow 2 4 0
+    Crate Pink 5 5 0
+    Crate Orange 3 3 0
+    Mini Yellow 6 6 Orange @10518
+    Mini White 3 2 Yellow @20721
+  `,
+  frameStackData: `
+    10518
+    17092
+  `,
+})

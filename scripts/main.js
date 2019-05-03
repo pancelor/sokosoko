@@ -479,6 +479,10 @@ function Raf() {
   requestAnimationFrame(redraw)
 }
 
+function setHashLevel(name) {
+  if (devmode) window.location.hash = `#dev#${name}`
+}
+
 let currentLevelName
 function reset(name=null) {
   const success = loadLevel(name || currentLevelName)
@@ -486,17 +490,27 @@ function reset(name=null) {
   recordingStart()
 }
 function loadLevel(name) {
+  const prevGS = gameState
   if (name !== "menu") gameState = GS_PLAYING
-  if (!Import(name)) return false
+  if (!Import(name)) {
+    gameState = prevGS
+    return false
+  }
   currentLevelName = name
   levelCodeInput.value = name.toUpperCase()
-  if (devmode) window.location.hash = `#dev#${name}`
+  setHashLevel(name)
   InitLevel()
   canvasView.focus()
   // scrollTo(0, 0)
 
   Raf()
   return true
+}
+function SaveLevel(name) {
+  name = name.toLowerCase()
+  if (name === "") name = "untitled"
+  downloadFile(`${name}.lvl`, Export(name))
+  setHashLevel(name)
 }
 
 function devmodeInit() {
