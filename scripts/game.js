@@ -324,18 +324,24 @@ async function DrawView(ctx) {
       const mini2 = parent.data
       assert(mini2)
       for (const i of remaining) {
-        const dir = i === 1 ? 0 : i === 3 ? 1 : i === 4 ? 2 : i === 6 ? 3 : assert(0, "bad i")
+        const dir = i === 1 ? 1 : i === 3 ? 2 : i === 4 ? 0 : i === 6 ? 3 : assert(0, "bad i")
         const src = mini2.pos.addDir(dir).scale(tileSize)
 
+        // console.log("dir", dir)
         let dest = new MapPos(0, 0).addDir(dir)
+        // console.log("dest1", dest.str())
         dest = dest.scale(8)
+        // console.log("dest2", dest.str())
         const tempp = mini.pos.roomPos().scale(-1) // gotta temp this otherwise adding converts it into a mappos
         dest = dest.add(tempp.x, tempp.y) // yes, mini, not mini2
+        // console.log("dest3", dest.str())
+        dest = dest.scale(8)
+        // console.log("dest4", dest.str())
 
         const vo = viewOffset()
         ctx.drawImage(screenshotMap,
           src.x, src.y, tileSize, tileSize,
-          (vo.x + dest.x*8)*tileSize, (vo.y + dest.y*8)*tileSize, tileSize*8*8, tileSize*8*8
+          (vo.x + dest.x)*tileSize, (vo.y + dest.y)*tileSize, tileSize*8*8, tileSize*8*8
         )
       }
     }

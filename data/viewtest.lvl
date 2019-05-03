@@ -73,26 +73,19 @@ levelData.push({
   `,
   actorData: `
     Player Blue 1 5
-    Crate White 2 1 0
     Mini White 3 5 Red
     Mini White 4 5 Blue @m1
     Mini Blue 0 5 Green @m2
-    Crate White 1 2 0
     Crate White 5 2 0
     Mini Yellow 1 1 Yellow
     Mini Black 1 1 Black
-    Mini Purple 1 1 Purple
-    Crate White 2 2 0
-    Crate White 3 2 0
-    Crate White 4 1 0
+    Mini White 1 1 Purple
+    Crate Purple 2 2 0
     Crate Red 7 4 0
     Crate White 5 1 0
     Crate White 6 1 0
     Crate White 6 2 0
     Crate White 6 1 0
-    Crate White 3 1 0
-    Crate White 1 1 0
-    Crate White 1 1 0
     Mini Green 2 4 White
     Mini Blue 2 7 Green
     Flag White 4 6
@@ -101,6 +94,17 @@ levelData.push({
     Mini White 5 5 Blue
     Mini Blue 7 5 Green
     Mini Blue 5 0 Green
+    Mini White 1 2 Purple
+    Mini White 1 3 Purple
+    Mini White 2 3 Purple
+    Mini White 2 2 Purple
+    Mini White 2 1 Purple
+    Mini White 3 1 Purple
+    Mini White 3 2 Purple
+    Mini White 3 3 Purple
+    Crate Purple 5 2 0
+    Crate Purple 5 5 0
+    Crate Purple 2 5 0
   `,
   frameStackData: `
     m1
