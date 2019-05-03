@@ -86,3 +86,49 @@ function menuOnKeyDown(e) {
     DoMenuSelect()
   }
 }
+
+
+function ignoreCorsErrors(cb) {
+  try {
+    cb()
+  } catch (e) {
+    // ignore CORS stuff when developing locally
+    console.log('cors error');
+    if (e.name !== "SecurityError") throw e
+  }
+}
+
+function clearProgress(levelName, type) {
+  assert(type === "win" || type === "bonus" || type === undefined)
+  ignoreCorsErrors(() => {
+    const ls = window.localStorage
+    if (levelName) {
+      if (ls && ls[levelName]) {
+        if (type) {
+          delete ls[levelName][type]
+        } else {
+          delete ls[levelName]
+        }
+      }
+    } else {
+      delete ls
+    }
+  })
+}
+
+function getProgress(levelName, type) {
+  assert(type === "win" || type === "bonus")
+  ignoreCorsErrors(() => {
+    const ls = window.localStorage
+    return ls && ls[levelName] && ls[levelName][type]
+  })
+}
+
+function setProgress(levelName, type) {
+  assert(type === "win" || type === "bonus")
+  ignoreCorsErrors(() => {
+    const ls = window.localStorage
+    if (!ls[levelName]) ls[levelName] = {}
+    ls[levelName][type] = 1
+  })
+}

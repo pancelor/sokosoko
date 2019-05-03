@@ -672,6 +672,11 @@ class Stairs extends Actor {
     super(p)
     this.name = name
   }
+  draw(ctxMap, ctxMini) {
+    Actor.prototype.draw.call(this, ctxMap, ctxMini)
+    if (getProgress(this.name, "win")) ctxMap.drawImage(imgCheck, this.pos.x*tileSize, this.pos.y*tileSize)
+    if (getProgress(this.name, "bonus")) ctxMap.drawImage(imgCheck, (this.pos.x+0.25)*tileSize, this.pos.y*tileSize)
+  }
   serialize() {
     const tag = this.tag ? ` @${this.tag}` : ""
     return `${this.constructor.name} ${this.pos.roomPos().serialize()} ${this.name}${tag}`
