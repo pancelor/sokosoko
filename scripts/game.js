@@ -378,9 +378,9 @@ function DrawGameMisc(ctxView) {
     ctxView.strokeRect(dest.x, dest.y, innerW, innerH)
   })
 
-  // draw "you win!"
+  // draw win msg
   if (player.won) {
-    const lines = ["You win!"]
+    const lines = ["Level clear!"]
     if (player.gotBonus) lines.push("very good")
     lines.push("[space] to continue")
     drawMessage(ctxView, lines)
