@@ -90,45 +90,42 @@ function menuOnKeyDown(e) {
 
 function ignoreCorsErrors(cb) {
   try {
-    cb()
+    return cb()
   } catch (e) {
     // ignore CORS stuff when developing locally
-    console.log('cors error');
     if (e.name !== "SecurityError") throw e
   }
 }
 
-function clearProgress(levelName, type) {
-  assert(type === "win" || type === "bonus" || type === undefined)
-  ignoreCorsErrors(() => {
-    const ls = window.localStorage
-    if (levelName) {
-      if (ls && ls[levelName]) {
-        if (type) {
-          delete ls[levelName][type]
-        } else {
-          delete ls[levelName]
-        }
-      }
-    } else {
-      delete ls
-    }
+function clearProgress(levelName) {
+  return ignoreCorsErrors(() => {
+    delete window.localStorage
   })
 }
 
 function getProgress(levelName, type) {
   assert(type === "win" || type === "bonus")
-  ignoreCorsErrors(() => {
+  return ignoreCorsErrors(() => {
     const ls = window.localStorage
-    return ls && ls[levelName] && ls[levelName][type]
+    if (ls && ls[levelName]) {
+      return ls[levelName].includes(type)
+    } else {
+      return false
+    }
   })
 }
 
 function setProgress(levelName, type) {
+  // return the previous state
   assert(type === "win" || type === "bonus")
-  ignoreCorsErrors(() => {
+  if (getProgress(levelName, type)) return true
+  return ignoreCorsErrors(() => {
     const ls = window.localStorage
-    if (!ls[levelName]) ls[levelName] = {}
-    ls[levelName][type] = 1
+    if (ls[levelName]) {
+      ls[levelName] = `${ls[levelName]} ${type}`
+    } else {
+      ls[levelName] = type
+    }
+    return false
   })
 }

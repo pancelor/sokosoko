@@ -579,6 +579,7 @@ class Player extends Actor {
     maybeFakeWin()
     if (findActor(Flag, player.pos)) {
       this.set("won", true)
+      setProgress(currentLevelName, "win")
       PlayAndRecordSound(sndWin)
     }
     return success
@@ -663,6 +664,7 @@ class Crate extends Actor {
     this.setDead(true)
     PlayAndRecordSound(sndBonus)
     player.set("gotBonus", true)
+    setProgress(currentLevelName, "bonus")
     return true
   }
 }
