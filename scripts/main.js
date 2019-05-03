@@ -45,7 +45,7 @@ function registerKeyListeners() {
   function gameOnKeyDown(e) {
     assert(gameState === GS_PLAYING)
     if (e.code === "Escape") {
-      playSound(sndExit)
+      playSound(sndWalk)
       InitMenu(currentLevelName)
     } else if (e.code === "KeyR") {
       if (devmode) return // too confusing; ctrl-r instead pls
@@ -494,6 +494,7 @@ function loadLevel(name) {
     gameState = prevGS
     return false
   }
+  if (name !== "menu") playSound(sndLoad)
   currentLevelName = name
   levelCodeInput.value = name.toUpperCase()
   setHashLevel(name)
