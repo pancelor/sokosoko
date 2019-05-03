@@ -660,7 +660,13 @@ function debugActorState() {
 
 function viewOffset() {
   // hacky
-  return new MapPos(4, 4)
+  if (gameState === GS_PLAYING) {
+    return new MapPos(4, 4)
+  } else if (gameState === GS_MENU) {
+    return new MapPos(0, 0)
+  } else {
+    assert(0, "bad gameState")
+  }
 }
 
 function reserializeAllLevels() {

@@ -90,7 +90,7 @@ function registerKeyListeners() {
   function gameOnKeyUp(e) {}
 
   function maybeSave(e) {
-    if (gameState === GS_PLAYING && (e.ctrlKey || e.metaKey) && e.code === "KeyS") {
+    if (devmode && (e.ctrlKey || e.metaKey) && e.code === "KeyS") {
       SaveLevel(levelCodeInput.value)
       return true
     } else {
@@ -192,8 +192,7 @@ function lockScroll(cb) {
   scrollTo(x,y)
 }
 
-function gameOnMouseDown(e) {
-  assert(gameState === GS_PLAYING)
+function onMouseDown(e) {
   if (e.target === canvasView) {
     mouseClick(translateMouseFromView(e))
     Raf()
@@ -205,8 +204,7 @@ function gameOnMouseDown(e) {
   }
 }
 
-function gameOnMouseMove(e) {
-  assert(gameState === GS_PLAYING)
+function onMouseMove(e) {
   if (e.target === canvasView) {
     mouseMove(translateMouseFromView(e))
     if (devmode) Raf()
@@ -228,49 +226,25 @@ function registerMouseListeners() {
   })
 
   canvasMap.addEventListener("mousedown", (e) => {
-    if (gameState === GS_PLAYING) {
-      gameOnMouseDown(e)
-    } else if (gameState === GS_MENU) {
-      menuOnMouseDown(e)
-    } else {
-      assert(0, "bad gameState")
-    }
+    onMouseDown(e)
 
     e.preventDefault()
     return false
   })
   canvasView.addEventListener("mousedown", (e) => {
-    if (gameState === GS_PLAYING) {
-      gameOnMouseDown(e)
-    } else if (gameState === GS_MENU) {
-      menuOnMouseDown(e)
-    } else {
-      assert(0, "bad gameState")
-    }
+    onMouseDown(e)
 
     e.preventDefault()
     return false
   })
   canvasMap.addEventListener("mousemove", (e) => {
-    if (gameState === GS_PLAYING) {
-      gameOnMouseMove(e)
-    } else if (gameState === GS_MENU) {
-      menuOnMouseMove(e)
-    } else {
-      assert(0, "bad gameState")
-    }
+    onMouseMove(e)
 
     e.preventDefault()
     return false
   })
   canvasView.addEventListener("mousemove", (e) => {
-    if (gameState === GS_PLAYING) {
-      gameOnMouseMove(e)
-    } else if (gameState === GS_MENU) {
-      menuOnMouseMove(e)
-    } else {
-      assert(0, "bad gameState")
-    }
+    onMouseMove(e)
 
     e.preventDefault()
     return false
@@ -296,7 +270,7 @@ function translateMouseFromView(e) {
 
 let storedActor = null
 function mouseClick({e, pos}) {
-  if (maybeGuiInteract(e)) return
+  if (maybeGuiInteract(e, pos)) return
   if (!devmode) return
   _devmodeMouseClick(e, pos)
 }
@@ -304,6 +278,10 @@ function mouseClick({e, pos}) {
 let mousepos
 function mouseMove({e, pos}) {
   if (!pos) return
+
+  if (gameState === GS_MENU) {
+    menuMouseMove(e, pos)
+  }
 
   mousepos = pos
   if (devmode) {
@@ -324,7 +302,11 @@ function mouseMove({e, pos}) {
   }
 }
 
-function maybeGuiInteract(e) {
+function maybeGuiInteract(e, pos) {
+  if (gameState === GS_MENU) {
+    if (maybeMenuMouseClick(e, pos)) return true
+  }
+
   // hacky calculation here
   const x = e.offsetX
   const y = e.offsetY

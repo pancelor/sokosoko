@@ -38,6 +38,9 @@ function DoMenuSelect() {
     gameState = GS_PLAYING
     playSound(sndEnter)
     reset(level)
+    return true
+  } else {
+    return false
   }
 }
 
@@ -68,14 +71,14 @@ async function DrawMenu(ctxMap, ctxMini, ctxView) {
   DrawGUI(ctxView)
 }
 
-function menuOnMouseMove(e) {}
-function menuOnMouseDown(e) {
+function menuMouseMove(e, pos) {
+  if (CanMoveToTile(pos)) menuSelectPos = pos
+}
+
+function maybeMenuMouseClick(e, pos) {
   assert(gameState === GS_MENU)
-  if (e.target === canvasView) {
-    canvasView.focus()
-  } else if (e.target === canvasMap) {
-    lockScroll(()=>canvasView.focus())
-  }
+  menuSelectPos = pos
+  return DoMenuSelect()
 }
 
 function menuOnKeyUp(e) {}
