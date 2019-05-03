@@ -3,6 +3,7 @@
 // * screenshotMini (only works through localhost)
 // * tracer.toggle()
 // * showmode=1
+// * debugIds=1
 // * serFrame(player.frameStack)
 // * getUniqueRoomFromNamePrefix()
 // * singleButtons()

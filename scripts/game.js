@@ -69,7 +69,8 @@ class RoomPos extends BasePos {
     // a hack to keep tracer from getting mad mid-teleport
     return {
       oob: true,
-      serialize: ()=>`OOB@(${x}, ${y})`
+      inbounds: () => false,
+      serialize: ()=>`OOB@(${x}, ${y})`,
     }
   }
 
@@ -298,15 +299,41 @@ async function DrawView(ctx) {
       src.x, src.y, outerW, outerH,
       0, 0, canvasView.width, canvasView.height
     )
-    for (const dy of [-1, 0, 1]) {
-      for (const dx of [-1, 0, 1]) {
-        if (dx === 0 && dy === 0) continue
-        const mini2 = findActor(Mini, mini.pos.add(dx, dy))
-        if (!mini2) continue
-        const src2 = mini2.innerRoom.mapCorner().scale(tileSize)
+    const dposList = [ // note: the dimensionality of this list is formatted weird
+      [-1, -1], [0, -1], [1, -1],
+      [-1,  0],          [1,  0],
+      [-1,  1], [0,  1], [1,  1],
+    ]
+    const remaining = new Set([1,3,4,6]) // the indicies of the 4 cardinals in dposList; HACK: assumes you're never in the corner of a mini. and that only 1 tile in each direction is visible
+    for (let i = 0; i < dposList.length; ++i) {
+      const [dx, dy] = dposList[i]
+      const p = mini.pos.add(dx, dy)
+      if (!p.roomPos().inbounds()) continue
+
+      remaining.delete(i)
+      const mini2 = findActor(Mini, p)
+      if (!mini2) continue
+      const src2 = mini2.innerRoom.mapCorner().scale(tileSize)
+      ctx.drawImage(screenshotMap,
+        src2.x, src2.y, tileSize*8, tileSize*8,
+        (0.5+dx)*tileSize*8, (0.5+dy)*tileSize*8, tileSize*8, tileSize*8
+      )
+    }
+    const parent = viewFrameStack.parent
+    if (parent.parent) {
+      const mini2 = parent.data
+      assert(mini2)
+      for (const i of remaining) {
+        const dir = i === 1 ? 0 : i === 3 ? i = 1 : i === 4 ? 2 : i === 6 ? 3 : assert(0, "bad i")
+        const src = mini2.pos.addDir(dir).scale(tileSize)
+        let dest = new MapPos(0, 0).addDir(dir).scale(8)
+        const tempp = mini.pos.roomPos().scale(-1)
+        dest = dest.add(tempp.x, tempp.y) // yes, mini, not mini2
+        dest = dest.scale(tileSize)
+        dest = dest.add(viewOffset().scale(4)) // idk why this is 4 but it works...
         ctx.drawImage(screenshotMap,
-          src2.x, src2.y, tileSize*8, tileSize*8,
-          (0.5+dx)*tileSize*8, (0.5+dy)*tileSize*8, tileSize*8, tileSize*8
+          src.x, src.y, tileSize, tileSize,
+          dest.x*8, dest.y*8, tileSize*8*8, tileSize*8*8
         )
       }
     }
