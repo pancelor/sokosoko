@@ -72,7 +72,7 @@ function drawLevelLabel(ctx, title) {
     textAlign: "center",
   }, () => {
     let msg = title.toUpperCase()
-    if (!levelIsReady(title)) msg += ' (WIP)'
+    if (levelIsWIP(title)) msg += ' (WIP)'
 
     const stats = ctx.measureText(msg)
     ctx.fillText(msg, cx, cy + lineHeight*0.25)
