@@ -2,13 +2,13 @@ levelData.push({
   name: 'porpoise',
   tileData: `
     room @White
-    xxxx.xxx
-    xxx...xx
-    xx....xx
-    xx....xx
-    xx....xx
-    xx....xx
+    xxx.xxxx
     xx...xxx
+    x....x.x
+    x....x.x
+    x....x.x
+    x....x.x
+    x...xx.x
     xxxxxxxx
 
     room @Pink
@@ -107,16 +107,16 @@ levelData.push({
     Crate Yellow 1 6 0
     Mini Pink 1 2 Pink
     Mini Orange 1 1 Orange
-    Mini White 2 5 Yellow
+    Mini White 1 5 Yellow
     Mini Green 1 1 Green
     Mini Blue 1 1 Blue
     Mini Purple 1 1 Purple
     Mini Red 1 1 Red
     Mini Brown 1 1 Brown
     Mini Black 1 1 Black
-    Mini White 2 3 Yellow
+    Mini White 1 3 Yellow
     Crate Yellow 0 6 0
-    Crate White 4 4 0
+    Crate White 1 4 0
     Crate White 2 4 0
     Crate White 3 4 0
     Mini Pink 1 6 White
@@ -124,9 +124,11 @@ levelData.push({
     Crate Pink 2 5 0
     Crate Pink 0 5 0
     Crate Pink 1 5 0
-    Mini Yellow 1 1 Pink @adsjh
+    Mini Yellow 1 1 White @adsjh
+    Mini White 6 6 Pink @7475
   `,
   frameStackData: `
     adsjh
+    7475
   `,
 })

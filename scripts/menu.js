@@ -69,7 +69,7 @@ async function DrawMenu(ctxMap, ctxMini, ctxView) {
     drawLevelTitle(ctxView, preview, level.toUpperCase())
   }
 
-  DrawGUI(ctxView)
+  DrawMisc(ctxView)
 }
 
 function menuMouseMove(e, pos) {

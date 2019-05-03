@@ -362,7 +362,8 @@ async function DrawView(ctx) {
   // }
 }
 
-function DrawMisc(ctxView) {
+function DrawGameMisc(ctxView) {
+  assert(gameState === GS_PLAYING)
   const innerW = 8 * tileSize
   const innerH = 8 * tileSize
   const dest = viewOffset().scale(tileSize)
@@ -384,13 +385,21 @@ function DrawMisc(ctxView) {
     lines.push("[space] to continue")
     drawMessage(ctxView, lines)
   }
+}
 
+function DrawMisc(ctxView) {
+  assert(gameState === GS_PLAYING || gameState === GS_MENU)
   // draw canvas border
   ctxWith(ctxView, {strokeStyle: "black"}, () => {
     ctxView.strokeRect(0, 0, canvasView.width, canvasView.height)
   })
 
   DrawGUI(ctxView)
+
+  // draw gray if we've lost window focus in
+  if (!gameHasWindowFocus) {
+    ctxWith(ctxView, {fillStyle: 'white', globalAlpha: "0.50"}, cls)
+  }
 }
 
 let showmode = false
@@ -421,8 +430,7 @@ function lookupActorImg(actor) {
     const name = actor.innerRoom.name
     return document.getElementById(`img${name}Floor`)
   } else if (cst === Flag) {
-    return imgFlagDebug
-    // return imgFlag
+    return imgFlag
   } else if (cst === FakeFlag) {
     return imgFlag
   } else if (cst === Stairs) {

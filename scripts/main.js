@@ -207,15 +207,24 @@ function onMouseDown(e) {
 function onMouseMove(e) {
   if (e.target === canvasView) {
     mouseMove(translateMouseFromView(e))
-    if (devmode) Raf()
+    if (devmode || gameState === GS_MENU) Raf()
   } else if (e.target === canvasMap) {
     mouseMove(translateMouseFromMap(e))
-    if (devmode) Raf()
+    if (devmode || gameState === GS_MENU) Raf()
   }
 }
 
+let gameHasWindowFocus = false
 function registerMouseListeners() {
   mousepos = new MapPos(0, 0)
+  canvasView.addEventListener("blur", (e) => {
+    gameHasWindowFocus = false
+    Raf()
+  })
+  canvasView.addEventListener("focus", (e) => {
+    gameHasWindowFocus = true
+    Raf()
+  })
   canvasView.addEventListener("contextmenu", (e) => {
     e.preventDefault()
     return false
@@ -469,6 +478,7 @@ async function redraw() {
     await DrawMinis(ctxMap)
     drawDevmode(ctxMap)
     await DrawView(ctxView)
+    DrawGameMisc(ctxView)
     DrawMisc(ctxView)
   } else {
     assert(0, "bad gameState")
