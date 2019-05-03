@@ -674,7 +674,7 @@ class Stairs extends Actor {
   }
   serialize() {
     const tag = this.tag ? ` @${this.tag}` : ""
-    return `${this.constructor.name} ${this.pos.roomPos().serialize()} ${this.name} ${tag}`
+    return `${this.constructor.name} ${this.pos.roomPos().serialize()} ${this.name}${tag}`
   }
   static deserialize(line) {
     const [type, rName, rx, ry, name] = line.split(' ')

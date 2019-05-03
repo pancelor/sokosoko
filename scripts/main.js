@@ -45,20 +45,8 @@ function registerKeyListeners() {
   function gameOnKeyDown(e) {
     assert(gameState === GS_PLAYING)
     if (e.code === "Escape") {
-      if (devmode) {
-        if (editingTiles) {
-          editingTiles = false
-          Raf()
-        }
-      } else {
-        playSound(sndExit)
-        InitMenu(currentLevelName)
-      }
-    } else if (e.code === "KeyU") {
-      if (devmode) {
-        playSound(sndExit)
-        InitMenu(currentLevelName)
-      }
+      playSound(sndExit)
+      InitMenu(currentLevelName)
     } else if (e.code === "KeyR") {
       if (devmode) return // too confusing; ctrl-r instead pls
       clearTimeout(holdTimeout)
@@ -71,7 +59,6 @@ function registerKeyListeners() {
       Raf()
     } else if (e.code === "KeyQ") {
       if (!devmode) return
-      editingTiles = false
       cycleStoredActor(usingStockActors ? (e.shiftKey ? -1 : 1) : 0)
       Raf()
     } else if (e.code === "Space" || e.code === "Enter") {
@@ -79,11 +66,6 @@ function registerKeyListeners() {
         InitMenu(currentLevelName)
         Raf()
         return
-      }
-      if (devmode) {
-        editingTiles = !editingTiles
-        storedActor = null
-        Raf()
       }
     }
   }
@@ -123,6 +105,11 @@ function registerKeyListeners() {
       const dir = KeyDirMap[e.code]
       if (!heldDirs.includes(dir)) heldDirs.push(dir)
       onKeyHold(true)
+    } else if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+      if (!devmode) return
+      editingTiles = true
+      storedActor = null
+      Raf()
     } else if (gameState === GS_PLAYING) {
       gameOnKeyDown(e)
     } else if (gameState === GS_MENU) {
@@ -147,6 +134,10 @@ function registerKeyListeners() {
       if (keyWasCurrent) {
         onKeyHold(false) // do next held button on stack immediately
       }
+    } else if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+      if (!devmode) return
+      editingTiles = false
+      Raf()
     } else if (gameState === GS_PLAYING) {
       gameOnKeyUp(e)
     } else if (gameState === GS_MENU) {
