@@ -390,7 +390,7 @@ function lookupActorImg(actor) {
   } else if (cst === FakeFlag) {
     return imgFlag
   } else if (cst === Stairs) {
-    return imgCrate // TODO get unique img?
+    return document.getElementById(`${actor.name}-preview`)
   } else {
     assert(0, `Don't know img for ${cst.name}`)
   }
@@ -408,7 +408,7 @@ function lookupActorImgMini(actor) {
   } else if (cst === FakeFlag) {
     return imgFlagMini
   } else if (cst === Stairs) {
-    return imgCrateMini // TODO get unique img? this one doesn't matter actually)
+    return imgMiniPlaceholder
   } else {
     assert(0, `Don't know img for ${cst.name}`)
   }

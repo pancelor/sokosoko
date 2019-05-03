@@ -52,6 +52,7 @@ function getFocusedLevel() {
 async function DrawMenu(ctxMap, ctxMini, ctxView) {
   DrawTiles(ctxMap, ctxMini)
   DrawActors(ctxMap, ctxMini)
+  drawDevmode(ctxMap)
   drawImgMap(ctxMap, imgSelector, menuSelectPos)
 
   const screenshotMap = await createImageBitmap(canvasMap)
@@ -78,7 +79,8 @@ function menuMouseMove(e, pos) {
 function maybeMenuMouseClick(e, pos) {
   assert(gameState === GS_MENU)
   menuSelectPos = pos
-  return DoMenuSelect()
+  if (e.button === 0) return DoMenuSelect()
+  return false
 }
 
 function menuOnKeyUp(e) {}
