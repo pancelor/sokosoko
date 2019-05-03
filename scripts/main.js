@@ -59,7 +59,7 @@ function registerKeyListeners() {
       Raf()
     } else if (e.code === "KeyQ") {
       if (!devmode) return
-      cycleStoredActor(usingStockActors ? (e.shiftKey ? -1 : 1) : 0)
+      cycleStoredActor(usingStockActors ? 1 : 0)
       Raf()
     } else if (e.code === "Space" || e.code === "Enter") {
       if (player.won) {
@@ -356,28 +356,25 @@ function maybeChangeViewFrameStack(e, pos) {
 
 let usingStockActors = false;
 let stockActorsPos = 0;
-let stockActors = [
-  "Mini White 0 8 White",
-  "Mini White 0 8 Red",
-  "Mini White 0 8 Orange",
-  "Mini White 0 8 Yellow",
-  "Mini White 0 8 Green",
-  "Mini White 0 8 Blue",
-  "Mini White 0 8 Purple",
-  "Mini White 0 8 Pink",
-  "Mini White 0 8 Brown",
-  "Mini White 0 8 Black",
-  "Crate White 0 8 0",
-  "Player White 0 8 0",
-  "Flag White 0 8 0",
-]
+function getStockActor(n) {
+  const base = innerRoom(player.frameStack).name
+  const opts = []
+  const cols = "White Pink Red Orange Yellow Green Blue Purple Brown Black".split(' ')
+  for (const c of cols) {
+    if (Room.findName(c)) opts.push(`Mini ${base} 0 8 ${c}`)
+  }
+  opts.push(`Crate ${base} 0 8 0`)
+  opts.push(`Player ${base} 0 8 0`)
+  opts.push(`Flag ${base} 0 8 0`)
+  return opts[saneMod(n, opts.length)]
+}
+
 function cycleStoredActor(scrollAmount) {
   usingStockActors = true
   if (storedActor) storedActor.dead = true // avoid undo system
 
   stockActorsPos += scrollAmount
-  stockActorsPos = saneMod(stockActorsPos, stockActors.length)
-  const a = deserSingleActor(stockActors[stockActorsPos])
+  const a = deserSingleActor(getStockActor(stockActorsPos))
   assert(a)
   actors.push(a);
   storedActor = a;
