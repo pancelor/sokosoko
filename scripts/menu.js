@@ -91,7 +91,7 @@ async function DrawMenu(ctxMap, ctxMini, ctxView) {
 }
 
 function menuMouseMove(e, pos) {
-  if (CanMoveToTile(pos)) menuSelectPos = pos
+  if (pos.roomPos().inbounds()) menuSelectPos = pos
 }
 
 function maybeMenuMouseClick(e, pos) {
@@ -125,7 +125,7 @@ function ignoreCorsErrors(cb) {
 
 function clearProgress(levelName) {
   return ignoreCorsErrors(() => {
-    delete window.localStorage
+    window.localStorage.clear()
   })
 }
 
