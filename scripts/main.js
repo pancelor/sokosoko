@@ -284,13 +284,13 @@ function mouseMove({e, pos}) {
     menuMouseMove(e, pos)
   }
 
+  if (debugIds) {
+    let a = findActor(null, pos)
+    if (a) actorIdOutput.innerText = `getActorId(${a.id})\n${a.serialize()}`
+  }
+
   mousepos = pos
   if (devmode) {
-    if (debugIds) {
-      let a = findActor(null, pos)
-      if (a) actorIdOutput.innerText = `getActorId(${a.id})\n${a.serialize()}`
-    }
-
     const LMB = e.buttons & (1<<0)
     const RMB = e.buttons & (1<<1)
     if (editingTiles) {
