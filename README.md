@@ -20,11 +20,15 @@ option 2b: (avoid some CORS annoynaces)
 * run `./server.sh`
 * open browser to `localhost:8080`
 
-## Credits / Inspirations
+## Inspirations / Other credits
 
 https://juner.itch.io/sokosoko
 
 Fractal Maze by Mark J. P. Wolf http://www.mathpuzzle.com/18Nov2003.html
 (http://i.stack.imgur.com/hxh62.gif)
+
+https://www.bfxr.net/
+
+https://www.audacityteam.org/
 
 https://www.favicon-generator.org/

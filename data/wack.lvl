@@ -57,8 +57,8 @@ levelData.push({
     x....xxx
     x....xxx
     x....xxx
-    x....x.x
     x....xxx
+    xxxxxx.x
     xxxxxxxx
   `,
   actorData: `
@@ -80,7 +80,7 @@ levelData.push({
     Crate Blue 1 2 0
     Crate Blue 2 3 0
     Player Yellow 1 6
-    Mini White 6 5 White @miniOuter1
+    Mini White 6 6 White @miniOuter1
     Mini Yellow 2 5 Red
   `,
   frameStackData: `

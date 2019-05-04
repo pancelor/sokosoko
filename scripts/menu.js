@@ -39,6 +39,7 @@ function DoMenuSelect() {
   const level = getFocusedLevel()
   if (level) {
     gameState = GS_PLAYING
+    playSound(sndLoad)
     reset(level)
     return true
   } else {

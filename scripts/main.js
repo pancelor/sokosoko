@@ -50,6 +50,7 @@ function registerKeyListeners() {
     } else if (e.code === "KeyR") {
       if (devmode) return // too confusing; ctrl-r instead pls
       clearTimeout(holdTimeout)
+      playSound(sndUndo)
       reset()
       Raf()
     } else if (e.code === "KeyP") {
@@ -494,7 +495,6 @@ function loadLevel(name) {
     gameState = prevGS
     return false
   }
-  if (name !== "menu") playSound(sndLoad)
   currentLevelName = name
   levelCodeInput.value = name.toUpperCase()
   setHashLevel(name)
