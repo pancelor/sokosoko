@@ -25,7 +25,7 @@ levelData.push({
     xxxxxxxx
     xxx...xx
     ....x..x
-    xx.....x
+    xxx....x
     xxxxxx.x
     x...x..x
     x......x
@@ -103,7 +103,7 @@ levelData.push({
   `,
   actorData: `
     Flag Brown 1 6
-    Player Red 3 6
+    Player Red 3 3
     Mini Red 6 4 Brown
     Mini Black 2 3 Blue @ajl
     Mini Blue 4 6 Green
@@ -175,6 +175,7 @@ levelData.push({
     Mini Pink 6 6 Orange
     Mini Pink 7 6 Orange
     Mini Pink 3 2 Orange
+    Mini Brown 1 2 Purple
   `,
   frameStackData: `
     ajl
