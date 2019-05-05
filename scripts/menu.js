@@ -58,8 +58,8 @@ function maybeDrawTutorialBang(ctxMap) {
 
   const unbeaten = n => !getProgress(n, "win")
   let s
-  if (unbeaten("zero")) s = findStairs("zero")
-  else if (unbeaten("one")) s = findStairs("one")
+  if (unbeaten("push")) s = findStairs("push")
+  else if (unbeaten("block")) s = findStairs("block")
   else if (unbeaten("poke")) s = findStairs("poke")
   else if (unbeaten("passage")) s = findStairs("passage")
   else if (unbeaten("original")) s = findStairs("original")

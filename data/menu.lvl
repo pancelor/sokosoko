@@ -22,8 +22,8 @@ levelData.push({
   `,
   actorData: `
     Player White 15 16
-    Stairs White 2 2 zero
-    Stairs White 3 2 one
+    Stairs White 2 2 push
+    Stairs White 3 2 block
     Stairs White 4 2 poke
     Stairs White 5 2 passage
     Stairs White 7 2 original
