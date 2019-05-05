@@ -720,6 +720,66 @@ function reserializeLevel(name) {
   SaveLevel(name)
 }
 
+function randLevel() {
+  const success = loadLevel("template")
+  assert(success)
+
+  //
+  // tiles
+  //
+  for (const room of rooms) {
+    for (let y = 1; y < 7; ++y) {
+      for (let x = 1; x < 7; ++x) {
+        if (Math.random() < 0.30) {
+          setTile(new RoomPos(room, x, y), 1, false)
+          continue
+        }
+
+      }
+    }
+  }
+
+  //
+  // actors
+  //
+
+  actors = []
+
+  function randPos() {
+    const room = choose(rooms)
+    const x = randInt(1, 7)
+    const y = randInt(1, 7)
+    return new RoomPos(room, x, y)
+  }
+
+  function place(a) {
+    actors.push(a)
+    if (!CanMoveToTile(a.pos)) setTile(a.pos, 0, false)
+  }
+
+  player.pos = randPos()
+  place(player)
+  place(new Flag(randPos()))
+  const cols = "White Pink Red Orange Yellow Green Blue Purple Brown Black".split(' ')
+  for (const col of cols) {
+    const r = Room.findName(col)
+    assert(r)
+    place(new Mini(randPos(), r))
+    place(new Mini(randPos(), r))
+    place(new Mini(randPos(), r))
+  }
+
+  player.frameStack = cons(player.pos.room(), null)
+
+  //
+  // redraw
+  //
+
+  viewFrameStack = player.frameStack
+  ResetTileCache()
+  Raf()
+}
+
 function getUniqueRoomFromNamePrefix(prefix) {
   prefix = prefix.toLowerCase()
   let res = null
