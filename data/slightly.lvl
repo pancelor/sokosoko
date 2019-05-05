@@ -95,15 +95,15 @@ levelData.push({
     xxxxx.xx
     xx.....x
     xx.xx..x
-    xx..x..x
-    xx..xx.x
-    x......x
-    x...xx.x
+    xx.x...x
+    xx....xx
+    x..x.xxx
+    x....xxx
     xxxxxxxx
   `,
   actorData: `
     Flag Pink 2 3
-    Player Green 6 6
+    Player Green 6 3
     Crate White 2 1 0
     Mini Red 1 1 Red
     Mini Black 1 1 Black
@@ -114,7 +114,7 @@ levelData.push({
     Mini Green 5 1 Pink
     Mini White 1 3 Red
     Mini Green 2 1 Orange
-    Mini Green 3 6 Yellow
+    Mini Green 4 6 Yellow
     Mini White 2 4 Black
     Mini White 1 5 Blue
     Mini White 2 5 Purple
