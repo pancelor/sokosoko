@@ -2,6 +2,7 @@
 // * showmode=1
 // * debugIds=1
 // * singleButtons()
+// * randLevel()
 // * Q to cycle template actors
 // * swapColors()
 // * screenshotMini (only works through localhost)
@@ -764,7 +765,6 @@ function randLevel() {
   for (const col of cols) {
     const r = Room.findName(col)
     assert(r)
-    place(new Mini(randPos(), r))
     place(new Mini(randPos(), r))
     place(new Mini(randPos(), r))
   }
