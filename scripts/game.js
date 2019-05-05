@@ -484,7 +484,7 @@ class Actor {
 
   playTeleInSound() {}
   playTeleOutSound() {}
-  playMoveSound() {}
+  onMoveSuccess() {}
 
   setPos(p) {
     const before = this.pos.mapPos()
@@ -561,7 +561,7 @@ class Player extends Actor {
     return this.set("frameStack", f)
   }
 
-  playMoveSound() {
+  onMoveSuccess() {
     PlayAndRecordSound(sndWalk)
   }
 
@@ -622,7 +622,7 @@ class Mini extends Actor {
     })
   }
 
-  playMoveSound() {
+  onMoveSuccess() {
     PlayAndRecordSound(sndShove)
   }
 }
@@ -648,24 +648,23 @@ class Crate extends Actor {
     return new (this)(p, !!int(special))
   }
 
-  setPos(p) {
-    Actor.prototype.setPos.call(this, p)
+  onMoveSuccess() {
+    PlayAndRecordSound(sndShove)
     this.maybeCollect()
   }
 
-  playMoveSound() {
-    PlayAndRecordSound(sndShove)
-  }
-
   maybeCollect() {
-    if (!this.special) return false
     if (!findActor(Flag, this.pos)) return false
-
-    this.setDead(true)
-    PlayAndRecordSound(sndBonus)
-    player.set("gotBonus", true)
-    setProgress(currentLevelName, "bonus")
-    return true
+    if (this.special) {
+      this.setDead(true)
+      PlayAndRecordSound(sndBonus)
+      player.set("gotBonus", true)
+      setProgress(currentLevelName, "bonus")
+      return true
+    } else {
+      PlayAndRecordSound(sndWrong)
+      return false
+    }
   }
 }
 

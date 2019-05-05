@@ -162,7 +162,7 @@ function maybePushableUpdate_(that, dir) {
 
   const oldPos = that.pos
   const oldFrameStack = that.frameStack // might change during e.g. maybeteleout; idk
-  const r = buildRet(that, ()=>that.playMoveSound(), ()=> {
+  const r = buildRet(that, ()=>that.onMoveSuccess(), ()=> {
     that.setPos(oldPos)
     that.setFrameStack(oldFrameStack)
   })
@@ -416,7 +416,7 @@ function maybeConsume_(that, food, dir) {
 
   const oldPos = that.pos // might change during e.g. maybetelein; idk
   const oldFrameStack = that.frameStack // might change during e.g. maybeteleout; idk
-  const r = buildRet(that, ()=>that.playMoveSound(), () => {
+  const r = buildRet(that, ()=>that.onMoveSuccess(), () => {
     that.setPos(oldPos)
     that.setFrameStack(oldFrameStack)
   })
