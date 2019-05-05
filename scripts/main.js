@@ -517,6 +517,10 @@ function devmodeInit() {
   const { dev, level } = match.groups
   if (level) reset(level)
   if (dev) devmodeOn()
+  if (!devmode) {
+    document.body.removeChild(levelCodeInput.previousElementSibling)
+    document.body.removeChild(levelCodeInput)
+  }
 }
 
 function init() {
