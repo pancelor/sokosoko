@@ -518,8 +518,9 @@ function devmodeInit() {
   if (level) reset(level)
   if (dev) devmodeOn()
   if (!devmode) {
-    document.body.removeChild(levelCodeInput.previousElementSibling)
-    document.body.removeChild(levelCodeInput)
+    for (const elem of [levelCodeInput.previousElementSibling, levelCodeInput]) {
+      elem.style.display = "none"
+    }
   }
 }
 
