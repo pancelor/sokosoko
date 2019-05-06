@@ -79,7 +79,7 @@ levelData.push({
     x.xxxxxx
     x.xx....
     x.....xx
-    x.xxxxxx
+    xxxxxxxx
 
     room @Orange
     xxx.xxxx
@@ -130,8 +130,7 @@ levelData.push({
     Mini Brown 3 4 Orange
     Crate Brown 5 5 0
     Crate Brown 4 7 0
-    Mini Brown 5 3 Pink
-    Crate Pink 1 7 0
+    Mini Brown 5 3 Brown
   `,
   frameStackData: `
     m5
