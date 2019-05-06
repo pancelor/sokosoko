@@ -1,0 +1,132 @@
+levelData.push({
+  name: 'spy',
+  tileData: `
+    room @White
+    xxxxxxxx
+    xx..xxxx
+    x...xxxx
+    x...xxxx
+    ......xx
+    xxxx..xx
+    xxxx..xx
+    xxxx.xxx
+
+    room @Pink
+    xxxxxxxx
+    x.x..x.x
+    xxx...xx
+    x...x..x
+    x......x
+    x...xx.x
+    x..x...x
+    xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    xx...xxx
+    xx.x....
+    xx...xxx
+    xxxx...x
+    xxxx.x.x
+    xxxx...x
+    xxxxxxxx
+
+    room @Orange
+    xxxxxxxx
+    x..x...x
+    x......x
+    x...x..x
+    x..xxx.x
+    x....xxx
+    x.....xx
+    xxxxxxxx
+
+    room @Yellow
+    xxxxxxxx
+    xx.xx..x
+    x....x.x
+    x..x...x
+    x.x.x.xx
+    x....x.x
+    xx.x...x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    xx.....x
+    xx.x.x.x
+    xx..x..x
+    x...xxxx
+    xx..xxxx
+    x.x.xxxx
+    xxxxxxxx
+
+    room @Blue
+    xxxxxxxx
+    x.xxxxxx
+    xxxx...x
+    xx.....x
+    xx.....x
+    xx.....x
+    xx.....x
+    xxxxxxxx
+
+    room @Purple
+    xxx.xxxx
+    xxx.xxxx
+    xxx.xxxx
+    xxx...xx
+    xxx.....
+    ..xx..xx
+    xxxxxxxx
+    xxxxxxxx
+
+    room @Brown
+    xxxxxxxx
+    xxxxxxxx
+    x.....xx
+    ..x.x.xx
+    x.x.x.xx
+    x.x.x.xx
+    x.....xx
+    xxxx.xxx
+
+    room @Black
+    xxx.xxxx
+    xx...xxx
+    x..x..xx
+    x..xx.xx
+    x..x..xx
+    x..x..xx
+    xx...xxx
+    xxx.xxxx
+  `,
+  actorData: `
+    Player Red 2 3
+    Flag Blue 5 4
+    Mini Orange 2 6 White
+    Mini Red 6 4 White
+    Mini Pink 1 1 Pink
+    Mini Orange 6 1 Pink
+    Mini Yellow 2 5 Orange
+    Mini Yellow 6 2 Orange
+    Mini Pink 6 3 Yellow
+    Mini Yellow 5 1 Green
+    Mini Blue 1 1 Blue
+    Mini Pink 6 1 Blue
+    Mini White 3 4 Purple
+    Mini Red 5 2 Brown
+    Mini Brown 3 4 Black
+    Mini Orange 2 2 Black
+    Mini Black 2 3 White
+    Crate Black 2 4 0
+    Crate White 4 5 0
+    Crate White 2 3 0
+    Mini Blue 2 5 Red @54033
+    Mini Black 4 4 Red
+    Crate White 2 2 0
+  `,
+  frameStackData: `
+    54033
+  `,
+})
