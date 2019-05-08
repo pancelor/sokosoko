@@ -1,13 +1,14 @@
 // misc list of various nice-to-have functions that i'll probably forget about:
 // * showmode=1
 // * debugIds=1
+// * rebase()
 // * singleButtons()
 // * randLevel()
 // * Q to cycle template actors
 // * swapColors()
-// * screenshotMini (only works through localhost)
-// * autoScreenshotMini (only works through localhost)
-// * screenshot (only works through localhost)
+// * screenshotMini() (only works through localhost)
+// * autoScreenshotMini() (only works through localhost)
+// * screenshot() (only works through localhost)
 // * tracer.toggle()
 // * serFrame(player.frameStack)
 // * getUniqueRoomFromNamePrefix()
@@ -540,7 +541,7 @@ const solutions = {
 
   squirrel: {
     win: "0003003322221222300000022222211222233221210000000001033230000301111101223221000030110110303221123300011101",
-    cheese: "00032210003013332222211222222321111000101",
+    cheese: "00012110322233033222222122300000022221211220322233033321110100101",
     wip: 1,
   },
   train: {
@@ -660,6 +661,15 @@ async function screenshot() {
     showmode = oldShowmode // idk why you would care but hooray i restored it for you
     Raf()
   }, 25)
+}
+
+function rebase(name) {
+  const room = getUniqueRoomFromNamePrefix(name)
+  if (!room) return
+  player.frameStack = cons(room, null)
+  viewFrameStack = player.frameStack
+  storedActor = player
+  Raf()
 }
 
 let devmode = false
