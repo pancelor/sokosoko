@@ -1,7 +1,7 @@
 levelData.push({
   name: 'packaging',
   tileData: `
-    room @White
+    room @Pink
     xxxxxxxx
     x......x
     x......x
@@ -31,7 +31,7 @@ levelData.push({
     xx.....x
     xxxxxxxx
 
-    room @Pink
+    room @White
     xxxx.xxx
     xxx...xx
     xxx...xx
@@ -61,7 +61,7 @@ levelData.push({
     xxxxxx.x
     xxxxxxxx
 
-    room @Purple
+    room @Black
     xxxxxxxx
     xxxxxx.x
     x.xxxxxx
@@ -81,7 +81,7 @@ levelData.push({
     xxxxx.xx
     xxxxxxxx
 
-    room @Yellow
+    room @Purple
     x.xxxxxx
     x.x...xx
     x......x
@@ -91,7 +91,7 @@ levelData.push({
     xxxx..xx
     xxxxxxxx
 
-    room @Black
+    room @Yellow
     xx.xxxxx
     xxxx...x
     xx...x.x
@@ -102,21 +102,21 @@ levelData.push({
     xxxxxxxx
   `,
   actorData: `
-    Flag Yellow 1 5
-    Player Yellow 5 2
-    Mini Red 2 5 Pink
-    Mini White 1 1 White
-    Mini Black 3 6 Pink @40916
+    Flag Purple 1 5
+    Player Purple 5 2
+    Mini Red 2 5 White
+    Mini Pink 1 1 Pink
+    Mini Yellow 3 6 White @40916
     Mini Red 3 1 Blue
-    Mini Red 4 5 Purple
+    Mini Red 4 5 Black
     Mini Red 3 4 Brown
-    Mini Yellow 2 3 Green
-    Mini Black 6 2 Yellow @76027
+    Mini Purple 2 3 Green
+    Mini Yellow 6 2 Purple @76027
     Mini Green 5 3 Red
     Mini Green 1 1 Blue
-    Mini Yellow 2 2 Blue
-    Mini Yellow 4 4 Black @79211
-    Crate Red 2 2 1
+    Mini Purple 2 2 Blue
+    Mini Purple 4 4 Yellow @79211
+    Crate Pink 2 2 1
   `,
   frameStackData: `
     79211
