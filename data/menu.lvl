@@ -7,16 +7,16 @@ levelData.push({
     x...........xxxx
     x...........xxxx
     xxxxxxxx...xxxxx
-    xxxxxxx......xxx
-    xxxxxxx......xxx
-    xxxxxxx......xxx
-    xx....x......xxx
-    xx...........xxx
-    xx...........xxx
-    xx...........xxx
-    xx....x......xxx
-    xxx.xxx......xxx
-    xx..xxx......xxx
+    xxxxxxx.......xx
+    xxxxxxx.......xx
+    xxxxxxx.......xx
+    xx....x.......xx
+    xx............xx
+    xx............xx
+    xx............xx
+    xx....x.......xx
+    xx....x.......xx
+    xxxxxxx.......xx
     xxxxxxxxxxxxxxxx
     xxxxxxxxxxxxxxx.
   `,
@@ -29,21 +29,21 @@ levelData.push({
     Stairs White 7 2 original
     Stairs White 8 6 slightly
     Stairs White 9 2 tunnels
-    Stairs White 9 8 oldstomach
+    Stairs White 11 8 oldstomach
     Stairs White 9 6 butterfly
-    Stairs White 8 8 balloon
+    Stairs White 10 8 balloon
     Stairs White 10 6 door
-    Stairs White 11 8 dolphin
-    Stairs White 9 10 bellyache
-    Stairs White 11 10 bubbles
-    Stairs White 2 14 wack
-    Stairs White 4 9 porpoise
+    Stairs White 8 8 dolphin
+    Stairs White 11 9 bellyache
+    Stairs White 9 10 bubbles
+    Stairs White 3 12 wack
+    Stairs White 5 9 porpoise
     Stairs White 3 9 sadclown
-    Stairs White 3 11 clownparty
-    Stairs White 4 11 roots
+    Stairs White 3 10 clownparty
+    Stairs White 3 11 roots
     Stairs White 11 6 packaging
-    Stairs White 11 11 squirrel
-    Stairs White 11 12 middleman
+    Stairs White 5 10 squirrel
+    Stairs White 12 6 middleman
   `,
   frameStackData: `
   `,
