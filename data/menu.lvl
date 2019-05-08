@@ -4,19 +4,19 @@ levelData.push({
     room @White
     xxxxxxxxxxxxxxxx
     x...........xxxx
-    x...........x.xx
-    x...........x.xx
+    x...........xxxx
+    x...........xxxx
     xxxxxxxx...xxxxx
-    xxxxxxx.....xx.x
-    xxxxxxx.....xx.x
-    xxxxxxx.....xxxx
-    xx....x.....x.xx
-    xx..........xxxx
-    xx..........xx.x
-    xx..........xxxx
-    xx....x.....xxxx
-    xxxxxxx.....xxxx
-    xxxxxxx.....xxxx
+    xxxxxxx......xxx
+    xxxxxxx......xxx
+    xxxxxxx......xxx
+    xx....x......xxx
+    xx...........xxx
+    xx...........xxx
+    xx...........xxx
+    xx....x......xxx
+    xxx.xxx......xxx
+    xx..xxx......xxx
     xxxxxxxxxxxxxxxx
     xxxxxxxxxxxxxxx.
   `,
@@ -31,17 +31,19 @@ levelData.push({
     Stairs White 9 2 tunnels
     Stairs White 9 8 oldstomach
     Stairs White 9 6 butterfly
-    Stairs White 10 6 balloon
-    Stairs White 8 8 door
-    Stairs White 10 8 dolphin
+    Stairs White 8 8 balloon
+    Stairs White 10 6 door
+    Stairs White 11 8 dolphin
     Stairs White 9 10 bellyache
-    Stairs White 10 10 bubbles
-    Stairs White 8 10 wack
+    Stairs White 11 10 bubbles
+    Stairs White 2 14 wack
     Stairs White 4 9 porpoise
     Stairs White 3 9 sadclown
     Stairs White 3 11 clownparty
     Stairs White 4 11 roots
-    Stairs White 9 7 packaging
+    Stairs White 11 6 packaging
+    Stairs White 11 11 squirrel
+    Stairs White 11 12 middleman
   `,
   frameStackData: `
   `,
