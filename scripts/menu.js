@@ -10,7 +10,7 @@ function InitMenu(levelName) {
   const success = loadLevel("menu")
   assert(success)
 
-  menuSelectPos = new MapPos(2, 2)
+  menuSelectPos = new MapPos(1, 2)
   const stairs = findStairs(levelName)
   if (stairs) menuSelectPos = stairs.pos.mapPos()
 
@@ -54,7 +54,7 @@ function getFocusedLevel() {
 
 function maybeDrawTutorialBang(ctxMap) {
   // hacky hardcoded stuff here
-  if (!isLocalStorageAvailable()) return
+  if (!isLocalStorageAvailable()) return false
 
   const unbeaten = n => !getProgress(n, "win")
   let s
@@ -64,16 +64,17 @@ function maybeDrawTutorialBang(ctxMap) {
   else if (unbeaten("passage")) s = findStairs("passage")
   else if (unbeaten("original")) s = findStairs("original")
   else if (unbeaten("slightly")) s = findStairs("slightly")
-  else return
+  else return false
   assert(s)
   drawImgMap(ctxMap, imgArrowDown, s.pos.addDir(1))
+  return true
 }
 
 async function DrawMenu(ctxMap, ctxMini, ctxView) {
   DrawTiles(ctxMap, ctxMini)
   DrawActors(ctxMap, ctxMini)
   drawDevmode(ctxMap)
-  maybeDrawTutorialBang(ctxMap)
+  // maybeDrawTutorialBang(ctxMap)
   drawImgMap(ctxMap, imgSelector, menuSelectPos)
 
   const screenshotMap = await createImageBitmap(canvasMap)
@@ -91,13 +92,13 @@ async function DrawMenu(ctxMap, ctxMini, ctxView) {
 }
 
 function menuMouseMove(e, pos) {
-  if (pos.roomPos().inbounds()) menuSelectPos = pos
+  // if (pos.roomPos().inbounds()) menuSelectPos = pos
 }
 
 function maybeMenuMouseClick(e, pos) {
-  assert(gameState === GS_MENU)
-  menuSelectPos = pos
-  if (e.button === 0) return DoMenuSelect()
+  // assert(gameState === GS_MENU)
+  // menuSelectPos = pos
+  // if (e.button === 0) return DoMenuSelect()
   return false
 }
 

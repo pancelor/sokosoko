@@ -55,9 +55,6 @@ function registerKeyListeners() {
       Raf()
     } else if (e.code === "KeyP") {
       recordingCycle()
-    } else if (e.code === "KeyM") {
-      muteToggle()
-      Raf()
     } else if (e.code === "KeyQ") {
       if (!devmode) return
       cycleStoredActor(usingStockActors ? 1 : 0)
@@ -110,6 +107,9 @@ function registerKeyListeners() {
       if (!devmode) return
       editingTiles = true
       storedActor = null
+      Raf()
+    } else if (e.code === "KeyM") {
+      muteToggle()
       Raf()
     } else if (gameState === GS_PLAYING) {
       gameOnKeyDown(e)
