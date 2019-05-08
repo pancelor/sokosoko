@@ -5,10 +5,10 @@ levelData.push({
     xxx.xxxx
     x......x
     xxxxx..x
-    xx..x.xx
+    x...x.xx
+    x...x.xx
     x...x..x
     xx.....x
-    xxx..xxx
     xxxxxxxx
 
     room @Purple
@@ -44,14 +44,14 @@ levelData.push({
   actorData: `
     Flag Brown 1 6
     Player Orange 6 2
-    Mini Orange 6 4 Brown @201
+    Mini Orange 6 5 Brown @201
     Mini Brown 3 6 Purple @m2
     Crate Orange 3 0 0
     Mini Purple 2 4 Orange
     Mini Purple 3 3 Orange
     Mini Purple 4 4 Orange @SAIAZIUOZA
     Mini Purple 2 2 Orange
-    Mini Orange 1 4 Purple
+    Mini Orange 1 5 Purple
     Crate Orange 3 1 0
     Mini Purple 4 2 Orange
     Mini Purple 3 5 Orange
