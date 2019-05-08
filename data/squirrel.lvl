@@ -122,11 +122,12 @@ levelData.push({
     Mini Pink 6 2 Black @53084
     Crate Black 5 3 0
     Crate Black 7 3 0
-    Mini Blue 4 6 Black
+    Mini Blue 4 6 Black @12998
     Mini Blue 2 4 Pink
     Mini Black 1 2 Pink @5556
   `,
   frameStackData: `
+    12998
     5556
     27890
   `,
