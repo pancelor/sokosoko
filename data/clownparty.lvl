@@ -115,7 +115,6 @@ levelData.push({
     Mini Purple 5 5 Red @SAIAZIUOZA
     Mini Purple 2 2 Red @71927
     Mini Red 1 5 Purple
-    Mini Pink 2 2 Pink
     Crate Red 3 1 0
     Mini Purple 4 2 Red
     Mini Black 5 1 Black
@@ -170,11 +169,6 @@ levelData.push({
     Mini Purple 1 5 Red
     Mini Purple 6 4 Red
     Mini Purple 6 2 Red
-    Mini Pink 4 2 Orange
-    Mini Pink 5 6 Orange
-    Mini Pink 6 6 Orange
-    Mini Pink 7 6 Orange
-    Mini Pink 3 2 Orange
     Mini Brown 3 2 Purple
   `,
   frameStackData: `

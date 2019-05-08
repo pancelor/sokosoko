@@ -31,14 +31,44 @@ levelData.push({
     x......x
     xxx.xxxx
 
-    room @Yellow
-    xxxx.xxx
-    xxxx.xxx
-    xxxx.xxx
-    xxxx....
-    xxxx.xxx
+    room @White
     xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
     xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Blue
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
     xxxxxxxx
   `,
   actorData: `
@@ -58,8 +88,6 @@ levelData.push({
     Mini Purple 5 3 Orange
     Mini Purple 5 5 Orange @72628
     Mini Orange 2 1 Brown @297436
-    Mini Yellow 4 1 Yellow
-    Mini Yellow 4 3 Orange
   `,
   frameStackData: `
     297436
