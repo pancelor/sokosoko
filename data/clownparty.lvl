@@ -1,7 +1,7 @@
 levelData.push({
   name: 'clownparty',
   tileData: `
-    room @Red
+    room @Orange
     xxx.xxxx
     x......x
     x.xxx..x
@@ -51,7 +51,7 @@ levelData.push({
     ..xxxx..
     ........
 
-    room @Orange
+    room @Red
     x.xxxxxx
     x.x..xxx
     x.x...xx
@@ -103,24 +103,24 @@ levelData.push({
   `,
   actorData: `
     Flag Brown 1 6
-    Player Red 6 2
-    Mini Red 6 5 Brown
+    Player Orange 6 2
+    Mini Orange 6 5 Brown
     Mini Black 2 3 Blue @ajl
     Mini Blue 4 6 Green
     Mini Brown 3 6 Purple @m2
-    Crate Red 3 0 0
+    Crate Orange 3 0 0
     Mini Blue 1 2 White
-    Mini Purple 2 4 Red
-    Mini Purple 3 3 Red
-    Mini Purple 5 5 Red @SAIAZIUOZA
-    Mini Purple 2 2 Red @71927
-    Mini Red 1 5 Purple
-    Crate Red 3 1 0
-    Mini Purple 4 2 Red
+    Mini Purple 2 4 Orange
+    Mini Purple 3 3 Orange
+    Mini Purple 5 5 Orange @SAIAZIUOZA
+    Mini Purple 2 2 Orange @71927
+    Mini Orange 1 5 Purple
+    Crate Orange 3 1 0
+    Mini Purple 4 2 Orange
     Mini Black 5 1 Black
-    Mini Purple 3 5 Red
-    Mini Purple 5 3 Red
-    Mini Purple 4 6 Red
+    Mini Purple 3 5 Orange
+    Mini Purple 5 3 Orange
+    Mini Purple 4 6 Orange
     Mini Blue 4 5 Brown @sakdjhg
     Crate Blue 2 5 1
     Mini Blue 2 1 Yellow
@@ -163,12 +163,12 @@ levelData.push({
     Mini Blue 6 6 Green
     Mini Blue 6 3 White
     Mini Blue 7 3 White
-    Mini Purple 4 4 Red
-    Mini Purple 3 1 Red
-    Mini Purple 1 3 Red
-    Mini Purple 1 5 Red
-    Mini Purple 6 4 Red
-    Mini Purple 6 2 Red
+    Mini Purple 4 4 Orange
+    Mini Purple 3 1 Orange
+    Mini Purple 1 3 Orange
+    Mini Purple 1 5 Orange
+    Mini Purple 6 4 Orange
+    Mini Purple 6 2 Orange
     Mini Brown 3 2 Purple
   `,
   frameStackData: `

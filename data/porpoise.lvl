@@ -1,7 +1,7 @@
 levelData.push({
   name: 'porpoise',
   tileData: `
-    room @White
+    room @Purple
     xxx.xxxx
     xx...xxx
     x....x.x
@@ -21,7 +21,7 @@ levelData.push({
     x.x...xx
     xxxxxxxx
 
-    room @Orange
+    room @Green
     xxxxxxxx
     x......x
     x......x
@@ -41,7 +41,7 @@ levelData.push({
     .......x
     xxxx.xxx
 
-    room @Green
+    room @White
     xxxxxxxx
     x......x
     x......x
@@ -61,7 +61,7 @@ levelData.push({
     x......x
     xxxxxxxx
 
-    room @Purple
+    room @Orange
     xxxxxxxx
     x......x
     x......x
@@ -106,26 +106,26 @@ levelData.push({
     Player Pink 4 5
     Crate Yellow 1 6 0
     Mini Pink 1 2 Pink
-    Mini Orange 1 1 Orange
-    Mini White 1 5 Yellow
     Mini Green 1 1 Green
+    Mini Purple 1 5 Yellow
+    Mini White 1 1 White
     Mini Blue 1 1 Blue
-    Mini Purple 1 1 Purple
+    Mini Orange 1 1 Orange
     Mini Red 1 1 Red
     Mini Brown 1 1 Brown
     Mini Black 1 1 Black
-    Mini White 1 3 Yellow
+    Mini Purple 1 3 Yellow
     Crate Yellow 0 6 0
-    Crate White 1 4 0
-    Crate White 2 4 0
-    Crate White 3 4 0
-    Mini Pink 1 6 White
+    Crate Purple 1 4 0
+    Crate Purple 2 4 0
+    Crate Purple 3 4 0
+    Mini Pink 1 6 Purple
     Crate Yellow 2 6 0
     Crate Pink 2 5 0
     Crate Pink 0 5 0
     Crate Pink 1 5 0
-    Mini Yellow 1 1 White @adsjh
-    Mini White 6 6 Pink @7475
+    Mini Yellow 1 1 Purple @adsjh
+    Mini Purple 6 6 Pink @7475
   `,
   frameStackData: `
     adsjh
