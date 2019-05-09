@@ -91,13 +91,13 @@ async function DrawMenu(ctxMap, ctxMini, ctxView) {
 }
 
 function menuMouseMove(e, pos) {
-  // if (pos.roomPos().inbounds()) menuSelectPos = pos
+  if (pos.roomPos().inbounds()) menuSelectPos = pos
 }
 
 function maybeMenuMouseClick(e, pos) {
-  // assert(gameState === GS_MENU)
-  // menuSelectPos = pos
-  // if (e.button === 0) return DoMenuSelect()
+  assert(gameState === GS_MENU)
+  menuSelectPos = pos
+  if (e.button === 0) return DoMenuSelect()
   return false
 }
 
