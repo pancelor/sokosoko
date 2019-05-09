@@ -1,5 +1,5 @@
 levelData.push({
-  name: 'sadclown',
+  name: 'clowntown',
   tileData: `
     room @Orange
     xxx.xxxx
@@ -7,8 +7,8 @@ levelData.push({
     xxxxx..x
     x...x.xx
     x...x.xx
-    x...x..x
-    xx.....x
+    x......x
+    xx..x..x
     xxxxxxxx
 
     room @Purple
@@ -27,7 +27,7 @@ levelData.push({
     ....x..x
     xxx....x
     xxxxxx.x
-    xx..x..x
+    x...x..x
     x......x
     xxx.xxxx
 
