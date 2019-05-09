@@ -23,7 +23,7 @@ function findStairs(levelName) {
 }
 
 function processMenuInput(dir) {
-  if (![0,1,2,3].includes(dir)) return // ignore undo/redo
+  if (![0,1,2,3].includes(dir)) return false // ignore undo/redo
 
   const pos = menuSelectPos.addDir(dir)
   if (!pos.roomPos().inbounds()) return false
@@ -40,8 +40,7 @@ function DoMenuSelect() {
   if (level) {
     gameState = GS_PLAYING
     playSound(sndLoad)
-    reset(level)
-    return true
+    return loadLevel(level)
   } else {
     return false
   }

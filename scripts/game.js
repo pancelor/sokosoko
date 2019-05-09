@@ -394,7 +394,7 @@ function DrawMisc(ctxView) {
     ctxView.strokeRect(0, 0, canvasView.width, canvasView.height)
   })
 
-  DrawGUI(ctxView)
+  DrawHUD(ctxView)
 
   // draw gray if we've lost window focus in
   if (!gameHasWindowFocus && !showmode) {
@@ -403,11 +403,25 @@ function DrawMisc(ctxView) {
 }
 
 let showmode = false
-function DrawGUI(ctxView) {
+function DrawHUD(ctxView) {
   if (showmode) return
 
-  // draw mute button
-  ctxView.drawImage(gameMuted ? imgSoundOff : imgSoundOn, canvasView.width - tileSize, 0)
+  for (let col = 8; col < 16; ++col) {
+    const elem = getHudElem(0, col)
+    if (!elem) continue
+    ctxView.drawImage(elem, tileSize*col, 0)
+  }
+}
+
+function getHudElem(row, col) {
+  if (row !== 0) return null
+
+  const p = gameState === GS_PLAYING
+  if (col === 16-1) return gameMuted ? imgHudSoundOff : imgHudSoundOn
+  if (p && col === 16-3) return CanRedo() ? imgHudRedo : imgHudRedoGray
+  if (p && col === 16-4) return CanUndo() ? imgHudUndo : imgHudUndoGray
+  if (p && col === 16-6) return imgHudReset
+  return null
 }
 
 function DrawActors(ctxMap, ctxMini) {

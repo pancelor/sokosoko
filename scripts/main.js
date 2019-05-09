@@ -49,8 +49,7 @@ function registerKeyListeners() {
       InitMenu(currentLevelName)
     } else if (e.code === "KeyR") {
       if (devmode) return // too confusing; ctrl-r instead pls
-      clearTimeout(holdTimeout)
-      playSound(sndUndo)
+      // clearTimeout(holdTimeout)
       reset()
       Raf()
     } else if (e.code === "KeyP") {
@@ -173,6 +172,7 @@ function processGameInput(code) {
   } else {
     success = Update(code) // code is dir
   }
+  Raf()
   if (!success) return // skip recording key hist if update failed
   RecordKeyHist(code)
 }
@@ -271,7 +271,7 @@ function translateMouseFromView(e) {
 
 let storedActor = null
 function mouseClick({e, pos}) {
-  if (maybeGuiInteract(e, pos)) return
+  if (maybeHudInteract(e, pos)) return
   if (!devmode) return
   _devmodeMouseClick(e, pos)
 }
@@ -303,25 +303,37 @@ function mouseMove({e, pos}) {
   }
 }
 
-function maybeGuiInteract(e, pos) {
+function maybeHudInteract(e, pos) {
   if (gameState === GS_MENU) {
     if (maybeMenuMouseClick(e, pos)) return true
   }
 
-  // hacky calculation here
-  const x = e.offsetX
-  const y = e.offsetY
-  const W = canvasView.width
-  const H = canvasView.height
-  const firstCol = 0 <= x && x < tileSize
-  const firstRow = 0 <= y && y < tileSize
-  const lastCol = W - tileSize <= x && x < W
-  const lastRow = H - tileSize <= y && y < H
-  if (firstRow && lastCol && e.button === 0) {
-    muteToggle()
+  if (e.button !== 0) return false
+
+  const col = Math.floor(e.offsetX / tileSize)
+  const row = Math.floor(e.offsetY / tileSize)
+  const elem = getHudElem(row, col)
+  if (elem === imgHudReset) {
+    reset()
+    Raf()
     return true
+  } else if (elem === imgHudSoundOn || elem === imgHudSoundOff) {
+    muteToggle()
+    Raf()
+    return true
+  } else if (elem === imgHudUndo) {
+    const success = Undo()
+    Raf()
+    return success
+  } else if (elem === imgHudRedo) {
+    const success = Redo()
+    Raf()
+    return success
+  } else if (elem === imgHudRedoGray || elem === imgHudUndoGray) {
+    return true // don't interact but consume the click
+  } else {
+    return false
   }
-  return false
 }
 
 function maybeChangeViewFrameStack(e, pos) {
@@ -483,9 +495,10 @@ function setHashLevel(name) {
 }
 
 let currentLevelName
-function reset(name=null) {
-  const success = loadLevel(name || currentLevelName)
-  if (!success) return
+function reset() {
+  playSound(sndUndo)
+  const success = loadLevel(currentLevelName)
+  assert(success)
   recordingStart()
 }
 function loadLevel(name) {
@@ -515,7 +528,7 @@ function SaveLevel(name) {
 function devmodeInit() {
   const match = window.location.hash.match(/^(#(?<dev>dev))?(#(?<level>[\w\d_]+))?$/)
   const { dev, level } = match.groups
-  if (level) reset(level)
+  if (level) loadLevel(level)
   if (dev) devmodeOn()
   if (!devmode) {
     for (const elem of [levelCodeInput.previousElementSibling, levelCodeInput]) {

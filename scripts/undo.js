@@ -207,8 +207,12 @@ function epochToString(e, join=true) {
   return join ? lines.join('\n') : lines
 }
 
+function CanUndo() {
+  return historyCursor > 0
+}
+
 function Undo() {
-  if (historyCursor <= 0) return false
+  if (!CanUndo()) return false
   historyCursor -= 1
   const e = gameHistory[historyCursor]
 
@@ -225,12 +229,15 @@ function Undo() {
   playSound(sndUndo)
 
   viewFrameStack = player.frameStack
-  Raf()
   return true
 }
 
+function CanRedo() {
+  return historyCursor < gameHistory.length
+}
+
 function Redo() {
-  if (historyCursor >= gameHistory.length) return false
+  if (!CanRedo()) return false
   const e = gameHistory[historyCursor]
   historyCursor += 1
 
@@ -249,6 +256,5 @@ function Redo() {
   }
 
   viewFrameStack = player.frameStack
-  Raf()
   return true
 }
