@@ -206,6 +206,7 @@ function InitLevel() {
   viewFrameStack = player.frameStack
   InitHistory()
   actors.forEach(a=>a.onLevelInit())
+  recordingStart()
 }
 
 function Update(dir) {

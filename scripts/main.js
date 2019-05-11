@@ -48,7 +48,7 @@ function registerKeyListeners() {
       playSound(sndWalk)
       InitMenu(currentLevelName)
     } else if (e.code === "KeyR") {
-      if (devmode) return // too confusing; ctrl-r instead pls
+      if (devmode) return // too confusing; ctrl-r instead pls. (the confusion happens when you save a level and then restart. fix this)
       // clearTimeout(holdTimeout)
       reset()
       Raf()
@@ -499,7 +499,6 @@ function reset() {
   playSound(sndUndo)
   const success = loadLevel(currentLevelName)
   assert(success)
-  recordingStart()
 }
 function loadLevel(name) {
   const prevGS = gameState
