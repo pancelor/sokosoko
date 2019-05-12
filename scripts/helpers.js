@@ -1,7 +1,7 @@
 // misc list of various nice-to-have functions that i'll probably forget about:
 // * showmode=1
 // * debugIds=1
-// * rebase()
+// * rebase() (deprecated; click the map instead)
 // * singleButtons()
 // * randLevel()
 // * Q to cycle template actors

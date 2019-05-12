@@ -337,9 +337,9 @@ function maybeHudInteract(e, pos) {
 
 function maybeChangeViewFrameStack(e, pos) {
   assert(devmode) // not necessary in general, but that's what i'm assuming for now
+  if (e.button !== 0) return false
 
   // zoom out on border-click
-  if (e.button !== 0) return false
   if (!pos) {
     if (viewFrameStack.parent) {
       viewFrameStack = viewFrameStack.parent
@@ -357,10 +357,16 @@ function maybeChangeViewFrameStack(e, pos) {
   // zoom in on mini-click
   const mini = findActor(Mini, pos)
   if (mini) {
-    viewFrameStack = cons(mini, viewFrameStack)
-    if (storedActor === player) {
-      player.frameStack = cons(mini, player.frameStack)
+    if (e.target === canvasMap) {
+      // rebase
+      viewFrameStack = cons(pos.room(), null)
+      if (storedActor === player) player.frameStack = viewFrameStack
     }
+
+    // add the new mini
+    viewFrameStack = cons(mini, viewFrameStack)
+    if (storedActor === player) player.frameStack = cons(mini, player.frameStack)
+
     return true
   }
   return false
@@ -395,7 +401,7 @@ function cycleStoredActor(scrollAmount) {
 
 let editingTiles = false
 function _devmodeMouseClick(e, pos) {
-  maybeChangeViewFrameStack(e, pos)
+  if (maybeChangeViewFrameStack(e, pos)) return
   if (!pos) return
   if (editingTiles) {
     if (e.button === 0) {
