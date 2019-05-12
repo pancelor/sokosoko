@@ -102,11 +102,10 @@ levelData.push({
     Mini Black 4 2 Purple
     Crate Purple 1 1 0
     Crate Black 2 2 0
-    Mini Blue 2 4 White
+    Mini Blue 2 4 White @m0
     Crate Purple 2 1 0
     Mini Purple 6 1 Orange
     Mini Purple 6 2 Orange
-    Mini Orange 1 1 White @m0
   `,
   frameStackData: `
     m0
