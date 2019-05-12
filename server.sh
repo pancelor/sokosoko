@@ -1,3 +1,3 @@
 #!/usr/bin/env sh
 
-http-server
+http-server --username username --password stuffandthings
