@@ -9,12 +9,12 @@ let actors
 let taggedActors // make this local?
 
 function levelDeclaredCount(name) {
-  return sum(levelData.map(ld=>ld.name === name ? 1 : 0))
+  return sum(levelData.map(lvl => lvl.name === name ? 1 : 0))
 }
 
 function levelDataFor(name) {
   assertEqual(levelDeclaredCount(name), 1, `Level ${name} was overdeclared`)
-  return levelData.find(ld=>ld.name === name)
+  return levelData.find(lvl => lvl.name === name)
 }
 
 function checkActorsInWalls() {
@@ -32,7 +32,7 @@ function Import(name) {
     console.warn("level not found:", name)
     return false
   }
-  const { tileData, actorData, frameStackData } = preloadData(name)
+  const { tileData, actorData, frameStackData } = levelDataFor(name)
   importTiles(tileData)
   FitCanvasesToTiles()
   importActors(actorData)
@@ -40,14 +40,6 @@ function Import(name) {
   importFrameStack(frameStackData)
   checkActorsInWalls()
   return true
-}
-
-function preloadData(name) {
-  const { tileData, actorData, frameStackData } = levelDataFor(name)
-  assert(tileData)
-  assert(actorData)
-  assert(frameStackData)
-  return { tileData, actorData, frameStackData }
 }
 
 function serTile(solid) {
@@ -229,19 +221,16 @@ function exportRoomString(room) {
 
 function exportTilesString() {
   const lines = []
-  lines.push("  tileData: `")
   for (let room of rooms) {
     lines.push(exportRoomString(room))
     lines.push("")
   }
   lines.length -= 1 // drop the last newline
-  lines.push("  `,")
   return lines.join("\n")
 }
 
 function exportActorsString() {
   const lines = []
-  lines.push("  actorData: `")
   for (let a of actors) {
     if (a.dead) {
       continue
@@ -251,13 +240,11 @@ function exportActorsString() {
     }
     lines.push(`    ${a.serialize()}`)
   }
-  lines.push("  `,")
   return lines.join("\n")
 }
 
 function exportFrameStackString() {
   const lines = []
-  lines.push("  frameStackData: `")
   let frame = player.frameStack
   while (frame.parent) {
     let tag = frame.data.tag
@@ -265,23 +252,33 @@ function exportFrameStackString() {
       tag = randInt(0, 100000)
       frame.data.tag = tag
     }
-    lines.splice(1, 0, `    ${tag}`)
+    lines.push(`    ${tag}`)
     frame = frame.parent
   }
-  lines.push("  `,")
-  return lines.join("\n")
+  return lines.reverse().join("\n")
 }
 
 function Export(name) {
   assert(name.length > 0)
+
+  const tileData = exportTilesString()
+  const frameStackData = exportFrameStackString() // hack: do this before exportActorsString so the actors get auto-tagged if needed
+  const actorData = exportActorsString()
+
   const lines = []
   lines.push("{")
   lines.push(`  name: '${name}',`)
-  lines.push(exportTilesString())
-  const fs = exportFrameStackString() // hack: do this first so the actors get auto-tagged if needed
-  lines.push(exportActorsString())
-  lines.push(fs)
+  lines.push("  tileData: `")
+  lines.push(     tileData)
+  lines.push("  `,")
+  lines.push("  actorData: `")
+  lines.push(     actorData)
+  lines.push("  `,")
+  lines.push("  frameStackData: `")
+  lines.push(     frameStackData)
+  lines.push("  `,")
   lines.push("}")
-  lines.push("")
-  return lines.join("\n")
+  const str = lines.join("\n")
+
+  return { str, obj: {name, tileData, actorData, frameStackData} }
 }

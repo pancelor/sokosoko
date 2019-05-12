@@ -519,13 +519,18 @@ function loadLevel(name) {
 function SaveLevel(name) {
   name = name.toLowerCase()
   if (name === "") name = "untitled"
-  const data = Export(name)
-  downloadFile(`${name}.lvl`, `levelData.push(${data})`)
+  const { str, obj } = Export(name)
+  downloadFile(`${name}.lvl`, `levelData.push(${str})\n`)
   setHashLevel(name)
 
-  // // update cache
-  // const ix = levelData.findIndex(lvl => lvl.name !== name)
-  // if (ix !== -1) levelData[ix] = JSON.parse(data)
+  // update RAM levelData cache
+  const ix = levelData.findIndex(lvl => lvl.name === name)
+  if (ix !== -1) {
+    levelData[ix] = obj
+  } else {
+    console.log("caching new level");
+    levelData.push(obj)
+  }
 }
 
 function devmodeInit() {
