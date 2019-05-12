@@ -275,13 +275,13 @@ function exportFrameStackString() {
 function Export(name) {
   assert(name.length > 0)
   const lines = []
-  lines.push("levelData.push({")
+  lines.push("{")
   lines.push(`  name: '${name}',`)
   lines.push(exportTilesString())
   const fs = exportFrameStackString() // hack: do this first so the actors get auto-tagged if needed
   lines.push(exportActorsString())
   lines.push(fs)
-  lines.push("})")
+  lines.push("}")
   lines.push("")
   return lines.join("\n")
 }

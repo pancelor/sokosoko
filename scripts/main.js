@@ -48,7 +48,6 @@ function registerKeyListeners() {
       playSound(sndWalk)
       InitMenu(currentLevelName)
     } else if (e.code === "KeyR") {
-      if (devmode) return // too confusing; ctrl-r instead pls. (the confusion happens when you save a level and then restart. fix this)
       // clearTimeout(holdTimeout)
       reset()
       Raf()
@@ -520,8 +519,13 @@ function loadLevel(name) {
 function SaveLevel(name) {
   name = name.toLowerCase()
   if (name === "") name = "untitled"
-  downloadFile(`${name}.lvl`, Export(name))
+  const data = Export(name)
+  downloadFile(`${name}.lvl`, `levelData.push(${data})`)
   setHashLevel(name)
+
+  // // update cache
+  // const ix = levelData.findIndex(lvl => lvl.name !== name)
+  // if (ix !== -1) levelData[ix] = JSON.parse(data)
 }
 
 function devmodeInit() {
