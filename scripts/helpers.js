@@ -410,7 +410,6 @@ function recordingCycle() {
   // recordingStart()
 }
 function recordingStart() {
-  console.log("Recording moves...")
   // recordingOutput.innerText = ""
   keyHist = []
 }

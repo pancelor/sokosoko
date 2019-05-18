@@ -101,9 +101,12 @@ function maybeMenuMouseClick(e, pos) {
   return false
 }
 
-function menuOnKeyUp(e) {}
+function menuOnKeyUp(e) {
+  sharedOnKeyUp(e)
+}
 function menuOnKeyDown(e) {
   assert(gameState === GS_MENU)
+  sharedOnKeyDown(e)
   if (e.code === "Space" || e.code === "Enter") {
     DoMenuSelect()
   }
