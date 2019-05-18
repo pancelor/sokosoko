@@ -1,0 +1,134 @@
+levelData.push({
+  name: 'plum',
+  tileData: `
+    room @White
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Pink
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Red
+    xxxxxxxx
+    xxxxx...
+    xxxxx..x
+    x...x..x
+    ......xx
+    x...x.xx
+    xxxxx.xx
+    xxxxx.xx
+
+    room @Orange
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Yellow
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Green
+    xxxxxxxx
+    x......x
+    x......x
+    x......x
+    x.....xx
+    x.....x.
+    x.....xx
+    xxxxxxxx
+
+    room @Blue
+    xxxxx.xx
+    xx.xx...
+    xxxxx.xx
+    x.xxx.xx
+    x.xxx..x
+    x..x...x
+    x..xx.xx
+    xxxxx.xx
+
+    room @Purple
+    xxxx.xxx
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    x......x
+    xxxxxxxx
+
+    room @Brown
+    xxxx.xxx
+    x..x..xx
+    x..xx.xx
+    x..xx..x
+    xxxxx..x
+    x...x.xx
+    xx....xx
+    xxxxxxxx
+
+    room @Black
+    xx.xxxxx
+    xx.x.x.x
+    xx.xxxxx
+    xx.xx.xx
+    xx.xx.xx
+    xxxxx.xx
+    x.x.x.xx
+    xxxxx.xx
+  `,
+  actorData: `
+    Flag Brown 1 5
+    Player Red 6 1
+    Crate Red 0 4 0
+    Mini Pink 1 1 Pink
+    Mini Red 5 3 Red
+    Mini Orange 1 1 Orange
+    Mini Yellow 1 1 Yellow
+    Mini Green 1 1 Green
+    Mini Blue 4 5 Blue
+    Mini Purple 1 1 Purple
+    Mini Brown 1 1 Brown
+    Mini White 1 2 White
+    Mini White 2 2 Pink
+    Mini White 5 1 Red @90358
+    Mini White 2 3 Orange
+    Mini White 5 6 Yellow
+    Mini Brown 3 6 Green
+    Mini Brown 5 2 Blue
+    Mini White 5 4 Purple
+    Mini Purple 4 3 Brown
+    Mini Brown 5 4 Red
+    Mini Red 2 5 Purple
+    Mini Blue 6 1 Black
+    Mini Blue 7 1 Black
+    Mini Blue 5 5 Black
+  `,
+  frameStackData: `
+    90358
+  `,
+})
