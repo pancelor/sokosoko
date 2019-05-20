@@ -86,7 +86,7 @@ levelData.push({
     Player Yellow 1 6
     Mini Blue 3 3 Black
     Mini Yellow 6 6 Blue
-    Mini White 4 3 Yellow @miniYellow
+    Mini White 5 3 Yellow @miniYellow
     Mini Yellow 2 6 Green
     Mini Green 3 5 Yellow
     Mini Yellow 4 1 Red
