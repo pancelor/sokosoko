@@ -107,9 +107,10 @@ levelData.push({
     Mini White 6 1 Pink @m1
     Mini Orange 4 4 Orange
     Mini Purple 3 3 Purple
-    Mini Pink 5 4 Pink
+    Mini Pink 5 4 Pink @2098
   `,
   frameStackData: `
     m1
+    2098
   `,
 })
