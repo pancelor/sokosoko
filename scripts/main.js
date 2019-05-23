@@ -100,9 +100,8 @@ function registerKeyListeners() {
       Raf()
     }
   }
-  function gameOnKeyUp(e) {
-    sharedOnKeyUp(e)
-  }
+  function gameOnKeyUp(e) { sharedOnKeyUp(e) }
+  function menuOnKeyUp(e) { sharedOnKeyUp(e) }
 
   function maybeSave(e) {
     if (devmode && (e.ctrlKey || e.metaKey) && e.code === "KeyS") {

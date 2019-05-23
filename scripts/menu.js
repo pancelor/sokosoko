@@ -101,9 +101,6 @@ function maybeMenuMouseClick(e, pos) {
   return false
 }
 
-function menuOnKeyUp(e) {
-  sharedOnKeyUp(e)
-}
 function menuOnKeyDown(e) {
   assert(gameState === GS_MENU)
   sharedOnKeyDown(e)
