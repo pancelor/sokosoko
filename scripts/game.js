@@ -450,8 +450,6 @@ function lookupActorImg(actor) {
     return imgFlag
   } else if (cst === FakeFlag) {
     return imgFlag
-  } else if (cst === Stairs) {
-    return document.getElementById(`${actor.name}-preview`) || imgCrate
   } else {
     assert(0, `Don't know img for ${cst.name}`)
   }
@@ -468,8 +466,6 @@ function lookupActorImgMini(actor) {
     return imgFlagMini
   } else if (cst === FakeFlag) {
     return imgFlagMini
-  } else if (cst === Stairs) {
-    return imgCrateMini // not legit but who cares
   } else {
     assert(0, `Don't know img for ${cst.name}`)
   }

@@ -2,17 +2,15 @@ let gameState
 const GS_MENU = 1
 const GS_PLAYING = 2
 
-const gameProgress = {}
-
-let menuSelectPos = null
+let menuSelectPos2 = null
 function InitMenu(levelName) {
   gameState = GS_MENU
   const success = loadLevel("menu")
   assert(success)
 
-  menuSelectPos = new MapPos(1, 2)
+  menuSelectPos2 = { row: 2, col: 1 }
   const stairs = findStairs(levelName)
-  if (stairs) menuSelectPos = stairs.pos.mapPos()
+  if (stairs) menuSelectPos2 = pos_to_hex(stairs.pos.mapPos())
 
   ResetTileCache()
   Raf()
@@ -25,10 +23,10 @@ function findStairs(levelName) {
 function processMenuInput(dir) {
   if (![0,1,2,3].includes(dir)) return false // ignore undo/redo
 
-  const pos = menuSelectPos.addDir(dir)
+  const pos = hex_to_pos(menuSelectPos2).addDir(dir)
   if (!pos.roomPos().inbounds()) return false
 
-  menuSelectPos = pos
+  menuSelectPos2 = pos_to_hex(pos)
   playSound(sndWalk)
 
   Raf()
@@ -47,42 +45,32 @@ function DoMenuSelect() {
 }
 
 function getFocusedLevel() {
-  const stairs = findActor(Stairs, menuSelectPos)
+  if (!menuSelectPos2) return null
+  const { col: x, row: y } = menuSelectPos2
+  const stairs = findActor(Stairs, new MapPos(x, y))
   return stairs ? stairs.name : null
 }
 
-function maybeDrawTutorialBang(ctxMap) {
-  // hacky hardcoded stuff here
-  if (!isLocalStorageAvailable()) return false
-
-  const unbeaten = n => !getProgress(n, "win")
-  let s
-  if (unbeaten("push")) s = findStairs("push")
-  else if (unbeaten("block")) s = findStairs("block")
-  else if (unbeaten("poke")) s = findStairs("poke")
-  else if (unbeaten("passage")) s = findStairs("passage")
-  else if (unbeaten("original")) s = findStairs("original")
-  else if (unbeaten("slightly")) s = findStairs("slightly")
-  else return false
-  assert(s)
-  drawImgMap(ctxMap, imgArrowDown, s.pos.addDir(1))
-  return true
-}
-
 async function DrawMenu(ctxMap, ctxMini, ctxView) {
-  DrawTiles(ctxMap, ctxMini)
-  DrawActors(ctxMap, ctxMini)
-  drawDevmode(ctxMap)
-  // maybeDrawTutorialBang(ctxMap)
-  drawImgMap(ctxMap, imgSelector, menuSelectPos)
-
-  const screenshotMap = await createImageBitmap(canvasMap)
   ctxWith(ctxView, {fillStyle: 'white'}, cls)
+  for (const a of actors) {
+    if (a.constructor.name !== "Stairs") continue
+    const { x, y } = oddr_offset_to_pixel({ row: a.pos.y, col: a.pos.x })
+    const imgPreview = document.getElementById(`${a.name}-preview`) || imgCrate
+    ctxView.drawImage(imgPreview, x, y)
+    if (getProgress(a.name, "win")) ctxView.drawImage(imgCheck, x+4, y+16)
+    if (getProgress(a.name, "bonus")) ctxView.drawImage(imgCheck, x+9, y+16)
+  }
+  // DrawTiles(ctxMap, ctxMini)
+  // DrawActors(ctxMap, ctxMini)
+  drawDevmode(ctxView)
 
-  ctxView.drawImage(screenshotMap,
-    0, 0, canvasView.width, canvasView.width,
-    0, 0, canvasView.width, canvasView.height
-  )
+  // temp
+  if (menuSelectPos2) {
+    const { x, y } = oddr_offset_to_pixel(menuSelectPos2)
+    ctxView.drawImage(imgSelector, x, y)
+  }
+  // visualizeCandidates(ctxView)
 
   const level = getFocusedLevel()
   if (level) drawLevelLabel(ctxView, level)
@@ -91,12 +79,14 @@ async function DrawMenu(ctxMap, ctxMini, ctxView) {
 }
 
 function menuMouseMove(e, pos) {
-  if (pos.roomPos().inbounds()) menuSelectPos = pos
+  if (pos.roomPos().inbounds()) {
+    menuSelectPos2 = pixel_to_pointy_hex({ x: e.offsetX, y: e.offsetY })
+  }
 }
 
 function maybeMenuMouseClick(e, pos) {
   assert(gameState === GS_MENU)
-  menuSelectPos = pos
+  menuSelectPos2 = pixel_to_pointy_hex({ x: e.offsetX, y: e.offsetY })
   if (e.button === 0) return DoMenuSelect()
   return false
 }
@@ -110,6 +100,9 @@ function menuOnKeyDown(e) {
   }
 }
 
+//
+// local storage
+//
 
 function isLocalStorageAvailable(cb) {
   return !!ignoreCorsErrors(() => window.localStorage)
@@ -155,4 +148,87 @@ function setProgress(levelName, type) {
     }
     return false
   })
+}
+
+//
+// hex coordinates
+//
+
+function hex_to_pos(hex) {
+  return new MapPos(hex.col, hex.row)
+}
+
+function pos_to_hex(pos) {
+  return { row: pos.y, col: pos.x }
+}
+
+function cube_to_oddr(cube) {
+  const col = cube.x + (cube.z - (cube.z&1)) / 2
+  const row = cube.z
+  return { row, col }
+}
+
+function cube_round(cube) {
+  let rx = Math.round(cube.x)
+  let ry = Math.round(cube.y)
+  let rz = Math.round(cube.z)
+
+  const x_diff = Math.abs(rx - cube.x)
+  const y_diff = Math.abs(ry - cube.y)
+  const z_diff = Math.abs(rz - cube.z)
+
+  if (x_diff > y_diff && x_diff > z_diff) {
+    rx = -ry-rz
+  } else if (y_diff > z_diff) {
+    ry = -rx-rz
+  } else {
+    rz = -rx-ry
+  }
+
+  return { x: rx, y: ry, z: rz}
+}
+
+function cube_neighbors(cube) {
+  const cube_directions = [
+    { x: +1, y: -1, z: 0 }, { x: +1, y: 0, z: -1 }, { x: 0, y: +1, z: -1 },
+    { x: -1, y: +1, z: 0 }, { x: -1, y: 0, z: +1 }, { x: 0, y: -1, z: +1 },
+  ]
+  return cube_directions.map(d=>({ x: d.x+cube.x, y: d.y+cube.y, z: d.z+cube.z }))
+}
+
+let candidates = [] // temp debug stuff; you can move it inside this fxn if you don't need to visualize anymore
+function pixel_to_pointy_hex(point) {
+  const size = 43*2/3 // magic; tweaked manually until it worked well enough
+  const q = (Math.sqrt(3)/3 * point.x  -  1/3 * point.y) / size
+  const r = (                        2/3 * point.y) / size
+  let cube = cube_round({ x: q, y: -q-r, z: r })
+
+  // hack: the above gets us close enough,
+  // now adjust to a neighbor if necessary
+  candidates = cube_neighbors(cube)
+  candidates.push(cube)
+  const distSqs = candidates.map(c=>{
+    let { x, y } = oddr_offset_to_pixel(cube_to_oddr(c))
+    x += 32 // adjust center
+    y += 32
+    assert(imgHexmask1.width === 64 && imgHexmask1.height === 64)
+    return (x-point.x)**2 + (y-point.y)**2
+  })
+  const { arg: ix } = argmin(distSqs)
+  cube = candidates[ix]
+  return cube_to_oddr(cube)
+}
+function visualizeCandidates(ctxView) {
+  for (let c of candidates) {
+    const { x, y } = oddr_offset_to_pixel(cube_to_oddr(c))
+    ctxWith(ctxView, {globalAlpha: 0.5}, () => {
+      ctxView.drawImage(imgSelector, x, y)
+    })
+  }
+}
+
+function oddr_offset_to_pixel(hex) {
+  const x = hex.col*48 + 24*(hex.row&1)
+  const y = hex.row*39
+  return new MapPos(x, y)
 }
