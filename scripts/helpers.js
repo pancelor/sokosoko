@@ -7,7 +7,7 @@
 // * Q to cycle template actors
 // * swapColors()
 // * screenshotMini() (only works through localhost)
-// * autoScreenshotMini() (only works through localhost)
+// * generatePreview(?levelName) (only works through localhost)
 // * screenshot() (only works through localhost)
 // * tracer.toggle()
 // * serFrame(player.frameStack)
@@ -633,13 +633,6 @@ function levelIsWIP(name) {
   return sol && sol.wip
 }
 
-async function autoScreenshotMini(name) {
-  loadLevel(name)
-  setTimeout(async () => {
-    await screenshotMini(innerRoom(player.frameStack).name)
-  }, 25)
-}
-
 async function screenshotMini(name) {
   const room = getUniqueRoomFromNamePrefix(name)
   if (!room) return
@@ -648,11 +641,7 @@ async function screenshotMini(name) {
   const w = 8*miniTileSize
   const h = 8*miniTileSize
 
-  const newCanvas = document.createElement('canvas')
-  newCanvas.width = w
-  newCanvas.height = h
-  const newCtx = newCanvas.getContext('2d')
-  newCtx.imageSmoothingEnabled = false
+  const { canvas: newCanvas, ctx: newCtx } = tempCanvas(w, h)
 
   newCtx.drawImage(canvasMini,
     src.x, src.y, w, h,
@@ -661,15 +650,63 @@ async function screenshotMini(name) {
   newCanvas.toBlob(b=>downloadBlob(currentLevelName, b))
 }
 
-async function screenshot() {
-  const oldShowmode = showmode
-  showmode = 1
-  Raf()
-  setTimeout(() => {
-    canvasView.toBlob(b=>downloadBlob("screenshot", b))
-    showmode = oldShowmode // idk why you would care but hooray i restored it for you
+async function generatePreview(name) {
+  if (!name) name = currentLevelName
+  loadLevel(name)
+  viewFrameStack = viewFrameStack.parent
+  assert(viewFrameStack) // something about this leaks out into more errors if this is tripped; weird
+  tempShowmode(1, (restore)=> {
     Raf()
-  }, 25)
+    setTimeout(async () => { // wait for Raf()
+      const border = tileSize/2
+      const src = player.frameStack.data.pos.mapPos().scale(tileSize).add(-border, -border)
+      const w = tileSize + 2*border
+      const h = tileSize + 2*border
+      assert(w === imgHexmask1.width && h === imgHexmask1.height)
+
+      const { canvas: newCanvas, ctx: newCtx } = tempCanvas(w, h)
+
+      newCtx.drawImage(imgHexmask1, 0, 0)
+      ctxWith(newCtx, {globalCompositeOperation: 'source-in'}, () => {
+        newCtx.drawImage(canvasMap,
+          src.x, src.y, w, h,
+          0, 0, w, h)
+      })
+
+      {
+        // draw imgHexmask2, but using the room's wall color
+        const borderColor = innerRoom(player.frameStack).tileColors().Floor
+
+        const { canvas: hexCanvas, ctx: hexCtx } = tempCanvas(w, h)
+        hexCtx.drawImage(imgHexmask2, 0, 0)
+        ctxWith(hexCtx, {globalCompositeOperation: 'source-in', fillStyle: borderColor}, () => {
+          hexCtx.fillRect(0, 0, w, h)
+        })
+        // canvasView.getContext('2d').drawImage(hexCanvas, 0, 0) // debug
+        newCtx.drawImage(hexCanvas, 0, 0)
+      }
+
+      newCanvas.toBlob(b=>downloadBlob(name, b))
+      // canvasView.getContext('2d').drawImage(newCanvas, 0, 0) // debug
+    }, 25)
+  })
+}
+
+async function tempShowmode(tempValue, cb) {
+  const oldShowmode = showmode
+  showmode = tempValue
+  cb(()=>{showmode = oldShowmode})
+}
+
+async function screenshot() {
+  tempShowmode(1, (restore)=> {
+    Raf()
+    setTimeout(() => { // wait for Raf()
+      canvasView.toBlob(b=>downloadBlob("screenshot", b))
+      restore()
+      Raf()
+    }, 25)
+  })
 }
 
 function rebase(name) {

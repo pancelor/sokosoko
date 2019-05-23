@@ -254,7 +254,7 @@ async function DrawMinis(ctxMap) {
       src.x, src.y, pixSize, pixSize,
       dest.x, dest.y, pixSize, pixSize,
     )
-    if (debugIds) {
+    if (debugIds && !showmode) {
       // print mini id above the mini
       ctxWith(ctxMap, {
         font: `10px Consolas`,
@@ -265,19 +265,21 @@ async function DrawMinis(ctxMap) {
       })
     }
   }
-  // draw highlight if we're zoomed out
-  let pfs = player.frameStack
-  if (length(viewFrameStack) < length(pfs)) {
-    while (length(viewFrameStack) + 1 < length(pfs)) {
-      assert(pfs.data && pfs.parent)
-      pfs = pfs.parent
+  if (!showmode) {
+    // draw highlight if we're zoomed out
+    let pfs = player.frameStack
+    if (length(viewFrameStack) < length(pfs)) {
+      while (length(viewFrameStack) + 1 < length(pfs)) {
+        assert(pfs.data && pfs.parent)
+        pfs = pfs.parent
+      }
+      assert(length(viewFrameStack) + 1  === length(pfs))
+      const m = pfs.data
+      const dest = m.pos.scale(tileSize)
+      ctxWith(ctxMap, {strokeStyle: 'white', globalAlpha: '0.85', lineWidth: 4}, () => {
+        ctxMap.strokeRect(dest.x, dest.y, tileSize, tileSize)
+      })
     }
-    assert(length(viewFrameStack) + 1  === length(pfs))
-    const m = pfs.data
-    const dest = m.pos.scale(tileSize)
-    ctxWith(ctxMap, {strokeStyle: 'white', globalAlpha: '0.85', lineWidth: 4}, () => {
-      ctxMap.strokeRect(dest.x, dest.y, tileSize, tileSize)
-    })
   }
 }
 

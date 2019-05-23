@@ -64,7 +64,7 @@ function drawLevelLabel(ctx, title) {
   const cx = W/2
   const cy = H - msgHeight - lineHeight
   ctxWith(ctx, {globalAlpha: 0.66, fillStyle: "black"}, () => {
-    fillRectCentered(ctx, cx, cy, W, msgHeight + 0.5*lineHeight)
+    fillRectCentered(ctx, cx, cy, W, msgHeight + lineHeight)
   })
   ctxWith(ctx, {
     font: `${lineHeight}px Consolas`,
@@ -121,4 +121,13 @@ function fillRectCentered(ctx, cx, cy, w, h) {
   const x = cx - w/2;
   const y = cy - h/2;
   ctx.fillRect(x,y,w,h);
+}
+
+function tempCanvas(w, h) {
+  const canvas = document.createElement('canvas')
+  canvas.width = w
+  canvas.height = h
+  const ctx = canvas.getContext('2d')
+  ctx.imageSmoothingEnabled = false
+  return { canvas, ctx }
 }
