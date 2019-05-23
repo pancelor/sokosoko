@@ -27,25 +27,26 @@ levelData.push({
     Stairs White 4 2 poke
     Stairs White 5 2 passage
     Stairs White 7 2 original
-    Stairs White 8 6 slightly
+    Stairs White 11 6 slightly
     Stairs White 9 2 tunnels
-    Stairs White 11 8 oldstomach
+    Stairs White 9 7 oldstomach
     Stairs White 9 6 butterfly
-    Stairs White 10 8 balloon
-    Stairs White 10 6 door
-    Stairs White 8 8 dolphin
-    Stairs White 11 9 bellyache
-    Stairs White 9 10 bubbles
+    Stairs White 8 7 balloon
+    Stairs White 8 6 door
+    Stairs White 8 9 dolphin
+    Stairs White 9 9 bellyache
+    Stairs White 10 9 bubbles
     Stairs White 3 12 wack
     Stairs White 5 9 porpoise
     Stairs White 3 9 sadclown
     Stairs White 2 11 clowntown
     Stairs White 3 10 clownparty
     Stairs White 3 11 roots
-    Stairs White 11 6 gift
+    Stairs White 11 9 gift
     Stairs White 5 10 squirrel
-    Stairs White 12 6 forklift
+    Stairs White 10 6 forklift
   `,
   frameStackData: `
+
   `,
 })
