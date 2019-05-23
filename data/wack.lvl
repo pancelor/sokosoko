@@ -81,7 +81,6 @@ levelData.push({
     Crate Blue 2 3 0
     Player Yellow 1 6
     Mini White 3 5 White @miniOuter1
-    Mini Yellow 2 5 Red
   `,
   frameStackData: `
     miniOuter1
