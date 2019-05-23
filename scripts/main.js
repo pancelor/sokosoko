@@ -21,88 +21,87 @@ function registerLevelCodeListener() {
   })
 }
 
-function registerKeyListeners() {
-  let heldDirs = []
-  let holdTimeout
-  const holdDelay = {
-    // different delays per input type
-    // each entry is [initialDelay, holdDelay]
-    0: [150, 150],
-    1: [150, 150],
-    2: [150, 150],
-    3: [150, 150],
-    4: [300, 75], // undo / redo are different than normal directions
-    5: [300, 75],
+let heldDirs = []
+let holdTimeout
+const holdDelay = {
+  // different delays per input type
+  // each entry is [initialDelay, holdDelay]
+  0: [150, 150],
+  1: [150, 150],
+  2: [150, 150],
+  3: [150, 150],
+  4: [300, 75], // undo / redo are different than normal directions
+  5: [300, 75],
+}
+function onKeyHold(wait=false) {
+  const dir = back(heldDirs)
+  if (dir === undefined) return
+  ProcessInput(dir)
+  clearTimeout(holdTimeout)
+  if (!enableHeldButtons) return
+  holdTimeout = setTimeout(onKeyHold, holdDelay[dir][wait ? 0 : 1])
+}
+function sharedOnKeyDown(e) {
+  assert(gameState === GS_PLAYING || gameState === GS_MENU)
+  if (e.code in KeyDirMap) {
+    const dir = KeyDirMap[e.code]
+    if (!heldDirs.includes(dir)) heldDirs.push(dir)
+    onKeyHold(true)
+  } else if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+    if (!devmode) return
+    editingTiles = true
+    storedActor = null
+    Raf()
+  } else if (e.code === "Semicolon") {
+    if (!devmode) return
+    // save to RAM but not disk
+    SaveLevel(currentLevelName, true)
+    console.log("level saved")
+  } else if (e.code === "KeyM") {
+    muteToggle()
+    Raf()
   }
-  function onKeyHold(wait=false) {
-    const dir = back(heldDirs)
-    if (dir === undefined) return
-    ProcessInput(dir)
-    clearTimeout(holdTimeout)
-    if (!enableHeldButtons) return
-    holdTimeout = setTimeout(onKeyHold, holdDelay[dir][wait ? 0 : 1])
-  }
-  function sharedOnKeyDown(e) {
-    assert(gameState === GS_PLAYING || gameState === GS_MENU)
-    if (e.code in KeyDirMap) {
-      const dir = KeyDirMap[e.code]
-      if (!heldDirs.includes(dir)) heldDirs.push(dir)
-      onKeyHold(true)
-    } else if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-      if (!devmode) return
-      editingTiles = true
-      storedActor = null
-      Raf()
-    } else if (e.code === "Semicolon") {
-      if (!devmode) return
-      // save to RAM but not disk
-      SaveLevel(currentLevelName, true)
-      console.log("level saved")
-    } else if (e.code === "KeyM") {
-      muteToggle()
-      Raf()
-    }
-  }
-  function gameOnKeyDown(e) {
-    assert(gameState === GS_PLAYING)
-    sharedOnKeyDown(e)
-    if (e.code === "Escape") {
-      playSound(sndWalk)
+}
+function gameOnKeyDown(e) {
+  assert(gameState === GS_PLAYING)
+  sharedOnKeyDown(e)
+  if (e.code === "Escape") {
+    playSound(sndWalk)
+    InitMenu(currentLevelName)
+  } else if (e.code === "KeyR") {
+    // clearTimeout(holdTimeout)
+    reset()
+    Raf()
+  } else if (e.code === "KeyP") {
+    recordingCycle()
+  } else if (e.code === "KeyQ") {
+    if (!devmode) return
+    cycleStoredActor(usingStockActors ? 1 : 0)
+    Raf()
+  } else if (e.code === "Space" || e.code === "Enter") {
+    if (player.won) {
       InitMenu(currentLevelName)
-    } else if (e.code === "KeyR") {
-      // clearTimeout(holdTimeout)
-      reset()
       Raf()
-    } else if (e.code === "KeyP") {
-      recordingCycle()
-    } else if (e.code === "KeyQ") {
-      if (!devmode) return
-      cycleStoredActor(usingStockActors ? 1 : 0)
-      Raf()
-    } else if (e.code === "Space" || e.code === "Enter") {
-      if (player.won) {
-        InitMenu(currentLevelName)
-        Raf()
-        return
-      }
+      return
     }
   }
-  function sharedOnKeyUp(e) {
-    assert(gameState === GS_PLAYING || gameState === GS_MENU)
-    if (e.code in KeyDirMap) {
-      const dir = KeyDirMap[e.code]
-      const keyWasCurrent = (dir === back(heldDirs))
-      heldDirs = heldDirs.filter(d=>d!==dir)
-      if (keyWasCurrent) onKeyHold(false) // do next held button on stack immediately
-    } else if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
-      if (!devmode) return
-      editingTiles = false
-      Raf()
-    }
+}
+function sharedOnKeyUp(e) {
+  assert(gameState === GS_PLAYING || gameState === GS_MENU)
+  if (e.code in KeyDirMap) {
+    const dir = KeyDirMap[e.code]
+    const keyWasCurrent = (dir === back(heldDirs))
+    heldDirs = heldDirs.filter(d=>d!==dir)
+    if (keyWasCurrent) onKeyHold(false) // do next held button on stack immediately
+  } else if (e.code === "ShiftLeft" || e.code === "ShiftRight") {
+    if (!devmode) return
+    editingTiles = false
+    Raf()
   }
-  function gameOnKeyUp(e) { sharedOnKeyUp(e) }
-  function menuOnKeyUp(e) { sharedOnKeyUp(e) }
+}
+function gameOnKeyUp(e) { sharedOnKeyUp(e) }
 
+function registerKeyListeners() {
   function maybeSave(e) {
     if (devmode && (e.ctrlKey || e.metaKey) && e.code === "KeyS") {
       SaveLevel(levelCodeInput.value)
