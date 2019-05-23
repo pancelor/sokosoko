@@ -281,24 +281,8 @@ async function DrawMinis(ctxMap) {
   }
 }
 
-let startZoom = false
-let zoomTimestamp = null
-let zoomLerp = 0
-let zoomScreenshot = null
-async function DrawView(ctx) {
-  if (startZoom) {
-    zoomTimestamp = new Date()/1000 // unix seconds
-    zoomScreenshot = await createImageBitmap(canvasMap)
-
-  } else if (zoomLerp !== 0) {
-    zoomLerp +=
-  } else {
-    await DrawView_Old(ctx)
-  }
-}
-
 let viewFrameStack
-async function DrawView_Old(ctx) {
+async function DrawView(ctx) {
   const screenshotMap = await createImageBitmap(canvasMap)
 
   ctxWith(ctx, {fillStyle: 'black'}, cls)
