@@ -173,12 +173,11 @@ RegisterTest("divmod", () => {
 })
 
 function hex(str) {
-  const match = str.match(/^[#]?([a-fA-F\d]+)$/)
+  const match = str.match(/^[#]?(?<code>[a-fA-F\d]+)$/)
   if (!match) {
     throw new Error(`bad hex parse on "${str}"`)
   }
-  const code = match[1]
-  return parseInt(code, 16)
+  return parseInt(match.groups.code, 16)
 }
 RegisterTest("hex", () => {
   assertEqual(hex("FFA300"), 16753408)

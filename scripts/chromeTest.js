@@ -17,4 +17,4 @@ function chromeTest() {
   }
 }
 
-// chromeTest()
+chromeTest()

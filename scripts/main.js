@@ -551,15 +551,10 @@ function SaveLevel(name, skipDisk=false) {
 }
 
 function devmodeInit() {
-  const [_, dev, level] = window.location.hash.split('#')
-  if (dev === "dev") {
-    dev = true
-  } else {
-    level = dev
-    dev = false
-  }
-  if (dev) devmodeOn()
+  const match = window.location.hash.match(/^(#(?<dev>dev))?(#(?<level>[\w\d_]+))?$/)
+  const { dev, level } = match.groups
   if (level) loadLevel(level)
+  if (dev) devmodeOn()
   if (!devmode) {
     for (const elem of [levelCodeInput.previousElementSibling, levelCodeInput]) {
       elem.style.display = "none"
