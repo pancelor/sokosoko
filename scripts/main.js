@@ -193,11 +193,11 @@ function lockScroll(cb) {
 
 function onMouseDown(e) {
   if (e.target === canvasView) {
-    mouseClick(translateMouseFromView(e))
+    mouseClick(translateHex(translateMouseFromView(e)))
     Raf()
     canvasView.focus()
   } else if (e.target === canvasMap) {
-    mouseClick(translateMouseFromMap(e))
+    mouseClick(translateHex(translateMouseFromMap(e)))
     Raf()
     lockScroll(()=>canvasView.focus())
   }
@@ -205,10 +205,10 @@ function onMouseDown(e) {
 
 function onMouseMove(e) {
   if (e.target === canvasView) {
-    mouseMove(translateMouseFromView(e))
+    mouseMove(translateHex(translateMouseFromView(e)))
     if (devmode || gameState === GS_MENU) Raf()
   } else if (e.target === canvasMap) {
-    mouseMove(translateMouseFromMap(e))
+    mouseMove(translateHex(translateMouseFromMap(e)))
     if (devmode || gameState === GS_MENU) Raf()
   }
 }

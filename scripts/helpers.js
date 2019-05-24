@@ -844,6 +844,7 @@ function randLevel() {
 }
 
 function getUniqueRoomFromNamePrefix(prefix) {
+  // TODO: put this on Room? e.g. `Room.findNameLax` maybe?
   prefix = prefix.toLowerCase()
   let res = null
   for (const r of rooms) {

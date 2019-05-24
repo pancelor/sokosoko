@@ -31,4 +31,6 @@ https://www.bfxr.net/
 
 https://www.audacityteam.org/
 
+https://www.redblobgames.com/grids/hexagons
+
 https://www.favicon-generator.org/

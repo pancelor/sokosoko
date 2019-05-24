@@ -2,15 +2,15 @@ let gameState
 const GS_MENU = 1
 const GS_PLAYING = 2
 
-let menuSelectPos2 = null
+let menuSelectHexPos = null
 function InitMenu(levelName) {
   gameState = GS_MENU
   const success = loadLevel("menu")
   assert(success)
 
-  menuSelectPos2 = { row: 2, col: 1 }
+  menuSelectHexPos = { row: 2, col: 1 }
   const stairs = findStairs(levelName)
-  if (stairs) menuSelectPos2 = pos_to_hex(stairs.pos.mapPos())
+  if (stairs) menuSelectHexPos = pos_as_hex(stairs.pos.mapPos())
 
   ResetTileCache()
   Raf()
@@ -23,10 +23,10 @@ function findStairs(levelName) {
 function processMenuInput(dir) {
   if (![0,1,2,3].includes(dir)) return false // ignore undo/redo
 
-  const pos = hex_to_pos(menuSelectPos2).addDir(dir)
+  const pos = hex_as_pos(menuSelectHexPos).addDir(dir)
   if (!pos.roomPos().inbounds()) return false
 
-  menuSelectPos2 = pos_to_hex(pos)
+  menuSelectHexPos = pos_as_hex(pos)
   playSound(sndWalk)
 
   Raf()
@@ -45,14 +45,17 @@ function DoMenuSelect() {
 }
 
 function getFocusedLevel() {
-  if (!menuSelectPos2) return null
-  const { col: x, row: y } = menuSelectPos2
+  if (!menuSelectHexPos) return null
+  const { col: x, row: y } = menuSelectHexPos
   const stairs = findActor(Stairs, new MapPos(x, y))
   return stairs ? stairs.name : null
 }
 
 async function DrawMenu(ctxMap, ctxMini, ctxView) {
-  ctxWith(ctxView, {fillStyle: 'white'}, cls)
+  const bkgColor = Room.findName("White").tileColors().Floor
+  ctxWith(ctxView, {fillStyle: bkgColor}, cls)
+
+  // draw stairs
   for (const a of actors) {
     if (a.constructor.name !== "Stairs") continue
     const { x, y } = oddr_offset_to_pixel({ row: a.pos.y, col: a.pos.x })
@@ -61,13 +64,11 @@ async function DrawMenu(ctxMap, ctxMini, ctxView) {
     if (getProgress(a.name, "win")) ctxView.drawImage(imgCheck, x+4, y+16)
     if (getProgress(a.name, "bonus")) ctxView.drawImage(imgCheck, x+9, y+16)
   }
-  // DrawTiles(ctxMap, ctxMini)
-  // DrawActors(ctxMap, ctxMini)
   drawDevmode(ctxView)
 
   // temp
-  if (menuSelectPos2) {
-    const { x, y } = oddr_offset_to_pixel(menuSelectPos2)
+  if (menuSelectHexPos) {
+    const { x, y } = oddr_offset_to_pixel(menuSelectHexPos)
     ctxView.drawImage(imgSelector, x, y)
   }
   // visualizeCandidates(ctxView)
@@ -80,13 +81,13 @@ async function DrawMenu(ctxMap, ctxMini, ctxView) {
 
 function menuMouseMove(e, pos) {
   if (pos.roomPos().inbounds()) {
-    menuSelectPos2 = pixel_to_pointy_hex({ x: e.offsetX, y: e.offsetY })
+    menuSelectHexPos = pixel_to_pointy_hex({ x: e.offsetX, y: e.offsetY })
   }
 }
 
 function maybeMenuMouseClick(e, pos) {
   assert(gameState === GS_MENU)
-  menuSelectPos2 = pixel_to_pointy_hex({ x: e.offsetX, y: e.offsetY })
+  menuSelectHexPos = pixel_to_pointy_hex({ x: e.offsetX, y: e.offsetY })
   if (e.button === 0) return DoMenuSelect()
   return false
 }
@@ -153,12 +154,18 @@ function setProgress(levelName, type) {
 //
 // hex coordinates
 //
+// There are 4 main coordinate systems in use:
+//   * oddr coordinates (hex)
+//   * cube coordinates (alternate hex system)
+//   * pixel coordinates
+//   * "standard" MapPos coordinates
+// see https://www.redblobgames.com/grids/hexagons/#pixel-to-hex more info
 
-function hex_to_pos(hex) {
+function hex_as_pos(hex) {
   return new MapPos(hex.col, hex.row)
 }
 
-function pos_to_hex(pos) {
+function pos_as_hex(pos) {
   return { row: pos.y, col: pos.x }
 }
 
@@ -231,4 +238,9 @@ function oddr_offset_to_pixel(hex) {
   const x = hex.col*48 + 24*(hex.row&1)
   const y = hex.row*39
   return new MapPos(x, y)
+}
+
+function translateHex({e, pos}) {
+  if (gameState === GS_MENU) pos = hex_as_pos(pixel_to_pointy_hex({ x: e.offsetX, y: e.offsetY }))
+  return { e, pos }
 }

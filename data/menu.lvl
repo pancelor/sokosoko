@@ -3,48 +3,48 @@ levelData.push({
   tileData: `
     room @White
     xxxxxxxxxxxxxxxx
-    x...........xxxx
-    x...........xxxx
-    x...........xxxx
-    xxxxxxxx...xxxxx
-    xxxxxxx.......xx
-    xxxxxxx.......xx
-    xxxxxxx.......xx
-    xx....x.......xx
-    xx............xx
-    xx............xx
-    xx............xx
-    xx....x.......xx
-    xx....x.......xx
-    xxxxxxx.......xx
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
+    x..............x
     xxxxxxxxxxxxxxxx
     xxxxxxxxxxxxxxx.
   `,
   actorData: `
     Player White 15 16
-    Stairs White 2 2 push
-    Stairs White 3 2 block
-    Stairs White 4 2 poke
-    Stairs White 5 2 passage
-    Stairs White 7 2 original
-    Stairs White 11 6 slightly
-    Stairs White 9 2 tunnels
-    Stairs White 9 7 oldstomach
-    Stairs White 9 6 butterfly
-    Stairs White 8 7 balloon
-    Stairs White 8 6 door
-    Stairs White 8 9 dolphin
-    Stairs White 9 9 bellyache
-    Stairs White 10 9 bubbles
-    Stairs White 3 12 wack
-    Stairs White 5 9 porpoise
-    Stairs White 3 9 sadclown
-    Stairs White 2 11 clowntown
-    Stairs White 3 10 clownparty
-    Stairs White 3 11 roots
-    Stairs White 11 9 gift
-    Stairs White 5 10 squirrel
-    Stairs White 10 6 forklift
+    Stairs White 1 2 push
+    Stairs White 2 2 block
+    Stairs White 2 3 poke
+    Stairs White 2 4 passage
+    Stairs White 2 5 original
+    Stairs White 4 6 slightly
+    Stairs White 3 5 tunnels
+    Stairs White 2 7 oldstomach
+    Stairs White 4 5 butterfly
+    Stairs White 3 6 balloon
+    Stairs White 4 4 door
+    Stairs White 6 5 dolphin
+    Stairs White 1 7 bellyache
+    Stairs White 6 6 bubbles
+    Stairs White 5 5 gift
+    Stairs White 7 6 wack
+    Stairs White 5 4 porpoise
+    Stairs White 4 7 sadclown
+    Stairs White 6 8 clowntown
+    Stairs White 5 8 clownparty
+    Stairs White 4 8 roots
+    Stairs White 5 3 squirrel
+    Stairs White 5 6 forklift
   `,
   frameStackData: `
 
