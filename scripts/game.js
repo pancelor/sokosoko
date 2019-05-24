@@ -691,6 +691,7 @@ class Stairs extends Actor {
     this.name = name
   }
   draw(ctxMap, ctxMini) {
+    // this is unused
     Actor.prototype.draw.call(this, ctxMap, ctxMini)
     const p = this.pos.scale(tileSize)
     if (getProgress(this.name, "win")) ctxMap.drawImage(imgCheck, p.x+4, p.y+16)

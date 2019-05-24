@@ -52,8 +52,11 @@ function getFocusedLevel() {
 }
 
 async function DrawMenu(ctxMap, ctxMini, ctxView) {
-  const bkgColor = Room.findName("White").tileColors().Floor
+  // draw background
+  const bkgColor = imgWhiteWall.dataset.color
   ctxWith(ctxView, {fillStyle: bkgColor}, cls)
+  // const pattern = ctxView.createPattern(imgWhiteWall, 'repeat')
+  // ctxWith(ctxView, {fillStyle: pattern}, cls)
 
   // draw stairs
   for (const a of actors) {
@@ -61,6 +64,16 @@ async function DrawMenu(ctxMap, ctxMini, ctxView) {
     const { x, y } = oddr_offset_to_pixel({ row: a.pos.y, col: a.pos.x })
     const imgPreview = document.getElementById(`${a.name}-preview`) || imgCrate
     ctxView.drawImage(imgPreview, x, y)
+
+    { // overwrite border color
+      const { canvas: hexCanvas, ctx: hexCtx } = tempCanvas(imgHexmask2.width, imgHexmask2.height)
+      hexCtx.drawImage(imgHexmask2, 0, 0)
+      ctxWith(hexCtx, {globalCompositeOperation: 'source-in', fillStyle: imgWhiteFloor.dataset.color}, cls)
+      // canvasView.getContext('2d').drawImage(hexCanvas, 0, 0) // debug
+      ctxView.drawImage(hexCanvas, x, y)
+    }
+
+    // draw progress
     if (getProgress(a.name, "win")) ctxView.drawImage(imgCheck, x+4, y+16)
     if (getProgress(a.name, "bonus")) ctxView.drawImage(imgCheck, x+9, y+16)
   }
