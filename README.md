@@ -2,7 +2,9 @@
 
 A game that started as a clone of https://juner.itch.io/sokosoko
 
-Still very much in-development
+I've stopped pushing updates to github - if you want updates,
+keep an eye on https://pancelor.itch.io/ where I will eventually
+publish this as a Real Game (TM)
 
 **Don't look through the code if you don't want spoilers!**
 
