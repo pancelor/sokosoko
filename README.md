@@ -1,16 +1,19 @@
-# Tursokoduckenban (name subject to change)
+# Inbox Unbox
 
-A game that started as a clone of https://juner.itch.io/sokosoko
+A game about pushing boxes into other boxes. Inspired by [sokosoko](https://juner.itch.io/sokosoko).
 
-I've stopped pushing updates to github - if you want updates,
-keep an eye on https://pancelor.itch.io/ where I will eventually
-publish this as a Real Game (TM)
+This is a very early demo build; I've made a lot of progress since then! Don't go sharing this page please!
+
+The full game is coming to [Steam](https://store.steampowered.com/app/1552300/Inbox_Unbox/) later this year! More info on [my site](https://pancelor.com/inbox-unbox)
 
 **Don't look through the code if you don't want spoilers!**
 
 ## How to play
 
-option 1: play online at https://pancelor.github.io/sokosoko/
+option 1: (better tutorial, graphics, zoom animation, music, etc!)
+* [wishlist](https://store.steampowered.com/app/1552300/Inbox_Unbox/) the game on steam
+* wait for the game to come out and buy it!
+* ;)
 
 option 2:
 * `git clone` this repo
